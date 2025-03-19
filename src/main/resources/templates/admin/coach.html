@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Coach</title>
+    <link rel="stylesheet" href="/css/styles.css"> <!-- Add your CSS file -->
+</head>
+<body>
+    <h2>Add New Coach</h2>
+
+    <form action="/admin/coach/add" method="post">
+        <label for="name">Coach Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="experience">Experience (Years):</label>
+        <input type="number" id="experience" name="experience" required>
+
+        <label for="specialization">Specialization:</label>
+        <input type="text" id="specialization" name="specialization" required>
+
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="salary">Salary:</label>
+        <input type="number" id="salary" name="salary" required>
+
+        <label for="gameId">Select Game:</label>
+        <select id="gameId" name="gameId" required>
+            <option value="">-- Select a Game --</option>
+            <!-- Dynamic Games List -->
+            <th:block th:each="game : ${games}">
+                <option th:value="${game.id}" th:text="${game.gameName}"></option>
+            </th:block>
+        </select>
+
+        <button type="submit">Add Coach</button>
+    </form>
+
+    <br>
+    <a href="/admin/dashboard"><button>Back to Admin Dashboard</button></a>
+</body>
+</html>

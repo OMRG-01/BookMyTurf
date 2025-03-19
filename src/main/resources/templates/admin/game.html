@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Games</title>
+</head>
+<body>
+    <h2>Game Management</h2>
+    
+    <form th:action="@{/admin/addGame}" method="post">
+        <label>Game Name:</label>
+        <input type="text" name="gameName" required>
+        
+        <label>Player Capacity:</label>
+        <input type="number" name="playerCapacity" required>
+        
+        <label>Type:</label>
+        <select name="type">
+            <option value="Indoor">Indoor</option>
+            <option value="Outdoor">Outdoor</option>
+        </select>
+        
+        <button type="submit">Add Game</button>
+    </form>
+
+    <h3>Game List</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Player Capacity</th>
+            <th>Type</th>
+        </tr>
+        <tr th:each="game : ${games}">
+            <td th:text="${game.id}"></td>
+            <td th:text="${game.gameName}"></td>
+            <td th:text="${game.playerCapacity}"></td>
+            <td th:text="${game.type}"></td>
+        </tr>
+    </table>
+    
+    <a href="/admin/dashboard"><button>Back to Admin Dashboard</button></a>
+
+    <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+
+</body>
+</html>

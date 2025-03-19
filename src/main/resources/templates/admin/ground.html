@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add/Edit Ground</title>
+</head>
+<body>
+    <h2 th:text="${ground.id == null ? 'Add Ground' : 'Edit Ground'}"></h2>
+    
+    <form th:action="@{/admin/ground/save}" th:object="${ground}" method="post">
+        <input type="hidden" th:field="*{id}"/>  <!-- Hidden field for ID (edit mode) -->
+
+        <label for="name">Ground Name:</label>
+        <input type="text" id="name" th:field="*{name}" required>
+        <br>
+        
+        <label for="location">Location:</label>
+        <input type="text" id="location" th:field="*{location}" required>
+        <br>
+        
+       <label for="game">Select Game:</label>
+		<select id="game" name="game.id" required> <!-- Bind to 'game.id' -->
+		    <option th:each="game : ${games}" th:value="${game.id}" th:text="${game.gameName}"></option>
+		</select>
+		<br>
+
+      
+
+        
+        <label for="groundType">Ground Type:</label>
+        <select id="groundType" th:field="*{groundType}" required>
+            <option value="Indoor">Indoor</option>
+            <option value="Outdoor">Outdoor</option>
+        </select>
+        <br>
+        
+        <label for="playerCapacity">Player Capacity:</label>
+        <input type="number" id="playerCapacity" th:field="*{playerCapacity}" required>
+        <br>
+        
+        <label for="surfaceType">Surface Type:</label>
+        <input type="text" id="surfaceType" th:field="*{surfaceType}" required>
+        <br>
+        
+        <label>Floodlights Available:</label>
+        <input type="radio" th:field="*{floodlightsAvailable}" value="true"> Yes
+        <input type="radio" th:field="*{floodlightsAvailable}" value="false"> No
+        <br>
+        
+        <label>Changing Rooms:</label>
+        <input type="radio" th:field="*{changingRooms}" value="true"> Yes
+        <input type="radio" th:field="*{changingRooms}" value="false"> No
+        <br>
+   		
+   		<label for="openingTime">Opening Time:</label>
+		<input type="time" id="openingTime" name="openingTime" required>
+		<br>
+		
+		<label for="closingTime">Closing Time:</label>
+		<input type="time" id="closingTime" name="closingTime" required>
+		<br>
+   		
+        
+        <button type="submit" >Submit</button>
+    </form>
+    
+    <a href="/admin/ground/list">View All Grounds</a> |
+    <a href="/admin/dashboard">Back to Dashboard</a>
+</body>
+</html>

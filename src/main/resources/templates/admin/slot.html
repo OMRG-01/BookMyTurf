@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Slot Management</h2>
+    
+    <label for="ground">Select Ground:</label>
+    <select id="ground" onchange="loadGroundDetails()">
+        <option value="">--Select Ground--</option>
+    </select>
+    
+    <p><b>Opening Time:</b> <span id="openingTime"></span></p>
+    <p><b>Closing Time:</b> <span id="closingTime"></span></p>
+    
+    <label for="breakTime">Break Time (e.g. 12:00 - 15:00):</label>
+    <input type="text" id="breakTime">
+    
+    <label for="slotHours">Slot Duration (in hours):</label>
+    <input type="number" id="slotHours" min="1" value="1">
+    
+    <label for="basePrice">Base Price:</label>
+    <input type="number" id="basePrice" min="0" value="0">
+    
+    <label for="weekendExtra">Weekend Extra Charge:</label>
+    <input type="number" id="weekendExtra" min="0" value="0" oninput="calculateWeekendPrice()">
+    
+    <h3>Available Slots</h3>
+    <div id="slotContainer"></div>
+    
+    <button onclick="submitSlots()">Submit</button>
+    
+    <script>
+        let groundData = [];
+        $(document).ready(function () {
+            loadGrounds();
+
+            // Trigger ground details loading when ground selection changes
+            $("#ground").change(function () {
+                loadGroundDetails();
+                generateSlots(); // Ensure slots update when a new ground is selected
+            });
+
+            // Trigger slot generation when break time or slot duration changes
+            $("#breakTime, #slotHours").on("input", function () {
+                generateSlots();
+            });
+        });
+
+        function loadGrounds() {
+            $.get("/admin/slots/grounds", function(data) {
+                console.log("Grounds fetched:", data); // Debugging line
+                groundData = data; // ✅ Store fetched grounds
+
+                $("#ground").empty().append('<option value="">--Select Ground--</option>'); // Clear old options
+
+                data.forEach(ground => {
+                    $("#ground").append(`<option value="${ground.id}">${ground.name}</option>`);
+                });
+            }).fail(function(error) {
+                console.error("Error fetching grounds:", error);
+            });
+        }
+
+
+        function loadGroundDetails() {
+            let groundId = $("#ground").val();
+            if (!groundId) {
+                $("#openingTime").text("N/A");
+                $("#closingTime").text("N/A");
+                return;
+            }
+
+            let ground = groundData.find(g => g.id == groundId);
+            if (ground) {
+                $("#openingTime").text(ground.openingTime || "N/A");
+                $("#closingTime").text(ground.closingTime || "N/A");
+            } else {
+                console.error("Ground not found in data:", groundId);
+            }
+        }
+
+
+        function generateSlots() {
+            let openingTime = $("#openingTime").text().trim();
+            let closingTime = $("#closingTime").text().trim();
+            let breakTime = $("#breakTime").val().trim();
+            let slotHours = parseInt($("#slotHours").val());
+
+            if (!openingTime || !closingTime || slotHours <= 0) {
+                console.warn("Invalid input for slot generation");
+                return;
+            }
+
+            $("#slotContainer").empty();
+
+            let slots = calculateSlots(openingTime, closingTime, breakTime, slotHours);
+            if (slots.length === 0) {
+                $("#slotContainer").append("<p>No available slots.</p>");
+            } else {
+                slots.forEach(slot => {
+                    $("#slotContainer").append(
+                        `<div>
+                            <input type="checkbox" class="slot" data-start="${slot.start}" data-end="${slot.end}">
+                            ${slot.start} - ${slot.end}
+                        </div>`
+                    );
+                });
+            }
+        }
+
+        function calculateSlots(open, close, breakTime, duration) {
+            let slots = [];
+            let start = convertToMinutes(open);
+            let end = convertToMinutes(close);
+            let breakStart = null, breakEnd = null;
+
+            if (breakTime && breakTime.includes(" - ")) {
+                let breakTimes = breakTime.split(" - ");
+                if (breakTimes.length === 2) {
+                    breakStart = convertToMinutes(breakTimes[0]);
+                    breakEnd = convertToMinutes(breakTimes[1]);
+                }
+            }
+
+            while (start + duration * 60 <= end) {
+                if (breakStart !== null && start >= breakStart && start < breakEnd) {
+                    start = breakEnd;
+                }
+
+                let slotEnd = start + duration * 60;
+                if (slotEnd <= end) {
+                    slots.push({ start: convertToTime(start), end: convertToTime(slotEnd) });
+                }
+                start = slotEnd;
+            }
+            return slots;
+        }
+
+        function convertToMinutes(time) {
+            let [h, m] = time.split(":").map(Number);
+            return h * 60 + m;
+        }
+
+        function convertToTime(minutes) {
+            let h = Math.floor(minutes / 60);
+            let m = minutes % 60;
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        }
+
+        
+        
+        function validateBreakTime(breakTime) {
+            let regex = /^([01]\d|2[0-3]):([0-5]\d) - ([01]\d|2[0-3]):([0-5]\d)$/;
+            return regex.test(breakTime);
+        }
+        function submitSlots() {
+            let groundId = $("#ground").val();
+            let breakTime = $("#breakTime").val().trim(); 
+
+            if (!groundId) {
+                alert("Please select a ground before submitting slots.");
+                return;
+            }
+
+            if (breakTime && !validateBreakTime(breakTime)) {
+                alert("Invalid break time format. Use HH:mm - HH:mm.");
+                return;
+            }
+
+            let basePrice = parseFloat($("#basePrice").val()) || 0;
+            let weekendExtra = parseFloat($("#weekendExtra").val()) || 0;
+            let weekendPrice = basePrice + weekendExtra;
+
+            let selectedSlots = [];
+            $(".slot:checked").each(function() {
+                selectedSlots.push({
+                    groundId: groundId,
+                    startTime: $(this).data("start"),
+                    endTime: $(this).data("end"),
+                    price: basePrice,
+                    weekendPrice: weekendPrice,
+                    availability: true,
+                    breakTime: breakTime  
+                });
+            });
+
+            if (selectedSlots.length === 0) {
+                alert("Please select at least one slot.");
+                return;
+            }
+
+            // 🚀 Send Slots **One by One** Instead of an Array
+            selectedSlots.forEach(slot => {
+                fetch("/admin/slots/submit", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(slot)  // Send a single slot at a time
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Slot saved:", data);
+                })
+                .catch(error => console.error("Error:", error));
+            });
+
+            alert("Slots submission in progress...");
+        }
+
+
+    </script>
+</body>
+</html>
