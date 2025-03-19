@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -201,16 +201,333 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(slot)  // Send a single slot at a time
                 })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Slot saved:", data);
+                .then(response => {
+                    if (response.status === 409) {
+                        return response.text(); // Return the conflict message as text
+                    } else if (response.ok) {
+                        return response.json(); // Success, return response as JSON
+                    } else {
+                        throw new Error("An unexpected error occurred.");
+                    }
                 })
-                .catch(error => console.error("Error:", error));
+                .then(data => {
+                    if (typeof data === 'string') {
+                        // Handle conflict case
+                        alert(data);  // Show the conflict message (duplicate slot)
+                    } else {
+                        console.log("Slot saved:", data);  // Success
+                        alert("Slot added successfully!"); // Success message
+                    }
+                })
+                
             });
 
             alert("Slots submission in progress...");
         }
 
+
+
+
+    </script>
+</body>
+</html>
+ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/slot.css}">
+    <!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+</head>
+<body>
+    <div class="container">
+        <h2>🏟️ Slot Management</h2>
+        
+        <div class="form-group">
+            <label for="ground">Select Ground:</label>
+            <select id="ground" onchange="loadGroundDetails()">
+                <option value="">--Select Ground--</option>
+            </select>
+        </div>
+
+        <div class="time-display">
+            <p><b>Opening Time:</b> <span id="openingTime">N/A</span><b>  to Closing Time:</b> <span id="closingTime">N/A</span></p>
+       
+        </div>
+
+        <div class="form-group">
+            <label for="breakTime">Break Time:</label>
+            <input type="text" id="breakTime" placeholder="e.g., 12:00 - 15:00">
+        </div>
+
+        <div class="form-group">
+            <label for="slotHours">Slot Duration (hours):</label>
+            <input type="number" id="slotHours" min="1" value="1">
+        </div>
+
+        <div class="form-group">
+            <label for="basePrice">Base Price:</label>
+            <input type="number" id="basePrice" min="0" value="0">
+        </div>
+
+        <div class="form-group">
+            <label for="weekendExtra">Weekend Extra:</label>
+            <input type="number" id="weekendExtra" min="0" value="0" oninput="calculateWeekendPrice()">
+        </div>
+
+        <h3>⏰ Available Slots</h3>
+        <div id="slotContainer"></div>
+
+        <button onclick="submitSlots()" style="width: 100%; margin-top: 1.5rem;">
+            💾 Save Slots
+        </button>
+    </div>
+
+    <script>
+    let groundData = [];
+    let selectedSlots = new Set();
+
+    $(document).ready(function () {
+        loadGrounds();
+
+        $("#ground").change(function () {
+            loadGroundDetails();
+            generateSlots();
+            selectedSlots.clear();
+        });
+
+        $("#breakTime, #slotHours").on("input", function () {
+            generateSlots();
+            selectedSlots.clear();
+        });
+    });
+
+    function loadGrounds() {
+        $.get("/admin/slots/grounds", function(data) {
+            groundData = data;
+            $("#ground").empty().append('<option value="">--Select Ground--</option>');
+            data.forEach(ground => {
+                $("#ground").append(`<option value="${ground.id}">${ground.name}</option>`);
+            });
+        }).fail(error => console.error("Error fetching grounds:", error));
+    }
+
+    function loadGroundDetails() {
+        const groundId = $("#ground").val();
+        if (!groundId) {
+            $("#openingTime").text("N/A");
+            $("#closingTime").text("N/A");
+            return;
+        }
+
+        const ground = groundData.find(g => g.id == groundId);
+        if (ground) {
+            $("#openingTime").text(ground.openingTime || "N/A");
+            $("#closingTime").text(ground.closingTime || "N/A");
+        }
+    }
+
+    function generateSlots() {
+        const openingTime = $("#openingTime").text().trim();
+        const closingTime = $("#closingTime").text().trim();
+        const breakTime = $("#breakTime").val().trim();
+        const slotHours = parseInt($("#slotHours").val());
+
+        if (!openingTime || openingTime === "N/A" || !closingTime || closingTime === "N/A" || slotHours <= 0) {
+            $("#slotContainer").html("<p>Please select a ground first</p>");
+            return;
+        }
+
+        const slots = calculateSlots(openingTime, closingTime, breakTime, slotHours);
+        $("#slotContainer").empty();
+
+        if (slots.length === 0) {
+            $("#slotContainer").append("<p>No available slots</p>");
+            return;
+        }
+
+        slots.forEach(slot => {
+            const slotElement = $(`
+                <div class="slot-card" data-start="${slot.start}" data-end="${slot.end}">
+                    ${slot.start} - ${slot.end}
+                </div>
+            `).click(function() {
+                $(this).toggleClass("selected");
+                const slotId = `${slot.start}-${slot.end}`;
+                selectedSlots.has(slotId) ? selectedSlots.delete(slotId) : selectedSlots.add(slotId);
+            });
+            
+            $("#slotContainer").append(slotElement);
+        });
+    }
+    function calculateSlots(open, close, breakTime, duration) {
+        let slots = [];
+        let start = convertToMinutes(open);
+        let end = convertToMinutes(close);
+        let breakStart = null, breakEnd = null;
+
+        if (breakTime && breakTime.includes(" - ")) {
+            let breakTimes = breakTime.split(" - ");
+            if (breakTimes.length === 2) {
+                breakStart = convertToMinutes(breakTimes[0]);
+                breakEnd = convertToMinutes(breakTimes[1]);
+            }
+        }
+
+        while (start + duration * 60 <= end) {
+            if (breakStart !== null && start >= breakStart && start < breakEnd) {
+                start = breakEnd;
+            }
+
+            let slotEnd = start + duration * 60;
+            if (slotEnd <= end) {
+                slots.push({ start: convertToTime(start), end: convertToTime(slotEnd) });
+            }
+            start = slotEnd;
+        }
+        return slots;
+    }
+
+    function convertToMinutes(time) {
+        let [h, m] = time.split(":").map(Number);
+        return h * 60 + m;
+    }
+
+    function convertToTime(minutes) {
+        let h = Math.floor(minutes / 60);
+        let m = minutes % 60;
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    }
+
+    
+    
+    function validateBreakTime(breakTime) {
+        let regex = /^([01]\d|2[0-3]):([0-5]\d) - ([01]\d|2[0-3]):([0-5]\d)$/;
+        return regex.test(breakTime);
+    }
+    function validateBreakTime(breakTime) {
+        let regex = /^([01]\d|2[0-3]):([0-5]\d) - ([01]\d|2[0-3]):([0-5]\d)$/;
+        return regex.test(breakTime);
+    }
+    function submitSlots() {
+        let groundId = $("#ground").val();
+        let breakTime = $("#breakTime").val().trim(); 
+
+        if (!groundId) {
+            toastr.error("Please select a ground before submitting slots.");
+            return;
+        }
+
+        if (breakTime && !validateBreakTime(breakTime)) {
+            toastr.error("Invalid break time format. Use HH:mm - HH:mm.");
+            return;
+        }
+
+        let basePrice = parseFloat($("#basePrice").val()) || 0;
+        let weekendExtra = parseFloat($("#weekendExtra").val()) || 0;
+        let weekendPrice = basePrice + weekendExtra;
+
+        let selectedSlots = [];
+        $(".slot-card.selected").each(function() {
+            selectedSlots.push({
+                groundId: groundId,
+                startTime: $(this).data("start"),
+                endTime: $(this).data("end"),
+                price: basePrice,
+                weekendPrice: weekendPrice,
+                availability: true,
+                breakTime: breakTime  
+            });
+        });
+
+        if (selectedSlots.length === 0) {
+            toastr.error("Please select at least one slot.");
+            return;
+        }
+
+        // 🚀 Send Slots **One by One** Instead of an Array
+        selectedSlots.forEach(slot => {
+            fetch("/admin/slots/submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(slot)  // Send a single slot at a time
+            })
+            .then(response => {
+                if (response.status === 409) {
+                    return response.text(); // Conflict message as text
+                } else if (response.ok) {
+                    return response.json(); // Success, response as JSON
+                } else {
+                    throw new Error("An unexpected error occurred.");
+                }
+            })
+            .then(data => {
+                if (typeof data === 'string') {
+                    // If response is a string (e.g., success message), show a warning
+                    toastr.warning(data); // Duplicate slot or any warning message
+                } else {
+                    // If response is JSON (successful response with data)
+                    console.log("Slot saved:", data); // Handle data (e.g., the saved slot details)
+                    toastr.success("Slot added successfully!"); // Success toaster message
+                }
+            })
+            .catch(error => {
+                toastr.error("An error occurred while saving the slot: " + error.message);
+            });
+        });
+
+        toastr.info("Slots submission in progress...");
+    }
+
+
+        function showAlert(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.style.position = 'fixed';
+            alert.style.top = '20px';
+            alert.style.right = '20px';
+            alert.style.padding = '1rem 2rem';
+            alert.style.background = type === 'error' ? '#ff4444' : '#4CAF50';
+            alert.style.color = 'white';
+            alert.style.borderRadius = '8px';
+            alert.style.boxShadow = '0 3px 6px rgba(0,0,0,0.16)';
+            alert.innerText = message;
+            
+            document.body.appendChild(alert);
+            setTimeout(() => alert.remove(), 3000);
+        }
+
+        function debounce(func, timeout = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => { func.apply(this, args); }, timeout);
+            };
+        }
+        toastr.options = {
+        	    "closeButton": true,
+        	    "debug": false,
+        	    "newestOnTop": true,
+        	    "progressBar": true,
+        	    "positionClass": "toast-top-right",  // Can be toast-top-left, toast-top-full-width, etc.
+        	    "preventDuplicates": true,
+        	    "onclick": null,
+        	    "showDuration": "1000",
+        	    "hideDuration": "1000",
+        	    "timeOut": "5000",  // Duration before the toast disappears
+        	    "extendedTimeOut": "1000",
+        	    "showEasing": "swing",
+        	    "hideEasing": "linear",
+        	    "showMethod": "fadeIn",
+        	    "hideMethod": "fadeOut"
+        	};
 
     </script>
 </body>
