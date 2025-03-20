@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .user-details {
+            padding: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .detail-icon {
+            width: 30px;
+            color: #3498db;
+            text-align: center;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            min-width: 120px;
+            color: #2c3e50;
+        }
+
+        .detail-value {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div th:fragment="userDetails" class="user-details">
+        <h2><i class="fas fa-user-circle"></i> User Details</h2>
+        
+        <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-user"></i></div>
+            <div class="detail-label">Name:</div>
+            <div class="detail-value" th:text="${user.name}"></div>
+        </div>
+        
+        <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-envelope"></i></div>
+            <div class="detail-label">Email:</div>
+            <div class="detail-value" th:text="${user.email}"></div>
+        </div>
+        
+        <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-mobile-alt"></i></div>
+            <div class="detail-label">Mobile:</div>
+            <div class="detail-value" th:text="${user.mobileNumber}"></div>
+        </div>
+        
+        <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-city"></i></div>
+            <div class="detail-label">City:</div>
+            <div class="detail-value" th:text="${user.city}"></div>
+        </div>
+        
+        <div class="detail-item">
+            <div class="detail-icon"><i class="fas fa-venus-mars"></i></div>
+            <div class="detail-label">Gender:</div>
+            <div class="detail-value" th:text="${user.gender}"></div>
+        </div>
+    </div>
+</body>
+</html>

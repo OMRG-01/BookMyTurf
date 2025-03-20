@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/slot.css}">
+ <!-- Toastr CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<!-- Toastr JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-calendar-alt"></i> Edit Slots</h2>
+
+        <div class="form-group">
+            <label for="ground"><i class="fas fa-map-marker-alt"></i> Selected Ground:</label>
+            <select id="ground" disabled>
+                <option value="">Loading...</option>
+            </select>
+        </div>
+
+        <div class="time-display">
+            <p><b>Opening Time:</b> <span id="openingTime">N/A</span> <b>Closing Time:</b> <span id="closingTime">N/A</span></p>
+        </div>
+
+        <div class="form-group">
+            <label for="breakTime"><i class="fas fa-clock"></i> Break Time:</label>
+            <input disabled type="text" id="breakTime">
+        </div>
+
+
+        <div class="form-group">
+            <label for="basePrice"><i class="fas fa-tag"></i> Base Price:</label>
+            <input type="number" id="basePrice" min="0">
+        </div>
+
+        <div class="form-group">
+            <label for="weekendExtra"><i class="fas fa-star"></i> Weekend Extra:</label>
+            <input type="number" id="weekendExtra" min="0">
+        </div>
+
+        <h3><i class="fas fa-list-alt"></i> Available Slots</h3>
+        <div id="slotContainer"></div>
+
+        <button onclick="submitSlots()">
+            <i class="fas fa-save"></i>
+            Save Slots
+        </button>
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const groundId = urlParams.get("groundId");
+
+        if (!groundId) {
+            alert("No ground selected!");
+            window.location.href = "/admin/slots";
+            return;
+        }
+
+        console.log("Fetching ground details for groundId:", groundId);
+
+        // ✅ Fetch Ground Name
+        fetch(`/admin/slots/grounds/${groundId}`)
+            .then(response => response.json())
+            .then(ground => {
+                console.log("Ground API Response:", ground);
+                if (ground && ground.name) {
+                    document.getElementById("ground").innerHTML = `<option value="${ground.id}" selected>${ground.name}</option>`;
+                } else {
+                    document.getElementById("ground").innerHTML = `<option value="" selected>Error loading ground</option>`;
+                }
+            })
+            .catch(error => console.error("Error fetching ground:", error));
+
+        // ✅ Fetch Slot Details
+        function fetchSlots() {
+            fetch(`/admin/slots/ground/${groundId}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Slots API Response:", data);
+
+                    // 🔹 Update Slot Basic Info
+                    document.getElementById("openingTime").textContent = data.openingTime || "N/A";
+                    document.getElementById("closingTime").textContent = data.closingTime || "N/A";
+                    document.getElementById("breakTime").value = data.breakTime || "";
+                    document.getElementById("basePrice").value = data.basePrice || 0;
+                    document.getElementById("weekendExtra").value = data.weekendExtra || 0;
+
+                    // 🔹 Update Slot List
+                    let slotContainer = document.getElementById("slotContainer");
+                    slotContainer.innerHTML = "";
+
+                    if (data.slots && data.slots.length > 0) {
+                        data.slots.forEach(slot => {
+                            let slotDiv = document.createElement("div");
+                            slotDiv.className = "slot-item";
+                            slotDiv.innerHTML = `
+                                <p>${slot.startTime} - ${slot.endTime}</p>
+                                <button onclick="deleteSlot(${slot.id}, ${groundId})">Delete</button>
+                            `;
+                            slotContainer.appendChild(slotDiv);
+                        });
+                    } else {
+                        slotContainer.innerHTML = "<p>No slots available.</p>";
+                    }
+                })
+                .catch(error => console.error("Error fetching slots:", error));
+        }
+
+        fetchSlots(); // Call fetchSlots() to load initial data
+
+        // ✅ Delete Slot Function
+        window.deleteSlot = function (slotId, groundId) {
+            if (!confirm("Are you sure you want to delete this slot?")) return;
+
+            fetch(`/admin/slots/delete/${slotId}`, { method: "DELETE" })
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to delete slot");
+                    return response.text();
+                })
+                .then(() => {
+                    alert("Slot deleted successfully!");
+                    toastr.success("Slot Delet successfully!", "Success");
+                    fetchSlots(); // Refresh slot list after deletion
+                })
+                .catch(error => alert("Error deleting slot: " + error));
+        };
+        
+    });
+
+        
+    function submitSlots() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const groundId = urlParams.get("groundId");
+
+        let basePrice = parseFloat(document.getElementById("basePrice").value) || 0;
+        let weekendExtra = parseFloat(document.getElementById("weekendExtra").value) || 0;
+
+        let requestData = {
+            breakTime: document.getElementById("breakTime").value,
+            price: basePrice,
+            weekendPrice: basePrice + weekendExtra  // ✅ Weekend price = Base price + Extra
+        };
+
+        console.log("Submitting slot update:", requestData);
+
+        fetch(`/admin/slots/update/${groundId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`Update API failed! Server Response: ${text}`);
+                });
+            }
+            return response.json().catch(() => "Success"); // Handle both JSON and text responses
+        })
+        .then(data => {
+            console.log("Update Success:", data);
+            toastr.success("Slots updated successfully!", "Success");
+
+            // ✅ Update UI after success
+            document.getElementById("breakTime").value = requestData.breakTime;
+            document.getElementById("basePrice").value = requestData.price;
+            document.getElementById("weekendExtra").value = weekendExtra;
+        })
+        .catch(error => {
+            console.error("Error updating slots:", error);
+            toastr.error("Failed to update slots. Please try again!", "Error");
+        });
+    }
+
+
+
+
+
+       
+    </script>
+</body>
+
+</body>
+</html>

@@ -214,69 +214,71 @@
 </head>
 <body>
     <div class="container">
-        <h2><i class="fas fa-map-marked-alt"></i><span th:text="${ground.id == null ? 'Add New Ground' : 'Edit Ground'}"></span></h2>
+    <h2>
+        <i class="fas fa-map-marked-alt"></i>
+        <span th:text="${ground.id == null ? 'Add New Ground' : 'Edit Ground'}"></span>
+    </h2>
 
-        <form th:action="@{/admin/ground/save}" th:object="${ground}" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:field="*{id}"/>
+    <form th:action="@{/admin/ground/update}" th:object="${ground}" method="post" enctype="multipart/form-data">
+        <input type="hidden" th:field="*{id}" />
 
-            <div class="form-group">
-                <label for="name"><i class="fas fa-tag"></i>Ground Name:</label>
-                <input type="text" id="name" th:field="*{name}" required placeholder="Enter ground name">
+        <div class="form-group">
+            <label for="name"><i class="fas fa-tag"></i> Ground Name:</label>
+            <input type="text" id="name" th:field="*{name}" required placeholder="Enter ground name">
+        </div>
+
+        <div class="form-group">
+            <label for="location"><i class="fas fa-map-marker-alt"></i> Location:</label>
+            <input type="text" id="location" th:field="*{location}" required placeholder="Enter location">
+        </div>
+
+        <div class="form-group">
+            <label for="game"><i class="fas fa-gamepad"></i> Select Game:</label>
+            <select id="game" name="gameId" required>
+                <option th:each="game : ${games}" th:value="${game.id}" th:text="${game.gameName}"
+                        th:selected="${ground.game.id == game.id}"></option>
+            </select>
+        </div>
+
+        <div class="form-group">
+		    <label for="coach"><i class="fas fa-user-tie"></i> Select Coach:</label>
+		    <select id="coach" name="coachId">
+		        <option value="">-- Select a Game First --</option>
+		        <option th:each="coach : ${coaches}" th:value="${coach.id}" th:text="${coach.name}"
+		                th:selected="${ground.coach != null and ground.coach.id == coach.id}"></option>
+		    </select>
+		</div>
+
+
+        <div class="form-group">
+            <label for="groundType"><i class="fas fa-archway"></i> Ground Type:</label>
+            <select id="groundType" th:field="*{groundType}" required>
+                <option value="Indoor">Indoor</option>
+                <option value="Outdoor">Outdoor</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="playerCapacity"><i class="fas fa-users"></i> Player Capacity:</label>
+            <input type="number" id="playerCapacity" th:field="*{playerCapacity}" required placeholder="Enter capacity">
+        </div>
+
+        <div class="form-group">
+            <label for="surfaceType"><i class="fas fa-layer-group"></i> Surface Type:</label>
+            <input type="text" id="surfaceType" th:field="*{surfaceType}" required placeholder="Enter surface type">
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-lightbulb"></i> Floodlights:</label>
+            <div class="toggle-switch">
+                <input type="radio" th:field="*{floodlightsAvailable}" value="true" id="floodlightsYes" hidden>
+                <label for="floodlightsYes" class="toggle-option">Yes</label>
+                <input type="radio" th:field="*{floodlightsAvailable}" value="false" id="floodlightsNo" hidden>
+                <label for="floodlightsNo" class="toggle-option">No</label>
+                <div class="slider"></div>
             </div>
-
-            <div class="form-group">
-                <label for="location"><i class="fas fa-map-marker-alt"></i>Location:</label>
-                <input type="text" id="location" th:field="*{location}" required placeholder="Enter location">
-            </div>
-
-            <div class="form-group">
-                <label for="game"><i class="fas fa-gamepad"></i>Select Game:</label>
-                <select id="game" name="game.id" required>
-                    <option th:each="game : ${games}" th:value="${game.id}" th:text="${game.gameName}"></option>
-                </select>
-            </div>
-            
-            
-			<div class="form-group">
-			    <label for="coach"><i class="fas fa-user-tie"></i> Select Coach:</label>
-			    <select id="coach" name="coach.id" >
-			        <option value="">-- Select a Game First --</option>
-			    </select>
-			</div>
-
-            <div class="form-group">
-                <label for="groundType"><i class="fas fa-archway"></i>Ground Type:</label>
-                <select id="groundType" th:field="*{groundType}" required>
-                    <option value="Indoor">Indoor</option>
-                    <option value="Outdoor">Outdoor</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="playerCapacity"><i class="fas fa-users"></i>Player Capacity:</label>
-                <input type="number" id="playerCapacity" th:field="*{playerCapacity}" required placeholder="Enter capacity">
-            </div>
-
-            <div class="form-group">
-                <label for="surfaceType"><i class="fas fa-layer-group"></i>Surface Type:</label>
-                <input type="text" id="surfaceType" th:field="*{surfaceType}" required placeholder="Enter surface type">
-            </div>
-
-            <div class="form-group">
-			    <label><i class="fas fa-lightbulb"></i>Floodlights:</label>
-			    <div class="toggle-switch">
-			        <input type="radio" th:field="*{floodlightsAvailable}" 
-			               value="true" id="floodlightsYes" hidden>
-			        <label for="floodlightsYes" class="toggle-option">Yes</label>
-			        <input type="radio" th:field="*{floodlightsAvailable}" 
-			               value="false" id="floodlightsNo" hidden>
-			        <label for="floodlightsNo" class="toggle-option">No</label>
-			        <div class="slider"></div>
-			    </div>
-			</div>
-			
-			<!-- Replace Changing Rooms radio group with this -->
-			<div class="form-group">
+        </div>
+        <div class="form-group">
 			    <label><i class="fas fa-restroom"></i>Changing Rooms:</label>
 			    <div class="toggle-switch">
 			        <input type="radio" th:field="*{changingRooms}" 
@@ -289,43 +291,41 @@
 			    </div>
 			</div>
 
-            <div class="form-group">
-                <label for="openingTime"><i class="fas fa-door-open"></i>Opening Time:</label>
-                <input type="time" id="openingTime" name="openingTime" required>
-            </div>
-
-            <div class="form-group">
-                <label for="closingTime"><i class="fas fa-door-closed"></i>Closing Time:</label>
-                <input type="time" id="closingTime" name="closingTime" required>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-image"></i>Ground Image:</label>
-                <div class="image-upload" onclick="document.getElementById('image').click()">
-                    <span>Click to upload image</span>
-                    <input type="file" id="image" name="image" accept="image/*" hidden 
-                           onchange="previewImage(event)">
-                    <img id="imagePreview" alt="Image preview">
-                </div>
-            </div>
-
-            <button type="submit">
-                <i class="fas fa-save"></i>
-                <span th:text="${ground.id == null ? 'Add Ground' : 'Update Ground'}"></span>
-            </button>
-        </form>
-
-        <div class="nav-links">
-            <a href="/admin/ground/viewGrounds">
-                <i class="fas fa-list"></i>
-                View All Grounds
-            </a>
-            <a href="/admin/dashboard">
-                <i class="fas fa-arrow-left"></i>
-                Back to Dashboard
-            </a>
+        <div class="form-group">
+            <label for="openingTime"><i class="fas fa-door-open"></i> Opening Time:</label>
+            <input type="time" id="openingTime" th:field="*{openingTime}" required>
         </div>
+
+        <div class="form-group">
+            <label for="closingTime"><i class="fas fa-door-closed"></i> Closing Time:</label>
+            <input type="time" id="closingTime" th:field="*{closingTime}" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-image"></i> Ground Image:</label>
+            <div class="image-upload" onclick="document.getElementById('image').click()">
+                <span>Click to upload image</span>
+                <input type="file" id="image" name="image" accept="image/*" hidden onchange="previewImage(event)">
+                <img id="imagePreview" th:src="@{'/GroundImg/' + ${ground.imageFileName}}" alt="Image preview">
+            </div>
+        </div>
+
+        <button type="submit">
+            <i class="fas fa-save"></i>
+            <span th:text="${ground.id == null ? 'Add Ground' : 'Update Ground'}"></span>
+        </button>
+    </form>
+
+    <div class="nav-links">
+        <a href="/admin/ground/list">
+            <i class="fas fa-list"></i> View All Grounds
+        </a>
+        <a href="/admin/dashboard">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
     </div>
+</div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

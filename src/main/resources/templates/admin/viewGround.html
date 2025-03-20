@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Grounds</title>
+    <link rel="stylesheet" href="/static/css/styles.css"> <!-- Optional external CSS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom Styling */
+        .ground-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out;
+        }
+        .ground-card:hover {
+            transform: translateY(-5px);
+        }
+        .ground-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .ground-info {
+            padding: 15px;
+        }
+        .dropdown-menu {
+            min-width: 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">View Grounds</h2>
+
+        <!-- Filters Section -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <input type="text" id="searchName" class="form-control" placeholder="Search by Ground Name">
+            </div>
+            <div class="col-md-4">
+                <input type="text" id="searchLocation" class="form-control" placeholder="Search by Location">
+            </div>
+            <div class="col-md-4">
+                <select id="searchType" class="form-control">
+                    <option value="">All Types</option>
+                    <option value="Indoor">Indoor</option>
+                    <option value="Outdoor">Outdoor</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Grounds Display Section -->
+        <div class="row" id="groundsContainer">
+            <div class="col-md-4 mb-4" th:each="ground : ${grounds}" th:data-name="${ground.name}" th:data-location="${ground.location}" th:data-type="${ground.groundType}">
+                <div class="card ground-card">
+                    <img th:src="@{'/GroundImg/' + ${ground.imageFileName}}" alt="Ground Image">
+                    <div class="ground-info">
+                        <h5 th:text="${ground.name}"></h5>
+                        <p><strong>Location:</strong> <span th:text="${ground.location}"></span></p>
+                    </div>
+                    <div class="dropdown position-absolute top-0 end-0 m-2">
+                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                            Actions
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <li>
+                                <a class="dropdown-item" th:href="@{'/admin/ground/edit/' + ${ground.id}}">Edit</a>
+                            </li>
+                            <li>
+                                <button class="dropdown-item text-danger" th:attr="data-id=${ground.id}" onclick="deleteGround(this)">Delete</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter functionality
+        $(document).ready(function() {
+            $("#searchName, #searchLocation, #searchType").on("input change", function() {
+                let nameFilter = $("#searchName").val().toLowerCase();
+                let locationFilter = $("#searchLocation").val().toLowerCase();
+                let typeFilter = $("#searchType").val().toLowerCase();
+
+                $("#groundsContainer .col-md-4").each(function() {
+                    let groundName = $(this).data("name").toLowerCase();
+                    let groundLocation = $(this).data("location").toLowerCase();
+                    let groundType = $(this).data("type").toLowerCase();
+
+                    let matchesName = !nameFilter || groundName.includes(nameFilter);
+                    let matchesLocation = !locationFilter || groundLocation.includes(locationFilter);
+                    let matchesType = !typeFilter || groundType === typeFilter;
+
+                    $(this).toggle(matchesName && matchesLocation && matchesType);
+                });
+            });
+        });
+        
+        function deleteGround(button) {
+            let groundId = button.getAttribute("data-id");
+
+            if (confirm("Are you sure you want to delete this ground?")) {
+                fetch('/admin/ground/delete/' + groundId, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert("Ground deleted successfully!");
+                        location.reload(); // Reload to update the UI
+                    } else {
+                        alert("Error deleting ground.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            }
+        }
+    </script>
+
+</body>
+</html>

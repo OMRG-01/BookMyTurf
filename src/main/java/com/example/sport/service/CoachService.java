@@ -35,4 +35,9 @@ public class CoachService {
     public void deleteCoach(Long id) {
         coachRepository.deleteById(id);
     }
+    
+    public List<Coach> getCoachesByGame(Long gameId) {
+        return coachRepository.findByGameId(gameId);
+    }
+
 }

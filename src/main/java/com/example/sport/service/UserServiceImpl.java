@@ -23,10 +23,12 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) {
         return userRepository.save(user);
     }
-
-    @Override
+    
+    public void save(User user) {
+        userRepository.save(user);  // Save the user to the database
+    }
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findByRoleId(2); // Only users with role 'USER' (role_id = 2)
     }
 
     @Override
@@ -39,4 +41,13 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
+    // Get user by ID
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
+
 }

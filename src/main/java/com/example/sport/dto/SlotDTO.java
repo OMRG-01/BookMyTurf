@@ -1,5 +1,9 @@
 package com.example.sport.dto;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public class SlotDTO {
     private boolean availability;
     private String breakTime;
@@ -8,6 +12,8 @@ public class SlotDTO {
     private double price;
     private String startTime;
     private double weekendPrice;
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public boolean isAvailability() {
         return availability;
@@ -63,5 +69,21 @@ public class SlotDTO {
 
     public void setWeekendPrice(double weekendPrice) {
         this.weekendPrice = weekendPrice;
+    }
+    
+    public LocalTime getStartTimeAsLocalTime() {
+        return parseTime(startTime);
+    }
+
+    public LocalTime getEndTimeAsLocalTime() {
+        return parseTime(endTime);
+    }
+
+    private LocalTime parseTime(String timeStr) {
+        try {
+            return LocalTime.parse(timeStr, TIME_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new RuntimeException("Invalid time format: " + timeStr);
+        }
     }
 }

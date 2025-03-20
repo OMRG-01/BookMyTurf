@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --danger-color: #e74c3c;
+            --background: #f8f9fa;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 2rem;
+            background: var(--background);
+            color: var(--primary-color);
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .user-table th,
+        .user-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .user-table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+
+        .user-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .action-cell {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-view {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2rem auto;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            animation: modalSlide 0.3s ease-out;
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .user-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1><i class="fas fa-users"></i> User Management</h1>
+
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile Number</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.mobileNumber}"></td>
+                <td>
+                    <div class="action-cell">
+                        <button class="btn btn-view" th:onclick="'viewUserDetails(' + ${user.id} + ')'">
+                            <i class="fas fa-eye"></i> View
+                        </button>
+                        <form th:action="@{/admin/user/{id}/delete(id=${user.id})}"  method="post" th:method="delete">
+                            <button class="btn btn-delete" type="submit">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <div id="userDetails"></div>
+        </div>
+    </div>
+
+    <script>
+        function viewUserDetails(userId) {
+            fetch(`/admin/user/${userId}`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('userDetails').innerHTML = html;
+                    document.getElementById('userModal').style.display = 'block';
+                });
+        }
+
+        // Close modal
+        document.querySelector('.modal-close').addEventListener('click', () => {
+            document.getElementById('userModal').style.display = 'none';
+        });
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('userModal')) {
+                document.getElementById('userModal').style.display = 'none';
+            }
+        };
+    </script>
+</body>
+</html>

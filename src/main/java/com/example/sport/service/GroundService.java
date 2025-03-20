@@ -17,18 +17,18 @@ public class GroundService {
     private GameRepository gameRepository;
 
     // Save ground
-    public Ground saveGround(Ground ground) {
-        return groundRepository.save(ground);
+    public void saveGround(Ground ground) {
+        groundRepository.save(ground);
     }
 
     // Fetch all grounds
     public List<Ground> getAllGrounds() {
         return groundRepository.findAll();
     }
-
+    
     // Fetch ground by ID
     public Ground getGroundById(Long id) {
-        return groundRepository.findById(id).orElse(null);
+        return groundRepository.findById(id).orElseThrow(() -> new RuntimeException("Ground not found"));
     }
     
 

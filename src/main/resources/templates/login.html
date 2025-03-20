@@ -1,20 +1,331 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sportplex | Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{login.css}">
+    <style>
+        
+		  
+		.main-container {
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        padding: 0rem;
+        background-image: url('/images/soccer.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    	}
+        .bg-slideshow {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            animation: imageTransition 20s infinite;
+            background-size: cover;
+            background-position: center;
+        }
+
+        @keyframes imageTransition {
+            0%, 100% {
+               background-image: url('');
+
+                opacity: 1;
+            }
+            25% {
+                background-image: url('https://source.unsplash.com/random/1920x1080?sports2');
+                opacity: 1;
+            }
+            50% {
+                background-image: url('https://source.unsplash.com/random/1920x1080?sports3');
+                opacity: 1;
+            }
+            75% {
+                background-image: url('https://source.unsplash.com/random/1920x1080?sports4');
+                opacity: 1;
+            }
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            background: rgba(0, 0, 0, 0.5); /* Dark overlay for better contrast */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        
+        [data-theme="dark"] {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --text-color: #fff;
+            --bg-color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            padding: 1rem;
+        }
+
+        .main-container {
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .login-form {
+		    position: absolute;
+		    right: 10%;
+		    top: 30%;
+		    transform: translateY(-50%);
+		    background: rgba(255, 255, 255, 0.1);
+		    padding: 2rem;
+		    border-radius: 15px;
+		    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+		    transition: all 0.3s ease;
+		    width: 350px; /* Adjust width as needed */
+		}
+		
+		.login-form:hover {
+		    transform: translateY(-50%) scale(1.05);
+		    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+		}
+
+
+        .image-container {
+            height: 600px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 15px;
+            animation: imageTransition 16s infinite;
+        }
+
+        @keyframes imageTransition {
+            0%, 100% { background-image: url('https://source.unsplash.com/random/800x600?sports1'); }
+            33% { background-image: url('https://source.unsplash.com/random/800x600?sports2'); }
+            66% { background-image: url('https://source.unsplash.com/random/800x600?sports3'); }
+        }
+
+        .form-control {
+            border-radius: 25px;
+            padding: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+         /* Add particles container styling */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Update main container for layering */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            min-height: 90vh;
+            padding: 2rem 0;
+        }
+
+        /* Update dark mode variables */
+        [data-theme="dark"] {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --text-color: #fff;
+            --bg-color: #121212;
+            --particle-color: #ffffff;
+            --particle-line: rgba(255,255,255,0.2);
+        }
+
+        :root {
+            --primary-color: #1abc9c;
+            --secondary-color: #16a085;
+            --accent-color: #f39c12;
+            --dark-color: #2c3e50;
+            --light-color: #ffffff;
+            --particle-color: #2c3e50;
+            --particle-line: rgba(44,62,80,0.2);
+        }
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
-    <form th:action="@{/login}"method="post">
-        <label>Email:</label>
-        <input type="email" name="email" required>
-        <br>
-        <label>Password:</label>
-        <input type="password" name="password" required>
-        <br>
-        <button type="submit">Login</button>
-    </form>
+  
+       <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-futbol brand-icon"></i>
+            BookMyTurf
+        </a>
+
+        <!-- Dark Mode Toggle -->
+        <button class="dark-mode-toggle me-3" onclick="toggleDarkMode()">
+            <i class="fas fa-moon"></i>
+            <span>Dark Mode</span>
+        </button>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" href="<%=TRBView.WELCOME_CTL%>">
+                        <i class="fas fa-home"></i>
+                        Home
+                    </a>
+                </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-info-circle"></i>
+                            About
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-phone-alt"></i>
+                            Contact
+                        </a>
+                    </li>
+            </ul>
+            <ul class="navbar-nav ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link" th:hrf="@{/login1}">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Sign In
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"  th:href="@{/register1}">
+                            <i class="fas fa-user-plus"></i>
+                            Sign Up
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+  
+
+   <main class="main-container">
+        <div class="container">
+            
+                
+                <div class="col-lg-6">
+                    <form class="login-form" th:action="@{/login}" method="post">
+                        <h2 class="mb-4 text-center"><i class="fas fa-sign-in-alt"></i> Member Login</h2>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-envelope"></i> Email:</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label"><i class="fas fa-lock"></i> Password:</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+       
+    </main>
+
+   <footer class="site-footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h5>About TurfZone</h5>
+                <p>Your premier destination for sports turf bookings. Experience world-class facilities with seamless booking management.</p>
+                <div class="social-links">
+                    <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h5>Quick Links</h5>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Home</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>About Us</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Our Facilities</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i>Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h5>Contact Info</h5>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i>Sports City, Turf Road 123</a></li>
+                    <li><a href="tel:+1234567890"><i class="fas fa-phone"></i>+1 (234) 567-890</a></li>
+                    <li><a href="mailto:info@turfzone.com"><i class="fas fa-envelope"></i>info@turfzone.com</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h5>Newsletter</h5>
+                <p>Subscribe for updates and special offers:</p>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Enter your email">
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; <a href="#">Turf Booking System</a>. All rights reserved.
+            <span style="margin: 0 10px">|</span>
+            <a href="#">Privacy Policy</a>
+            <span style="margin: 0 10px">|</span>
+            <a href="#">Terms of Service</a></p>
+        </div>
+    </div>
+</footer>
+  
     
-    <p th:if="${error}" th:text="${error}" style="color: red;"></p>
+	<script src="dash.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

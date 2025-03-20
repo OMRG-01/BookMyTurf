@@ -1,0 +1,281 @@
+.site-footer {
+        background: var(--secondary-color);
+        color: #ffffff;
+        padding: 4rem 0 2rem;
+        margin-top: auto;
+        font-family: 'Poppins', sans-serif;
+         transition: all 0.3s ease-in-out;
+    }
+
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        padding-bottom: 3rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer-section h5 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #f39c12;
+    }
+
+    .footer-links {
+        list-style: none;
+        padding: 0;
+    }
+
+    .footer-links li {
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .footer-links a:hover {
+        color: #ffffff;
+        transform: translateX(5px);
+    }
+
+    .social-links {
+        display: flex;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .social-links a {
+        color: white;
+        font-size: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .social-links a:hover {
+        transform: translateY(-3px);
+        color: #f39c12;
+    }
+
+    .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        margin-top: 2rem;
+        color: rgba(255,255,255,0.8);
+    }
+
+    .footer-bottom a {
+        color: #f39c12;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .footer-bottom a:hover {
+        color: #ffffff;
+        text-decoration: underline;
+    }
+
+    .newsletter-form {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .newsletter-input {
+        flex: 1;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 5px;
+        background: rgba(255,255,255,0.1);
+        color: white;
+    }
+
+    .newsletter-input::placeholder {
+        color: rgba(255,255,255,0.7);
+    }
+
+    .newsletter-btn {
+        background: #f39c12;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .newsletter-btn:hover {
+        background: #e67e22;
+    }
+
+    @media (max-width: 768px) {
+        .footer-content {
+            grid-template-columns: 1fr;
+        }
+    }
+    body.dark-mode .site-footer {
+        background: #34495e;
+        border-top: 1px solid #2c3e50;
+    }
+     .navbar {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 0.8rem 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        color: var(--light-color) !important;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .brand-icon {
+        font-size: 2.2rem;
+        color: var(--accent-color);
+    }
+
+    .nav-item {
+        margin: 0 0.5rem;
+        position: relative;
+    }
+
+    .nav-link {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--light-color) !important;
+        padding: 0.8rem 1.2rem !important;
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .nav-link:hover {
+        background: rgba(255,255,255,0.15);
+        color: var(--accent-color) !important;
+        transform: translateY(-2px);
+    }
+
+    .nav-link i {
+        width: 24px;
+        text-align: center;
+    }
+
+    .dropdown-menu {
+        background: var(--secondary-color);
+        border: none;
+        border-radius: 12px;
+        padding: 0.5rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        margin-top: 0.8rem !important;
+    }
+
+    .dropdown-item {
+        color: var(--light-color) !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 8px;
+        margin: 0.25rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+        background: var(--primary-color) !important;
+        transform: translateX(5px);
+    }
+
+    .dark-mode-toggle {
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        color: var(--light-color);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .dark-mode-toggle:hover {
+        background: rgba(255,255,255,0.2);
+        transform: scale(1.05);
+    }
+
+    .dark-mode {
+        background-color: var(--dark-color) !important;
+        color: var(--light-color) !important;
+    }
+
+    .dark-mode .navbar {
+        background: linear-gradient(135deg, #34495e, #2c3e50);
+    }
+
+    .dark-mode .dropdown-menu {
+        background: #2c3e50;
+    }
+    /* Add these dark mode styles */
+    body.dark-mode .site-footer {
+        background: #2c3e50;
+        color: #ecf0f1;
+    }
+
+    body.dark-mode .footer-links a {
+        color: #bdc3c7;
+    }
+
+    body.dark-mode .footer-links a:hover {
+        color: #ecf0f1;
+    }
+
+    body.dark-mode .footer-section h5 {
+        color: #f39c12;
+    }
+
+    body.dark-mode .newsletter-input {
+        background: rgba(0,0,0,0.3);
+    }
+    .navbar-toggler {
+        border: none;
+        padding: 0.5rem;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    @media (max-width: 992px) {
+        .navbar-collapse {
+            background: var(--secondary-color);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 12px;
+        }
+
+        .dropdown-menu {
+            background: rgba(0,0,0,0.1);
+            margin-left: 1.5rem;
+            width: 90%;
+        }
+    }

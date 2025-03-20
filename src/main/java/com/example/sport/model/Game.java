@@ -1,5 +1,7 @@
 package com.example.sport.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -18,7 +20,11 @@ public class Game {
 
     @Column(nullable = false)
     private String type; // Indoor or Outdoor
+    
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Coach> coaches;
 
+    
     // Constructors
     public Game() {}
 

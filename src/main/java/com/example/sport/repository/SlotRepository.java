@@ -1,6 +1,9 @@
 package com.example.sport.repository;
 
 import com.example.sport.model.Slot;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +22,13 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
     List<Long> findUsedGroundIds();
     
     boolean existsByGroundIdAndStartTimeAndEndTime(Long groundId, LocalTime startTime, LocalTime endTime);
+    
+    @Query("SELECT s FROM Slot s JOIN FETCH s.ground")
+    List<Slot> findAllWithGround();
+    
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Slot s WHERE s.ground.id = :groundId")
+    void deleteByGroundId(@Param("groundId") Long groundId);
+
 }

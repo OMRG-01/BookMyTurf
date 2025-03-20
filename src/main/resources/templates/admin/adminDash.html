@@ -3,24 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Admin Dashboard - TurfZone</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #39B54A;
+            --accent-color: #f39c12;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --text-color: #fff;
+            --bg-color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card {
+		    background: rgba(255, 255, 255, 0.1);
+		    border: none;
+		    border-radius: 15px;
+		    transition: all 0.3s ease;
+		    min-height: 250px;
+		    display: flex;
+		    flex-direction: column;
+		    justify-content: center;
+		    backdrop-filter: blur(10px);
+		    background-color: var(--bg-color);
+		    color: var(--text-color);
+		}
+		
+		[data-theme="dark"] .dashboard-card {
+		    background: rgba(0, 0, 0, 0.2);
+		}
+
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .stats-card {
+		    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+		    color: white;
+		    border-radius: 15px;
+		    padding: 1.5rem;
+		}
+
+        .quick-action-btn {
+            transition: all 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .quick-action-btn:hover {
+            transform: scale(1.05);
+        }
+        
+		.dark-mode {
+		    background-color: var(--dark-color) !important;
+		    color: var(--light-color) !important;
+		}
+		
+		body.dark-mode .site-footer {
+		    background: #2c3e50;
+		    color: #ecf0f1;
+		}
+    .navbar {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 0.8rem 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .navbar-brand {
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        color: var(--light-color) !important;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+    .brand-icon {
+        font-size: 2.2rem;
+        color: var(--accent-color);
+    }
+
+    .nav-item {
+        margin: 0 0.5rem;
+        position: relative;
+    }
+
+    .nav-link {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--text-color) !important;
+        padding: 0.8rem 1.2rem !important;
+        border-radius: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .nav-link:hover {
+        background: rgba(255,255,255,0.15);
+        color: var(--accent-color) !important;
+        transform: translateY(-2px);
+    }
+
+    .nav-link i {
+        width: 24px;
+        text-align: center;
+    }
+
+    .dropdown-menu {
+        background: var(--secondary-color);
+        border: none;
+        border-radius: 12px;
+        padding: 0.5rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        margin-top: 0.8rem !important;
+    }
+
+    .dropdown-item {
+        color: var(--light-color) !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 8px;
+        margin: 0.25rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-item:hover {
+        background: var(--primary-color) !important;
+        transform: translateX(5px);
+    }
+
+    .dark-mode-toggle {
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        color: var(--light-color);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .dark-mode-toggle:hover {
+        background: rgba(255,255,255,0.2);
+        transform: scale(1.05);
+    }
+
+    .dark-mode {
+        background-color: var(--dark-color) !important;
+        color: var(--light-color) !important;
+    }
+
+    .dark-mode .navbar {
+        background: linear-gradient(135deg, #34495e, #2c3e50);
+    }
+
+    .dark-mode .dropdown-menu {
+        background: #2c3e50;
+    }
+    /* Add these dark mode styles */
+    body.dark-mode .site-footer {
+        background: #2c3e50;
+        color: #ecf0f1;
+    }
+
+    body.dark-mode .footer-links a {
+        color: #bdc3c7;
+    }
+
+    body.dark-mode .footer-links a:hover {
+        color: #ecf0f1;
+    }
+
+    body.dark-mode .footer-section h5 {
+        color: #f39c12;
+    }
+
+    body.dark-mode .newsletter-input {
+        background: rgba(0,0,0,0.3);
+    }
+    .navbar-toggler {
+        border: none;
+        padding: 0.5rem;
+    }
+
+    .navbar-toggler:focus {
+        box-shadow: none;
+    }
+
+    .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    @media (max-width: 992px) {
+        .navbar-collapse {
+            background: var(--secondary-color);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 12px;
+        }
+
+        .dropdown-menu {
+            background: rgba(0,0,0,0.1);
+            margin-left: 1.5rem;
+            width: 90%;
+        }
+    }
+    </style>
 </head>
 <body>
-    <h2>Welcome, <span th:text="${loggedInUser.name}"></span> (Admin)</h2>
-    <p>Your Email: <span th:text="${loggedInUser.email}"></span></p>
-     <a href="/admin/game">
-        <button>Manage Games</button>
-    </a>
-    <a href="/admin/coach">
-    <button>Add Coach</button>
-	</a>
-	<a href="/admin/ground/add">
-    <button>Add Ground</button>
-	</a>
-	<a href="/admin/slots">
-    <button>Add slot</button>
-	</a>
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-futbol brand-icon"></i>
+           BookMyTurf 
+        </a>
+
+        <!-- Dark Mode Toggle -->
+        <button class="dark-mode-toggle me-3" onclick="toggleDarkMode()">
+            <i class="fas fa-moon"></i>
+            <span>Dark Mode</span>
+        </button>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="manageSlotDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-calendar-alt"></i> Manage
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="manageSlotDropdown">
+                        <li><a class="dropdown-item" th:href="@{/admin/game}">Add Game</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/coach}">Add Coach</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/ground/add}">Add Ground</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/slots}">Add Slot</a></li>
+                    </ul>
+                </li>
+                <!-- Manage Coach Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="manageCoachDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-info-circle"></i> View
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="manageCoachDropdown">
+                        <li><a class="dropdown-item" th:href="@{/admin/coaches}">View Coaches</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/ground/viewGrounds}">View Grounds</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/slots/viewSlot}">View Slots</a></li>
+                    </ul>
+                </li>
+
+                <!-- Manage Ground Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="manageGroundDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-map-marker-alt"></i> Booking
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="manageGroundDropdown">
+                        <li><a class="dropdown-item" th:href="@{/admin/coaches}">Today Booking</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/ground/viewGrounds}">Booking History</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/slots/viewSlot}">Account</a></li>
+                        
+                    </ul>
+                </li>
+               
+             </ul>    
+            <ul class="navbar-nav ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link"  th:href="@{/register1}">
+                            <i class="fas fa-user-plus"></i>
+                            Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Log Out
+                        </a>
+                    </li>
+                    
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<main class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="stats-card">
+                <h3>Welcome Back, <span th:text="${loggedInUser.name}"></span>!</h3>
+                <p class="mb-0">Email: <span th:text="${loggedInUser.email}"></span></p>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <!-- Manage Games Card -->
+    <div class="col">
+        <div class="dashboard-card p-4 position-relative">
+           
+            <a th:href="@{/admin/game}" class="text-decoration-none text-reset">
+                <i class="fas fa-futbol card-icon"></i>
+                <h4>Manage Games</h4>
+                <p>Add and manage different sports games</p>
+                <button class="btn btn-outline-primary quick-action-btn">
+                    Manage Now <i class="fas fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Manage Coaches Card -->
+    <div class="col">
+        <div class="dashboard-card p-4 position-relative">
+            <!-- Dropdown -->
+            <div class="position-absolute top-0 end-0 mt-2 me-2">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-link text-secondary" 
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/admin/coaches}"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a th:href="@{/admin/coach}" class="text-decoration-none text-reset">
+                <i class="fas fa-users card-icon"></i>
+                <h4>Manage Coaches</h4>
+                <p>Add and view coaching staff</p>
+                <button class="btn btn-outline-primary quick-action-btn">
+                    View Coaches <i class="fas fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Manage Grounds Card -->
+    <div class="col">
+        <div class="dashboard-card p-4 position-relative">
+            <!-- Dropdown -->
+            <div class="position-absolute top-0 end-0 mt-2 me-2">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-link text-secondary" 
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item"th:href="@{/admin/ground/viewGrounds}"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a th:href="@{/admin/ground/add}" class="text-decoration-none text-reset">
+                <i class="fas fa-map-marked-alt card-icon"></i>
+                <h4>Manage Grounds</h4>
+                <p>Add and view sports grounds</p>
+                <button class="btn btn-outline-primary quick-action-btn">
+                    View Grounds <i class="fas fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Manage Slots Card -->
+    <div class="col">
+        <div class="dashboard-card p-4 position-relative">
+            <!-- Dropdown -->
+            <div class="position-absolute top-0 end-0 mt-2 me-2">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-link text-secondary" 
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/admin/slots/viewSlot}"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a th:href="@{/admin/slots}" class="text-decoration-none text-reset">
+                <i class="fas fa-calendar-alt card-icon"></i>
+                <h4>Manage Slots</h4>
+                <p>Create and manage booking slots</p>
+                <button class="btn btn-outline-primary quick-action-btn">
+                    View Slots <i class="fas fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <!-- User Management Card -->
+    <div class="col">
+        <div class="dashboard-card p-4 position-relative">
+            <!-- Dropdown -->
+            <div class="position-absolute top-0 end-0 mt-2 me-2">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-link text-secondary" 
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a th:href="@{/admin/users}" class="text-decoration-none text-reset">
+                <i class="fas fa-user-cog card-icon"></i>
+                <h4>User Management</h4>
+                <p>Manage system users and permissions</p>
+                <button class="btn btn-outline-primary quick-action-btn">
+                    View Users <i class="fas fa-arrow-right"></i>
+                </button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats Card -->
+    <div class="col">
+        <div class="dashboard-card p-4 position-relative">
+           
+            <div class="row text-center">
+                <div class="col-6 mb-3">
+                    <h2>1.2k</h2>
+                    <small>Total Bookings</small>
+                </div>
+                <div class="col-6 mb-3">
+                    <h2>85%</h2>
+                    <small>Occupancy Rate</small>
+                </div>
+                <div class="col-6">
+                    <h2>50+</h2>
+                    <small>Active Users</small>
+                </div>
+                <div class="col-6">
+                    <h2>4.8</h2>
+                    <small>Avg. Rating</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+<script>
+function toggleDarkMode() {
+    const body = document.body;
+    const isDark = body.getAttribute('data-theme') === 'dark';
+    body.setAttribute('data-theme', isDark ? 'light' : 'dark');
     
-    <a th:href="@{/logout}">Logout</a>
+    // Update toggle button icon
+    const icon = document.querySelector('.dark-mode-toggle i');
+    icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
+    
+    // Store preference
+    localStorage.setItem('darkMode', !isDark);
+}
+
+// Initialize dark mode from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    if(isDark) {
+        document.body.setAttribute('data-theme', 'dark');
+        document.querySelector('.dark-mode-toggle i').className = 'fas fa-sun';
+    }
+});
+// Add smooth scroll behavior
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
+</script>
+<script src="dash.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

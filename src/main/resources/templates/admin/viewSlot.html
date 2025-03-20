@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Slots</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Add Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
+<!-- Add jQuery (Toastr requires it) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Add Toastr.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #e74c3c;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background-color: var(--background);
+            color: var(--primary-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .filter-section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        #slotContainer {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .ground-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+
+        .ground-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .ground-header {
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .ground-header h3 {
+            margin: 0;
+            color: var(--primary-color);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .slot-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem 0;
+        }
+
+        .slot-list li {
+            padding: 0.5rem;
+            margin: 0.3rem 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slot-list li::before {
+            content: "\f017";
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            color: var(--success-color);
+        }
+
+        .price-info {
+            background: #e8f5e9;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Rubik', sans-serif;
+        }
+
+        .btn-edit {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-delete {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-view {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            #slotContainer {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-calendar-alt"></i> Available Slots</h2>
+        
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="groundFilter" class="form-label">
+                        <i class="fas fa-filter"></i> Filter by Ground:
+                    </label>
+                    <select id="groundFilter" class="form-select">
+                        <option value="">All Grounds</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="slotContainer"></div>
+    </div>
+
+    <script>
+    document.getElementById("groundFilter").addEventListener("change", function () {
+        let selectedGround = this.value;
+        let allGrounds = document.querySelectorAll(".ground-card");
+
+        allGrounds.forEach(card => {
+            let groundId = card.id.replace("ground-", ""); // Extract ground ID from card ID
+            if (selectedGround === "" || groundId === selectedGround) {
+                card.style.display = "block"; // Show matching cards
+            } else {
+                card.style.display = "none"; // Hide non-matching cards
+            }
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Load ground names for filter
+        fetch('/admin/slots/grounds')
+            .then(response => response.json())
+            .then(data => {
+                let groundFilter = document.getElementById("groundFilter");
+                data.forEach(ground => {
+                    let option = document.createElement("option");
+                    option.value = ground.id;
+                    option.textContent = ground.name;
+                    groundFilter.appendChild(option);
+                });
+            });
+
+        function loadSlots() {
+            fetch('/admin/slots/all')
+                .then(response => response.json())
+                .then(slots => {
+                    let slotContainer = document.getElementById("slotContainer");
+                    slotContainer.innerHTML = "";
+
+                    let groundMap = {};
+
+                    slots.forEach(slot => {
+                        if (!slot.ground) return;
+
+                        let groundId = slot.ground.id;
+                        if (!groundMap[groundId]) {
+                            groundMap[groundId] = {
+                                name: slot.ground.name,
+                                price: slot.price || "N/A",
+                                weekendPrice: slot.weekendPrice || "N/A",
+                                slots: []
+                            };
+                        }
+
+                        let formattedSlot = `${slot.startTime || "??"} - ${slot.endTime || "??"}`;
+                        groundMap[groundId].slots.push(formattedSlot);
+                    });
+
+                    for (let groundId in groundMap) {
+                        let groundData = groundMap[groundId];
+
+                        let groundCard = document.createElement("div");
+                        groundCard.className = "ground-card";
+                        groundCard.id = `ground-${groundId}`; // ✅ Add this
+
+                        groundCard.innerHTML = `
+                            <div class="ground-header">
+                                <h3><i class="fas fa-map-marker-alt"></i> ${groundData.name}</h3>
+                            </div>
+                            
+                            <div class="price-info">
+                                <p><i class="fas fa-tag"></i> Regular Price: ₹${groundData.price}</p>
+                                <p><i class="fas fa-star"></i> Weekend Price: ₹${groundData.weekendPrice}</p>
+                            </div>
+                            
+                            <p><strong><i class="fas fa-clock"></i> Available Slots:</strong></p>
+                            <ul class="slot-list">
+                                ${groundData.slots.map(slotTime => `
+                                    <li>${slotTime}</li>
+                                `).join('')}
+                            </ul>
+                            
+                            <div class="action-buttons">
+                                <button class="btn btn-edit" onclick="editGround(${groundId})">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn btn-delete" onclick="deleteGround(${groundId})">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
+                            </div>
+                        `;
+                        slotContainer.appendChild(groundCard);
+                    }
+                })
+                .catch(error => console.error("Error fetching slots:", error));
+        }
+
+        loadSlots();
+    });
+
+    function editGround(groundId) {
+        window.location.href = `/admin/slots/editSlot?groundId=${groundId}`;
+    }
+    function deleteGround(groundId) {
+        groundId = Number(groundId);
+
+        
+
+        fetch(`/admin/slots/slotdelete/${groundId}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to delete slot.");
+            }
+            return response.text();
+        })
+        .then(() => {
+            // ✅ Check if Toastr exists before using it
+            if (typeof toastr !== "undefined") {
+                toastr.success("Slot deleted successfully!", "Success");
+            } 
+
+            // ✅ Remove deleted slot from the UI
+            let groundCard = document.getElementById(`ground-${groundId}`);
+            if (groundCard) {
+                groundCard.remove();
+            }
+        })
+        .then(() => {
+            setTimeout(() => {
+                location.reload(); // ✅ Reload page after a short delay
+            }, 1000);
+        })
+        .catch(error => {
+            console.error("Error deleting slot:", error);
+
+            // ✅ Check Toastr before using
+            if (typeof toastr !== "undefined") {
+                toastr.error("Failed to delete slot. Please try again!", "Error");
+            } else {
+                alert("Failed to delete slot.");
+            }
+        });
+    }
+
+
+
+    function viewSlot(groundId) {
+        window.location.href = `/admin/slots/view?groundId=${groundId}`;
+    }
+    </script>
+</body>
+</html>

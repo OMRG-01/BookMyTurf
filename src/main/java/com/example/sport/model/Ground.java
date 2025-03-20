@@ -15,7 +15,7 @@ public class Ground {
     private String name;
     private String location;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
@@ -27,11 +27,30 @@ public class Ground {
     private LocalTime openingTime; // New field for opening time
     private LocalTime closingTime;
 
+    private String imageFileName;
+    @ManyToOne
+    @JoinColumn(name = "coach_id", nullable = true)
+    private Coach coach;  // Selected Coach
 
+   
     public Ground() {}
     
-   
+    public Coach getCoach() {
+        return coach;
+    }
 
+    public void setCoach(Coach coach) {
+        this.coach = coach;
+    }
+   
+    public String getImageFileName() {
+        return imageFileName;
+    }
+
+    public void setImageFileName(String imageFileName) {
+        this.imageFileName = imageFileName;
+    }
+    
     public Long getId() {
         return id;
     }

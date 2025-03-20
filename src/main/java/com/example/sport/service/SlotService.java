@@ -24,7 +24,10 @@ public class SlotService {
         List<Slot> savedSlots = slotRepository.saveAll(slots);
         return savedSlots;
     }
-
+    
+    public List<Slot> getSlotsByGroundId(Long groundId) {
+        return slotRepository.findByGroundId(groundId);
+    }
 
     // ✅ Fetch all slots
     public List<Slot> getAllSlots() {
@@ -39,5 +42,9 @@ public class SlotService {
     // ✅ Delete a Slot
     public void deleteSlot(Long id) {
         slotRepository.deleteById(id);
+    }
+    
+    public void deleteSlotByGroundId(Long groundId) {
+        slotRepository.deleteByGroundId(groundId);
     }
 }

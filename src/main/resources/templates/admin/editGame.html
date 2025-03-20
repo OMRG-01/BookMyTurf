@@ -154,78 +154,48 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>
-            <i class="fas fa-gamepad"></i>
-            Game Management
-        </h2>
+<div class="container">
+    <h2>Edit Game</h2>
 
-        <form class="game-form" th:action="@{/admin/addGame}" method="post">
-            <div class="form-group">
-                <label>Game Name:</label>
-                <input type="text" name="gameName" required placeholder="Enter game name">
-            </div>
+    <form class="game-form" th:action="@{/admin/updateGame}" th:object="${game}" method="post">
+        <!-- Hidden field for ID to ensure it's passed along -->
+        <input type="hidden" th:field="*{id}" />
 
-            <div class="form-group">
-                <label>Player Capacity:</label>
-                <input type="number" name="playerCapacity" required placeholder="Enter player capacity">
-            </div>
+        <!-- Game Name Field -->
+        <div class="form-group">
+            <label>Game Name:</label>
+            <input type="text" th:field="*{gameName}" required placeholder="Enter game name" />
+        </div>
 
-            <div class="form-group">
-                <label>Type:</label>
-                <select name="type">
-                    <option value="Indoor">Indoor</option>
-                    <option value="Outdoor">Outdoor</option>
-                </select>
-            </div>
+        <!-- Player Capacity Field -->
+        <div class="form-group">
+            <label>Player Capacity:</label>
+            <input type="number" th:field="*{playerCapacity}" required placeholder="Enter player capacity" />
+        </div>
 
-            <button type="submit">
-                <i class="fas fa-plus-circle"></i>
-                Add Game
-            </button>
-        </form>
+        <!-- Type Field -->
+        <div class="form-group">
+            <label>Type:</label>
+            <select th:field="*{type}">
+                <option value="Indoor" th:selected="${game.type == 'Indoor'}">Indoor</option>
+                <option value="Outdoor" th:selected="${game.type == 'Outdoor'}">Outdoor</option>
+            </select>
+        </div>
 
-        <h3>Game List</h3>
-        <table class="game-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Player Capacity</th>
-                    <th>Type</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="game : ${games}">
-                    <td th:text="${game.id}"></td>
-                    <td th:text="${game.gameName}"></td>
-                    <td th:text="${game.playerCapacity}"></td>
-                    <td>
-                        <span th:class="${game.type == 'Indoor'} ? 'type-indoor' : 'type-outdoor'">
-                            <i th:class="${game.type == 'Indoor'} ? 'fas fa-house' : 'fas fa-tree'"></i>
-                            <span th:text="${game.type}"></span>
-                        </span>
-                    </td>
-                    <td>
-					    <a th:href="@{/admin/editGame/{id}(id=${game.id})}" class="btn btn-edit">
-					        <i class="fas fa-edit"></i> Edit
-					    </a>
-					    <a th:href="@{/admin/deleteGame/{id}(id=${game.id})}" class="btn btn-delete" onclick="return confirm('Are you sure you want to delete this game?');">
-					        <i class="fas fa-trash-alt"></i> Delete
-					    </a>
-					</td>
-					                    
-                </tr>
-            </tbody>
-        </table>
+        <!-- Update Button -->
+        <button type="submit">
+            <i class="fas fa-save"></i>
+            Update Game
+        </button>
+    </form>
 
-        <a href="/admin/dashboard" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
-            Back to Dashboard
-        </a>
+    <a href="/admin/game" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Back to Game List
+    </a>
+</div>
 
-        <p th:if="${error}" class="error-message" th:text="${error}"></p>
-    </div>
+
+
 </body>
 </html>
