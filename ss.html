@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMyTurf</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Righteous&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #39B54A;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --text-color: #fff;
+            --bg-color: #121212;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-family: 'Righteous', cursive;
+            font-size: 1.8rem;
+            color: var(--primary-color) !important;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            height: calc(100vh - 70px);
+            position: fixed;
+            top: 70px;
+            padding: 20px;
+        }
+
+        .left-sidebar {
+            left: 0;
+            border-right: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .right-sidebar {
+            right: 0;
+            border-left: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .main-content {
+            margin: 70px 280px 0;
+            padding: 30px;
+        }
+
+        .dropdown-menu {
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            padding: 8px;
+            text-align: center;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .calendar-day.past {
+            opacity: 0.5;
+        }
+
+        .calendar-day.event {
+            position: relative;
+            color: #dc3545;
+        }
+
+        .calendar-day.event::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #dc3545;
+            border-radius: 50%;
+            bottom: 3px;
+            left: 40%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-futbol"></i> BookMyTurf
+            </a>
+            
+            <div class="d-flex align-items-center">
+                <button class="btn btn-dark mx-3" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="d-flex gap-3">
+                    <a href="#" class="btn btn-outline-primary">About</a>
+                    <a href="#" class="btn btn-outline-primary">Contact</a>
+                    <a href="#" class="btn btn-outline-primary">Profile</a>
+                    <a href="#" class="btn btn-outline-danger">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Left Sidebar -->
+    <div class="sidebar left-sidebar">
+        <div class="user-info mb-4">
+            <h4><i class="fas fa-user me-2"></i><span th:text="${loggedInUser.name}"></span></h4>
+        </div>
+
+        <!-- Sport Dropdown -->
+        <div class="mb-4">
+            <button class="btn btn-secondary w-100 dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-basketball-ball me-2"></i>Sport
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <input type="text" class="form-control" placeholder="Search Sport..." id="searchSport">
+                </li>
+                <li th:each="game : ${games}">
+                    <a class="dropdown-item" th:text="${game.name}" th:attr="data-id=${game.id}"></a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- City Dropdown -->
+        <div class="mb-4">
+            <button class="btn btn-secondary w-100 dropdown-toggle" data-bs-toggle="dropdown">
+                <i class="fas fa-city me-2"></i>City
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <input type="text" class="form-control" placeholder="Search City..." id="searchCity">
+                </li>
+                <li th:each="ground : ${grounds}">
+                    <a class="dropdown-item" th:text="${ground.location}" th:attr="data-id=${ground.id}"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="sidebar right-sidebar">
+        <h4 class="mb-4"><i class="fas fa-calendar-alt me-2"></i>Availability</h4>
+        <div id="calendarContainer"></div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Add your main content here -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            document.body.setAttribute('data-theme', 
+                document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
+            );
+        }
+
+        // Calendar Generation
+        function generateCalendar() {
+            const container = document.getElementById('calendarContainer');
+            const months = [];
+            
+            for(let i = 0; i < 2; i++) {
+                const date = new Date();
+                date.setMonth(date.getMonth() + i);
+                
+                const month = document.createElement('div');
+                month.className = 'mb-4';
+                month.innerHTML = `
+                    <h5>${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}</h5>
+                    <div class="calendar" id="calendar-${i}"></div>
+                `;
+                
+                const daysContainer = month.querySelector('.calendar');
+                const daysInMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
+                
+                // Generate days
+                for(let d = 1; d <= daysInMonth; d++) {
+                    const day = document.createElement('div');
+                    day.className = 'calendar-day';
+                    day.textContent = d;
+                    
+                    // Highlight specific dates
+                    if([5, 10, 21].includes(d)) {
+                        day.classList.add('event');
+                    }
+                    
+                    // Disable past dates
+                    if(new Date() > new Date(date.getFullYear(), date.getMonth(), d)) {
+                        day.classList.add('past');
+                    }
+                    
+                    daysContainer.appendChild(day);
+                }
+                
+                months.push(month);
+            }
+            
+            container.append(...months);
+        }
+
+                // Search filter for Sports
+        document.getElementById("searchSport").addEventListener("keyup", function () {
+            let filter = this.value.toUpperCase();
+            let items = document.querySelectorAll(".dropdown-menu li a");
+
+            items.forEach((item) => {
+                let text = item.textContent || item.innerText;
+                item.style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            });
+        });
+
+        // Search filter for Cities
+        document.getElementById("searchCity").addEventListener("keyup", function () {
+            let filter = this.value.toUpperCase();
+            let items = document.querySelectorAll(".dropdown-menu li a");
+
+            items.forEach((item) => {
+                let text = item.textContent || item.innerText;
+                item.style.display = text.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+            });
+        });
+
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            generateCalendar();
+            setupSearch('sportSearch', 'sportList');
+            setupSearch('citySearch', 'cityList');
+        });
+    </script>
+</body>
+</html>
