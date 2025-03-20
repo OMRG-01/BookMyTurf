@@ -19,4 +19,8 @@ public interface GroundRepository extends JpaRepository<Ground, Long> {
 	    @Transactional
 	    @Query("DELETE FROM Ground g WHERE g.game.id = :gameId")
 	    void deleteByGameId(@Param("gameId") Long gameId);
+	 	
+	 	@Query("SELECT g FROM Ground g WHERE g.location = :city")
+	 	List<Ground> findByLocation(@Param("city") String city);
+
 }

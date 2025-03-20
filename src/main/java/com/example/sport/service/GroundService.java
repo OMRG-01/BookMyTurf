@@ -25,7 +25,10 @@ public class GroundService {
     public List<Ground> getAllGrounds() {
         return groundRepository.findAll();
     }
-    
+    public List<Ground> getGroundsByCity(String city) {
+        return groundRepository.findByLocation(city);
+    }
+
     // Fetch ground by ID
     public Ground getGroundById(Long id) {
         return groundRepository.findById(id).orElseThrow(() -> new RuntimeException("Ground not found"));

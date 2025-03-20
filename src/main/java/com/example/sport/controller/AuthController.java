@@ -1,10 +1,15 @@
 package com.example.sport.controller;
 
+import com.example.sport.model.*;
 import com.example.sport.model.User;
 import com.example.sport.repository.*;
+import com.example.sport.service.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +22,11 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GameService gameService;
+
+    @Autowired
+    private GroundService groundService;
 
     @GetMapping("/login1")
     public String showLoginPage() {
@@ -54,9 +64,17 @@ public class AuthController {
             return "redirect:/login1"; // Redirect if not logged in
         }
 
-        model.addAttribute("loggedInUser", loggedInUser); // Pass user to view
+        // Fetch all games and ground locations dynamically
+        List<Game> games = gameService.getAllGames();
+        List<Ground> grounds = groundService.getAllGrounds();
+        List<Ground> userCityGrounds = groundService.getGroundsByCity(loggedInUser.getCity());
+        model.addAttribute("loggedInUser", loggedInUser);
+        model.addAttribute("games", games);
+        model.addAttribute("grounds", grounds);
+        model.addAttribute("grounds", userCityGrounds);
         return "user/userDash";
     }
+
 
 
     @GetMapping("/admin/dashboard")

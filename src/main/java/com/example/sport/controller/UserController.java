@@ -1,9 +1,14 @@
 package com.example.sport.controller;
 
+import com.example.sport.model.Ground;
 import com.example.sport.model.Role;
 import com.example.sport.model.User;
+import com.example.sport.service.GroundService;
 import com.example.sport.service.RoleService;
 import com.example.sport.service.UserService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +25,9 @@ public class UserController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private GroundService groundService;
+    
     // Show the registration form
     @GetMapping("/register1")
     public String showRegistrationForm(Model model) {
@@ -41,5 +49,12 @@ public class UserController {
         userService.save(user);
 
         return "redirect:/register1";  // Redirect to the login page after successful registration
+    }
+    
+    @GetMapping("/viewGrounds")
+    public String viewGrounds(Model model) {
+        List<Ground> grounds = groundService.getAllGrounds();
+        model.addAttribute("grounds", grounds);
+        return "admin/viewGround";
     }
 }
