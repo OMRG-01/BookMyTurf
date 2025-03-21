@@ -47,4 +47,9 @@ public class SlotService {
     public void deleteSlotByGroundId(Long groundId) {
         slotRepository.deleteByGroundId(groundId);
     }
+    
+    public List<Slot> getAvailableSlotsForGround(Long groundId) {
+        return slotRepository.findByGroundIdAndAvailabilityTrue(groundId);
+    }
+
 }

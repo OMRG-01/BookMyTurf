@@ -30,5 +30,8 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
     @Modifying
     @Query("DELETE FROM Slot s WHERE s.ground.id = :groundId")
     void deleteByGroundId(@Param("groundId") Long groundId);
+    
+    @Query("SELECT s FROM Slot s WHERE s.ground.id = :groundId AND s.availability = true")
+    List<Slot> findByGroundIdAndAvailabilityTrue(@Param("groundId") Long groundId);
 
 }

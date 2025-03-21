@@ -50,6 +50,7 @@ public class GroundService {
             Ground ground = existingGround.get();
             ground.setName(updatedGround.getName());
             ground.setLocation(updatedGround.getLocation());
+            ground.setAddress(updatedGround.getAddress());
             ground.setPlayerCapacity(updatedGround.getPlayerCapacity());
             ground.setSurfaceType(updatedGround.getSurfaceType());
             ground.setFloodlightsAvailable(updatedGround.isFloodlightsAvailable());

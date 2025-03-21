@@ -14,7 +14,7 @@ public class Ground {
 
     private String name;
     private String location;
-
+    private String address;
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
@@ -73,6 +73,14 @@ public class Ground {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+    
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Game getGame() {

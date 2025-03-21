@@ -34,28 +34,142 @@
         color: var(--text-color);
     }
 
-    /* Improved Sidebars */
-    .sidebar {
-        width: 280px;
-        background: var(--dark-color);
-        height: calc(100vh - 70px);
-        position: fixed;
-        top: 70px;
-        padding: 20px;
-        transition: transform 0.3s ease;
-        z-index: 1000;
-    }
+   
+   
 
-    .left-sidebar {
-        left: 0;
-        box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-    }
+  
+ .sidebar {
+    width: 280px;
+    background: var(--dark-color);
+    height: calc(100vh - 70px);
+    position: fixed;
+    top: 70px;
+    padding: 1.5rem; /* Using rem for better scalability */
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.2); /* Adding a right-side shadow */
+    border-top-right-radius: 8px; /* Optional: Rounded top-right corner */
+    border-bottom-right-radius: 8px; /* Optional: Rounded bottom-right corner */
+    overflow-y: auto; /* Adds scroll if content overflows */
+}
 
-    .right-sidebar {
-        right: 0;
-        box-shadow: -4px 0 15px rgba(0,0,0,0.1);
-    }
+/* User Info Section */
+.user-info {
+    padding: 1rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
 
+.user-info h4 {
+    font-size: 1.3rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+/* Dropdown Menu Styles */
+.nav-item.dropdown {
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.dropdown-toggle {
+    background: #34495e !important;
+    border: none !important;
+    padding: 1rem 1.5rem !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    transition: all 0.3s ease;
+    color: white !important;
+}
+
+.dropdown-toggle:hover {
+    background: #3d566e !important;
+    transform: translateY(-2px);
+}
+
+.dropdown-toggle i:first-child {
+    font-size: 1.2rem;
+    width: 30px;
+    color: #1abc9c;
+}
+
+.dropdown-toggle .chevron {
+    transition: transform 0.3s ease;
+}
+
+.dropdown-toggle[aria-expanded="true"] .chevron {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    background: #34495e !important;
+    border: none !important;
+    border-radius: 8px !important;
+    margin-top: 0.5rem !important;
+    padding: 0.5rem !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Search Input */
+.dropdown-menu input {
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: black;
+    margin: 0.5rem;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+}
+
+.dropdown-menu input::placeholder {
+    color: rgba(255,255,255,0.6);
+}
+
+/* Dropdown Items */
+.dropdown-item {
+    color: white !important;
+    padding: 0.75rem 1rem !important;
+    border-radius: 6px;
+    margin: 0.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.dropdown-item i {
+    color: #1abc9c;
+    width: 25px;
+    text-align: center;
+}
+
+.dropdown-item:hover {
+    background: rgba(255,255,255,0.1) !important;
+    transform: translateX(5px);
+}
+
+/* Scrollbar Styling */
+.dropdown-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+    background: #1abc9c;
+    border-radius: 4px;
+}
     /* Responsive Main Content */
     .main-content {
         margin: 90px 300px 0;
@@ -63,48 +177,7 @@
         transition: margin 0.3s ease;
     }
 
-    /* Enhanced Dropdowns */
-    .sidebar .dropdown-menu {
-        border: none;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        background: var(--bg-color);
-    }
-
-    .sidebar .dropdown-item {
-        color: var(--text-color) !important;
-        padding: 0.75rem 1.25rem !important;
-    }
-
-    .sidebar .dropdown-item:hover {
-        background: var(--primary-color) !important;
-        color: white !important;
-    }
-
-    /* Calendar Design */
-    .calendar {
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-    }
-
-    .calendar-day {
-        padding: 10px;
-        border-radius: 8px;
-        background: rgba(255,255,255,0.1);
-        transition: all 0.2s ease;
-    }
-
-    .calendar-day:hover {
-        background: var(--primary-color);
-        color: white;
-        transform: scale(1.05);
-    }
-
-    .calendar-day.event::after {
-        background: var(--accent-color);
-        width: 8px;
-        height: 8px;
-        bottom: 2px;
-    }
+   
 
     /* Card Design Improvements */
     .ground-card {
@@ -336,7 +409,86 @@
             width: 90%;
         }
    }
-   
+   .right-sidebar {
+    background: var(--dark-color) !important;
+    border-left: 1px solid rgba(0,0,0,0.1);
+    padding: 1.5rem 1rem !important;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.05);
+    right:0;
+}
+.right-sidebar h4{
+color: white;
+}
+
+.calendar-container {
+    margin-top: 1rem;
+}
+
+.calendar-month {
+    background: var(--light-color);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-day {
+    text-align: center;
+    padding: 0.8rem 0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    position: relative;
+    transition: all 0.2s ease;
+    background: rgba(26, 188, 156, 0.05);
+}
+
+.calendar-day.event::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #e74c3c;
+    border-radius: 50%;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.calendar-day.past {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.calendar-day.today {
+    background: var(--primary-color);
+    color: white;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .calendar-day {
+        padding: 0.5rem 0;
+        font-size: 0.8rem;
+    }
+    
+    .calendar-month {
+        padding: 0.75rem;
+    }
+}
     </style>
 </head>
 <body>
@@ -379,6 +531,12 @@
                             <i class="fas fa-phone-alt"></i>
                             Contact
                         </a>
+                    </li> 
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/booking}">
+                            <i class="fas fa-phone-alt"></i>
+                            Book Now
+                        </a>
                     </li>
             </ul>
             <ul class="navbar-nav ms-3">
@@ -405,86 +563,146 @@
     <i class="fas fa-calendar"></i>
 </button>
     <!-- Left Sidebar -->
-<div class="sidebar left-sidebar">
+<div class="sidebar">
     <div class="user-info mb-4">
-        <h4 class="text-white"><i class="fas fa-user me-2"></i><span th:text="${loggedInUser.name}"></span></h4>
+        <h4 class="text-white">
+            <i class="fas fa-user-circle"></i>
+            <span th:text="${loggedInUser.name}"></span>
+        </h4>
     </div>
-        <!-- Sport Dropdown -->
-        <ul class="nav flex-column">
+
+    <!-- Sport Dropdown -->
+    <ul class="nav flex-column">
         <li class="nav-item dropdown">
-            <button class="btn btn-primary w-100 text-start d-flex align-items-center" 
-                    data-bs-toggle="dropdown">
-                <i class="fas fa-basketball-ball me-3"></i>
+            <button class="dropdown-toggle" 
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                <i class="fas fa-basketball-ball"></i>
                 <span>Select Sport</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
+                <i class="fas fa-chevron-down chevron ms-auto"></i>
             </button>
             <ul class="dropdown-menu shadow-lg">
                 <li>
-                    <div class="px-3 py-2">
-                        <input type="text" class="form-control" 
-                               placeholder="Search Sport..." id="searchSport">
+                    <div class="px-2 py-1">
+                        <input type="text" 
+                               class="form-control" 
+                               placeholder="Search Sport..." 
+                               id="searchSport">
                     </div>
                 </li>
                 <li th:each="game : ${games}">
-                    <a class="dropdown-item d-flex align-items-center" 
-                       th:text="${game.gameName}" th:attr="data-id=${game.id}">
-                        <i class="fas fa-running me-2"></i>
+                    <a class="dropdown-item" 
+                       th:text="${game.gameName}" 
+                       th:attr="data-id=${game.id}">
+                        <i class="fas fa-running"></i>
                         <span th:text="${game.gameName}"></span>
                     </a>
                 </li>
             </ul>
         </li>
-		</ul>
-		<ul class="nav flex-column">
+    </ul>
+
+    <!-- City Dropdown -->
+    <ul class="nav flex-column mt-3">
         <li class="nav-item dropdown">
-            <button class="btn btn-primary w-100 text-start d-flex align-items-center" 
-                    data-bs-toggle="dropdown">
-                <i class="fas fa-basketball-ball me-3"></i>
-                <span>Select Sport</span>
-                <i class="fas fa-chevron-down ms-auto"></i>
+            <button class="dropdown-toggle" 
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                <i class="fas fa-city"></i>
+                <span>Select City</span>
+                <i class="fas fa-chevron-down chevron ms-auto"></i>
             </button>
             <ul class="dropdown-menu shadow-lg">
                 <li>
-                    <div class="px-3 py-2">
-                        <input type="text" class="form-control" 
-                               placeholder="Search Sport..." id="searchSport">
+                    <div class="px-2 py-1">
+                        <input type="text" 
+                               class="form-control" 
+                               placeholder="Search City..." 
+                               id="searchCity">
                     </div>
                 </li>
-                <li  th:each="ground : ${grounds}">
-                    <a class="dropdown-item d-flex align-items-center" 
-                       th:text="${ground.location}" th:attr="data-id=${ground.id}">
-                        <i class="fas fa-running me-2"></i>
+                <li th:each="ground : ground">
+                    <a class="dropdown-item" 
+                       th:text="${ground.location}" 
+                       th:attr="data-id=${ground.id}">
+                        <i class="fas fa-map-marker-alt"></i>
                         <span th:text="${ground.location}"></span>
                     </a>
                 </li>
             </ul>
         </li>
-        </ul>
-    </div>
-
-    <!-- Right Sidebar -->
-    <div class="sidebar right-sidebar">
-        <h4 class="mb-4"><i class="fas fa-calendar-alt me-2"></i>Availability</h4>
-        <div id="calendarContainer"></div>
-    </div>
-
+    </ul>
+</div>
+<div class="sidebar right-sidebar">
+    <h4 class="mb-3"><i class="fas fa-calendar-alt me-2"></i>Availability</h4>
+    <div id="calendarContainer" class="calendar-container"></div>
+</div>
+  
     <!-- Main Content -->
     <div class="main-content">
+    <h4>Recommended Grounds for <span id="userCity" th:text="${loggedInUser.city}"></span></h4>
         <div class="row" id="groundsContainer">
-        <div class="col-md-4 mb-4" th:each="ground : ${grounds}">
-            <div class="card ground-card">
-                <img th:src="@{'/GroundImg/' + ${ground.imageFileName}}" alt="Ground Image">
-                <div class="ground-info">
-                    <h5 th:text="${ground.name}"></h5>
-                    <p><strong>Location:</strong> <span th:text="${ground.location}"></span></p>
-                </div>
-            </div>
-        </div>
-    </div>
+			    <div class="col-md-4 mb-4" th:each="ground : ${grounds}" 
+			         th:data-location="${ground.location}">
+			        <div class="card ground-card">
+			            <img th:src="@{'/GroundImg/' + ${ground.imageFileName}}" alt="Ground Image">
+			            <div class="ground-info">
+			                <h5 th:text="${ground.name}"></h5>
+			                <p><strong>Location:</strong> <span th:text="${ground.location}"></span></p>
+			            </div>
+			        </div>
+			    </div>
+			</div>
     </div>
 
     
     <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let cityItems = document.querySelectorAll(".dropdown-item");
+        let seenCities = new Set();
+
+        cityItems.forEach(item => {
+            let cityName = item.textContent.trim();
+            if (seenCities.has(cityName)) {
+                item.style.display = "none"; // Hide duplicate city
+            } else {
+                seenCities.add(cityName);
+            }
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        let userCity = document.getElementById("userCity").innerText.trim();
+        let groundsContainer = document.getElementById("groundsContainer");
+        let header = document.querySelector(".main-content h4"); // Select the <h4> header
+        let cards = Array.from(groundsContainer.getElementsByClassName("col-md-4"));
+        let hasGrounds = false;
+
+        cards.forEach(card => {
+            let groundCity = card.getAttribute("data-location").trim();
+            if (groundCity !== userCity) {
+                card.style.display = "none"; // Hide non-matching grounds
+            } else {
+                hasGrounds = true; // At least one ground found
+            }
+        });
+
+        // If no grounds are found, show message & hide <h4>
+        if (!hasGrounds) {
+            let noGroundMessage = document.createElement("div");
+            noGroundMessage.classList.add("no-ground-message");
+            noGroundMessage.innerHTML = `
+                <h5 class="text-center text-danger">No grounds available in your city.</h5>
+                <p class="text-center">Please search for grounds in other cities.</p>
+            `;
+            groundsContainer.appendChild(noGroundMessage);
+
+            // Hide the <h4> title
+            header.style.display = "none";
+        }
+    });
+
+
+
         // Dark Mode Toggle
         function toggleDarkMode() {
             document.body.setAttribute('data-theme', 
@@ -492,50 +710,7 @@
             );
         }
 
-        // Calendar Generation
-        function generateCalendar() {
-            const container = document.getElementById('calendarContainer');
-            const months = [];
-            
-            for(let i = 0; i < 2; i++) {
-                const date = new Date();
-                date.setMonth(date.getMonth() + i);
-                
-                const month = document.createElement('div');
-                month.className = 'mb-4';
-                month.innerHTML = `
-                    <h5>${date.toLocaleString('default', { month: 'long' })} ${date.getFullYear()}</h5>
-                    <div class="calendar" id="calendar-${i}"></div>
-                `;
-                
-                const daysContainer = month.querySelector('.calendar');
-                const daysInMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
-                
-                // Generate days
-                for(let d = 1; d <= daysInMonth; d++) {
-                    const day = document.createElement('div');
-                    day.className = 'calendar-day';
-                    day.textContent = d;
-                    
-                    // Highlight specific dates
-                    if([5, 10, 21].includes(d)) {
-                        day.classList.add('event');
-                    }
-                    
-                    // Disable past dates
-                    if(new Date() > new Date(date.getFullYear(), date.getMonth(), d)) {
-                        day.classList.add('past');
-                    }
-                    
-                    daysContainer.appendChild(day);
-                }
-                
-                months.push(month);
-            }
-            
-            container.append(...months);
-        }
-
+        
                 // Search filter for Sports
         document.getElementById("searchSport").addEventListener("keyup", function () {
             let filter = this.value.toUpperCase();
@@ -565,6 +740,76 @@
             setupSearch('sportSearch', 'sportList');
             setupSearch('citySearch', 'cityList');
         });
+       
+	
+        function generateCalendar() {
+            const container = document.getElementById('calendarContainer');
+            container.innerHTML = '';
+            const today = new Date();
+            
+            // Generate 2 months starting from current
+            for(let i = 0; i < 2; i++) {
+                const date = new Date();
+                date.setMonth(date.getMonth() + i);
+                
+                const monthDiv = document.createElement('div');
+                monthDiv.className = 'calendar-month';
+                monthDiv.innerHTML = `
+                    <div class="calendar-header">
+                        <span>${date.toLocaleString('default', { month: 'long' })}</span>
+                        <span>${date.getFullYear()}</span>
+                    </div>
+                    <div class="calendar-grid"></div>
+                `;
+                
+                const grid = monthDiv.querySelector('.calendar-grid');
+                const daysInMonth = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
+                const firstDay = (new Date(date.getFullYear(), date.getMonth(), 1).getDay() || 7);
+                
+                // Add empty days for grid alignment
+                for(let d = 1; d < firstDay; d++) {
+                    grid.appendChild(createDayElement(''));
+                }
+
+                // Generate actual days
+                for(let d = 1; d <= daysInMonth; d++) {
+                    const day = createDayElement(d);
+                    const currentDate = new Date(date.getFullYear(), date.getMonth(), d);
+                    
+                    // Highlight today
+                    if(currentDate.toDateString() === today.toDateString()) {
+                        day.classList.add('today');
+                    }
+                    
+                    // Mark past dates
+                    if(currentDate < today && !(currentDate.toDateString() === today.toDateString())) {
+                        day.classList.add('past');
+                    }
+
+                    // Add events (5th, 10th, 23rd)
+                    if([5,10,23].includes(d)) {
+                        day.classList.add('event');
+                    }
+
+                    grid.appendChild(day);
+                }
+                
+                container.appendChild(monthDiv);
+            }
+        }
+
+        function createDayElement(day) {
+            const div = document.createElement('div');
+            div.className = 'calendar-day';
+            if(day) {
+                div.textContent = day;
+                div.title = 'Click to view availability';
+            }
+            return div;
+        }
+
+        // Initialize calendar
+        document.addEventListener('DOMContentLoaded', generateCalendar);
     </script>
     <script src="dash.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

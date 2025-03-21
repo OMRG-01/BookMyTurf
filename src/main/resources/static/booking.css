@@ -1,0 +1,49 @@
+ 
+		  
+		.main-container {
+        display: flex;
+        min-height: 100vh;
+        align-items: center;
+        justify-content: center;
+        padding: 0rem;
+        background-image: url('/images/soccer.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    	}
+      
+
+        .main-container {
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+     
+
+        /* Update main container for layering */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            min-height: 90vh;
+            padding: 2rem 0;
+        }
+
+        /* Update dark mode variables */
+        [data-theme="dark"] {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --text-color: #fff;
+            --bg-color: #121212;
+            --particle-color: #ffffff;
+            --particle-line: rgba(255,255,255,0.2);
+        }
+
+        :root {
+            --primary-color: #1abc9c;
+            --secondary-color: #16a085;
+            --accent-color: #f39c12;
+            --dark-color: #2c3e50;
+            --light-color: #ffffff;
+            --particle-color: #2c3e50;
+            --particle-line: rgba(44,62,80,0.2);
+        }

@@ -67,11 +67,11 @@ public class AuthController {
         // Fetch all games and ground locations dynamically
         List<Game> games = gameService.getAllGames();
         List<Ground> grounds = groundService.getAllGrounds();
-        List<Ground> userCityGrounds = groundService.getGroundsByCity(loggedInUser.getCity());
+        List<Ground> allGrounds = groundService.getAllGrounds();
         model.addAttribute("loggedInUser", loggedInUser);
         model.addAttribute("games", games);
         model.addAttribute("grounds", grounds);
-        model.addAttribute("grounds", userCityGrounds);
+        model.addAttribute("grounds", allGrounds); 
         return "user/userDash";
     }
 
