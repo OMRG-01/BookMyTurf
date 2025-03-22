@@ -6,13 +6,16 @@ import com.example.sport.model.Ground;
 import com.example.sport.model.Slot;
 import com.example.sport.model.User;
 import com.example.sport.service.BookingService;
+import com.example.sport.service.EmailService;
 import com.example.sport.service.GameService;
 import com.example.sport.service.GroundService;
+import com.example.sport.service.OTPService;
 import com.example.sport.service.SlotService;
 
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +46,12 @@ public class BookingController {
 
     @Autowired
     private BookingService bookingService;
+    
+    @Autowired
+    private OTPService otpService;
+    
+    @Autowired
+    private EmailService emailService;
     
     @GetMapping("/booking")
     public String userDashboard(HttpSession session, Model model) {
@@ -130,40 +139,50 @@ public class BookingController {
             return slotData;
         }).collect(Collectors.toList());
     }
+    @PostMapping("/generate-otp")
+    @ResponseBody
+    public ResponseEntity<?> generateOTP(HttpSession session) {
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+        }
+        
+        try {
+            String otp = otpService.generateOTP(user.getEmail());
+            emailService.sendOTPEmail(user.getEmail(), otp);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Failed to send OTP");
+        }
+    }
     
     @PostMapping("/create")
-    public String createBooking(
+    public ResponseEntity<?> createBooking(
             @RequestParam Long gameId,
             @RequestParam Long groundId,
             @RequestParam Long slotId,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-
-        // Get the complete user object from session
-        User loggedInUser = (User) session.getAttribute("loggedInUser");
+            @RequestParam String otp,
+            HttpSession session) {
         
-        if (loggedInUser == null) {
-            redirectAttributes.addFlashAttribute("error", "User not logged in");
-            return "redirect:/login1";
+        User user = (User) session.getAttribute("loggedInUser");
+        if (user == null) return ResponseEntity.badRequest().body("User not logged in");
+        
+        if (!otpService.validateOTP(user.getEmail(), otp)) {
+            return ResponseEntity.badRequest().body("Invalid OTP");
         }
 
-        // Create a new booking using the ID from the user object
         Booking booking = new Booking();
-        booking.setUserId(loggedInUser.getId());
+        booking.setUserId(user.getId());
         booking.setGameId(gameId);
         booking.setGroundId(groundId);
         booking.setSlotId(slotId);
         booking.setPaymentStatus(0);
-
-        bookingService.saveBooking(booking);
-
-        // Add booking ID as path variable
-        redirectAttributes.addAttribute("bookingId", booking.getId());
         
-        // Redirect to gateway page
-        return "redirect:/user/gateway";
-    }
-    
+        bookingService.saveBooking(booking);
+        
+        return ResponseEntity.ok("/user/gateway?bookingId=" + booking.getId());
+    }    
     @GetMapping("/user/gateway")
     public String showGateway(@RequestParam Long bookingId, Model model) {
         // Add booking details to model if needed
