@@ -15,6 +15,7 @@ import com.example.sport.service.SlotService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -25,7 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,9 +123,10 @@ public class BookingController {
     
     @GetMapping("/getSlotsByGround")
     @ResponseBody
-    public List<Map<String, Object>> getSlotsByGround(@RequestParam Long groundId) {
+    public List<Map<String, Object>> getSlotsByGround(@RequestParam Long groundId, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date bookingDate) {
+    	
         List<Slot> slots = slotService.getSlotsByGroundId(groundId);
-        
+       
         return slots.stream().map(slot -> {
             Map<String, Object> slotData = new HashMap<>();
             slotData.put("id", slot.getId());
@@ -136,6 +141,12 @@ public class BookingController {
             boolean isPaid = bookingService.isSlotPaid(slot.getId());
             slotData.put("isPaid", isPaid);
             
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(bookingDate);
+            boolean isWeekend = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY 
+                             || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+            
+            slotData.put("currentPrice", isWeekend ? slot.getWeekendPrice() : slot.getPrice());
             return slotData;
         }).collect(Collectors.toList());
     }
@@ -162,6 +173,8 @@ public class BookingController {
             @RequestParam Long gameId,
             @RequestParam Long groundId,
             @RequestParam Long slotId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate bookingDate,
+            @RequestParam Double price,
             @RequestParam String otp,
             HttpSession session) {
         
@@ -178,6 +191,8 @@ public class BookingController {
         booking.setGroundId(groundId);
         booking.setSlotId(slotId);
         booking.setPaymentStatus(0);
+        booking.setBookingDate(bookingDate);
+        booking.setPrice(price);
         
         bookingService.saveBooking(booking);
         
@@ -189,6 +204,20 @@ public class BookingController {
         Booking booking = bookingService.getBookingById(bookingId);
         model.addAttribute("booking", booking);
         return "user/gateway"; // This will resolve to templates/user/gateway.html
+    }
+    @PostMapping("/update-payment-status")
+    public ResponseEntity<?> updatePaymentStatus(
+            @RequestParam Long bookingId,
+            @RequestParam int status) {
+        
+        try {
+            Booking booking = bookingService.getBookingById(bookingId);
+            booking.setPaymentStatus(status);
+            bookingService.saveBooking(booking);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
     
 }

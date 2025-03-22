@@ -1,17 +1,326 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportplex | Booking</title>
+    <title>Payment Gateway</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-	
-</head>
-<body>
-
-        <h2>Book a Slot</h2>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .payment-container {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
         
- 
+        .payment-methods {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .payment-form {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+		/* Add new styles for modals */
+		       .success-modal .modal-header {
+		           background-color: #28a745;
+		           color: white;
+		       }
+		       .failure-modal .modal-header {
+		           background-color: #dc3545;
+		           color: white;
+		       }
+		       .payment-processing {
+		           display: none;
+		           position: fixed;
+		           top: 0;
+		           left: 0;
+		           width: 100%;
+		           height: 100%;
+		           background: rgba(0,0,0,0.5);
+		           z-index: 9999;
+		       }
+		       .processing-spinner {
+		           position: absolute;
+		           top: 50%;
+		           left: 50%;
+		           transform: translate(-50%, -50%);
+		       }
+        .method-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .method-item:hover {
+            background: #f8f9fa;
+        }
+
+        .method-item.active {
+            border-left: 4px solid #0d6efd;
+            background: #f8f9fa;
+        }
+
+        .payment-option {
+            display: none;
+        }
+
+        .payment-option.active {
+            display: block;
+        }
+
+        .card-input {
+            position: relative;
+        }
+
+        .card-input i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body class="payment-container">
+	<div class="payment-processing">
+	       <div class="spinner-border text-light processing-spinner" role="status">
+	           <span class="visually-hidden">Loading...</span>
+	       </div>
+	   </div>
+    <div class="container py-5">
+        <div class="row g-4">
+            <!-- Left Side - Payment Methods -->
+            <div class="col-lg-4">
+                <div class="payment-methods p-4">
+                    <h3 class="mb-4">Select Payment Method</h3>
+                    <div class="list-group">
+                        <div class="list-group-item method-item active" onclick="showPayment('card')">
+                            <i class="fas fa-credit-card me-2"></i>
+                            Credit/Debit Card
+                        </div>
+                        <div class="list-group-item method-item" onclick="showPayment('upi')">
+                            <i class="fas fa-mobile-alt me-2"></i>
+                            UPI Payment
+                        </div>
+                        <div class="list-group-item method-item" onclick="showPayment('razorpay')">
+                            <i class="fas fa-wallet me-2"></i>
+                            Razor Pay
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Payment Forms -->
+            <div class="col-lg-8">
+                <div class="payment-form p-4">
+                    <!-- Card Payment Form -->
+                    <form th:action="@{/process-payment}" method="post" class="payment-option active" id="cardForm">
+                        <h4 class="mb-4"><i class="fas fa-credit-card me-2"></i>Card Payment</h4>
+                        
+                        <div class="mb-3 card-input">
+                            <label class="form-label">Card Number</label>
+                            <input type="text" class="form-control" placeholder="1234 5678 9012 3456" required>
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="month" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">CVV</label>
+                                <input type="text" class="form-control" placeholder="123" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-4">
+                            Pay Now
+                        </button>
+                    </form>
+
+                    <!-- UPI Payment Form -->
+                    <form th:action="@{/process-payment}" method="post" class="payment-option" id="upiForm">
+                        <h4 class="mb-4"><i class="fas fa-mobile-alt me-2"></i>UPI Payment</h4>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">UPI ID</label>
+                            <input type="text" class="form-control" placeholder="yourname@upi" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-4">
+                            Pay via UPI
+                        </button>
+                    </form>
+
+                    <!-- Razor Pay Form -->
+                    <div class="payment-option" id="razorpayForm">
+                        <h4 class="mb-4"><i class="fas fa-wallet me-2"></i>Razor Pay</h4>
+                        
+                        <div class="text-center">
+                            <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razor Pay" 
+                                 style="height: 100px; margin-bottom: 2rem;">
+                            <p class="text-muted">You will be redirected to Razor Pay secure payment gateway</p>
+                            <button type="button" class="btn btn-primary w-100">
+                                Pay with Razor Pay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	<div class="modal fade success-modal" id="successModal" tabindex="-1">
+	        <div class="modal-dialog">
+	            <div class="modal-content">
+	                <div class="modal-header">
+	                    <h5 class="modal-title">Payment Successful!</h5>
+	                </div>
+	                <div class="modal-body">
+	                    <p>Thank you for your payment. Your booking is confirmed!</p>
+	                </div>
+	                <div class="modal-footer">
+	                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" 
+	                            onclick="redirectToDashboard()">OK</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+		<div class="modal fade failure-modal" id="failureModal" tabindex="-1">
+		        <div class="modal-dialog">
+		            <div class="modal-content">
+		                <div class="modal-header">
+		                    <h5 class="modal-title">Payment Failed</h5>
+		                </div>
+		                <div class="modal-body">
+		                    <p id="errorMessage">There was an error processing your payment. Please try again.</p>
+		                </div>
+		                <div class="modal-footer">
+		                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+		
+        function showPayment(method) {
+            // Remove active class from all methods
+            document.querySelectorAll('.method-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Add active class to selected method
+            event.target.closest('.method-item').classList.add('active');
+
+            // Hide all payment forms
+            document.querySelectorAll('.payment-option').forEach(form => {
+                form.classList.remove('active');
+            });
+
+            // Show selected payment form
+            document.getElementById(method + 'Form').classList.add('active');
+        }			// Get booking ID from URL
+			    const urlParams = new URLSearchParams(window.location.search);
+			    const bookingId = urlParams.get('bookingId');
+
+			    // Validation functions
+			    function validateCard(cardNumber, expiryDate, cvv) {
+			        const cardRegex = /^\d{16}$/;
+			        const cvvRegex = /^\d{3,4}$/;
+			        const currentDate = new Date();
+			        const expiry = new Date(expiryDate);
+
+			        return cardRegex.test(cardNumber) && 
+			               cvvRegex.test(cvv) &&
+			               expiry > currentDate;
+			    }
+
+			    function validateUPI(upiId) {
+			        const upiRegex = /^[\w.-]{2,}@[\w]{2,}$/;
+			        return upiRegex.test(upiId);
+			    }
+
+			    function showProcessing(show) {
+			        document.querySelector('.payment-processing').style.display = show ? 'block' : 'none';
+			    }
+
+			    async function updatePaymentStatus(status) {
+			        showProcessing(true);
+			        try {
+			            const response = await fetch(`/update-payment-status?bookingId=${bookingId}&status=${status}`, {
+			                method: 'POST'
+			            });
+
+			            if (!response.ok) throw new Error('Payment update failed');
+			            return true;
+			        } catch (error) {
+			            console.error('Error:', error);
+			            return false;
+			        } finally {
+			            showProcessing(false);
+			        }
+			    }
+
+				function redirectToDashboard() {
+				    window.location.href = '/user/dashboard'; // Match controller's @GetMapping path
+				}
+
+			    // Card Form Handler
+			    document.getElementById('cardForm').addEventListener('submit', async (e) => {
+			        e.preventDefault();
+			        
+			        const cardNumber = document.querySelector('#cardForm input[type="text"]').value;
+			        const expiryDate = document.querySelector('#cardForm input[type="month"]').value;
+			        const cvv = document.querySelector('#cardForm input[placeholder="123"]').value;
+
+			        if (!validateCard(cardNumber, expiryDate, cvv)) {
+			            document.getElementById('errorMessage').textContent = 'Invalid card details';
+			            new bootstrap.Modal(document.getElementById('failureModal')).show();
+			            return;
+			        }
+
+			        const success = await updatePaymentStatus(1);
+			        if (success) {
+			            new bootstrap.Modal(document.getElementById('successModal')).show();
+			        } else {
+			            new bootstrap.Modal(document.getElementById('failureModal')).show();
+			        }
+			    });
+
+			    // UPI Form Handler
+			    document.getElementById('upiForm').addEventListener('submit', async (e) => {
+			        e.preventDefault();
+			        
+			        const upiId = document.querySelector('#upiForm input').value;
+			        if (!validateUPI(upiId)) {
+			            document.getElementById('errorMessage').textContent = 'Invalid UPI ID format (e.g., yourname@upi)';
+			            new bootstrap.Modal(document.getElementById('failureModal')).show();
+			            return;
+			        }
+
+			        const success = await updatePaymentStatus(1);
+			        if (success) {
+			            new bootstrap.Modal(document.getElementById('successModal')).show();
+			        } else {
+			            new bootstrap.Modal(document.getElementById('failureModal')).show();
+			        }
+			    });
+
+			    // Razorpay Handler
+			    document.querySelector('#razorpayForm button').addEventListener('click', async () => {
+			        const success = await updatePaymentStatus(1);
+			        if (success) {
+			            new bootstrap.Modal(document.getElementById('successModal')).show();
+			        } else {
+			            new bootstrap.Modal(document.getElementById('failureModal')).show();
+			        }
+			    });
+		
+    </script>
 </body>
 </html>

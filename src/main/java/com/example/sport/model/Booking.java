@@ -1,5 +1,7 @@
 package com.example.sport.model;
 
+import java.time.LocalDate;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +18,33 @@ public class Booking {
     private Long groundId;
     private Long slotId;
     private int paymentStatus; // 0 = unpaid, 1 = paid
+    @Column(name = "booking_date")
+    private LocalDate bookingDate;
+    
+    @Column(name = "price")
+    private Double price;
+    
+    
+    
+    public LocalDate getBookingDate() {
+        return bookingDate;
+    }
 
+    // Setter for bookingDate
+    public void setBookingDate(LocalDate bookingDate) {
+        this.bookingDate = bookingDate;
+    }
+
+    // Getter for price
+    public Double getPrice() {
+        return price;
+    }
+
+    // Setter for price
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+    
     public Long getId() {
         return id;
     }
