@@ -489,6 +489,14 @@ color: white;
         padding: 0.75rem;
     }
 }
+/* Add this new style */
+        .no-ground-message {
+            padding: 2rem;
+            text-align: center;
+            background: rgba(255,0,0,0.1);
+            border-radius: 15px;
+            margin-top: 2rem;
+        }
     </style>
 </head>
 <body>
@@ -621,7 +629,7 @@ color: white;
                                id="searchCity">
                     </div>
                 </li>
-                <li th:each="ground : ground">
+                <li th:each="ground : ${ground}">
                     <a class="dropdown-item" 
                        th:text="${ground.location}" 
                        th:attr="data-id=${ground.id}">
@@ -657,6 +665,12 @@ color: white;
 
     
     <script>
+		function toggleSidebar(side) {
+		       const sidebar = document.querySelector(side === 'left' ? '.sidebar' : '.right-sidebar');
+		       sidebar.style.transform = sidebar.style.transform === 'translateX(0px)' ? 
+		           `translateX(${side === 'left' ? '-100%' : '100%'})` : 
+		           'translateX(0px)';
+		   }
     document.addEventListener("DOMContentLoaded", function () {
         let cityItems = document.querySelectorAll(".dropdown-item");
         let seenCities = new Set();

@@ -70,31 +70,37 @@ public class BookingController {
  // ✅ API to get games based on selected city
     @GetMapping("/getGamesByCity")
     @ResponseBody
-    public List<String> getGamesByCity(@RequestParam String city) {
+    public List<Map<String, Object>> getGamesByCity(@RequestParam String city) {
         List<Ground> grounds = groundService.getAllGrounds();
-
-        // Get unique game names where the ground location matches the selected city
-        Set<String> gamesInCity = grounds.stream()
+        
+        return grounds.stream()
             .filter(ground -> ground.getLocation().equalsIgnoreCase(city))
-            .map(ground -> ground.getGame().getGameName()) // Extract game name
-            .collect(Collectors.toSet());
-
-        return new ArrayList<>(gamesInCity); // Convert Set to List and return
+            .map(ground -> {
+                Map<String, Object> gameData = new HashMap<>();
+                gameData.put("id", ground.getGame().getId());
+                gameData.put("name", ground.getGame().getGameName());
+                return gameData;
+            })
+            .distinct()
+            .collect(Collectors.toList());
     }
     
     
     @GetMapping("/getGroundsByCityAndGame")
     @ResponseBody
-    public List<Map<String, String>> getGroundsByCityAndGame(@RequestParam String city, @RequestParam String game) {
+    public List<Map<String, String>> getGroundsByCityAndGame(
+            @RequestParam String city,
+            @RequestParam Long gameId) { // Changed to receive gameId
+        
         List<Ground> grounds = groundService.getAllGrounds();
 
         return grounds.stream()
             .filter(ground -> ground.getLocation().equalsIgnoreCase(city) &&
-                              ground.getGame().getGameName().equalsIgnoreCase(game))
+                              ground.getGame().getId().equals(gameId)) // Filter by game ID
             .map(ground -> {
                 Map<String, String> groundData = new HashMap<>();
-                groundData.put("id", String.valueOf(ground.getId())); // Send ID as String
-                groundData.put("name", ground.getName()); // Send Name
+                groundData.put("id", String.valueOf(ground.getId()));
+                groundData.put("name", ground.getName());
                 return groundData;
             })
             .collect(Collectors.toList());

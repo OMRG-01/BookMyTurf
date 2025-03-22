@@ -98,99 +98,138 @@
 
     <script>
         $(document).ready(function () {
-            $("#citySelect").change(function () {
-                var selectedCity = $(this).val();
-                if (selectedCity) {
-                    $.ajax({
-                        type: "GET",
-                        url: "/getGamesByCity",
-                        data: { city: selectedCity },
-                        success: function (games) {
-                            $("#gameSelect").empty().append('<option value="">Select Game</option>');
-                            $.each(games, function (index, game) {
-                                $("#gameSelect").append('<option value="' + game + '">' + game + '</option>');
-                            });
-                            $("#groundSelect").empty().append('<option value="">Select Ground</option>'); // Reset grounds
-                        }
-                    });
-                } else {
-                    $("#gameSelect").empty().append('<option value="">Select Game</option>');
-                    $("#groundSelect").empty().append('<option value="">Select Ground</option>');
-                }
-            });
-
-			$("#gameSelect").change(function () {
-			    var selectedCity = $("#citySelect").val();
-			    var selectedGame = $(this).val(); // Get game name instead of ID
-
-			    if (selectedCity && selectedGame) {
+			$("#citySelect").change(function() {
+			    var selectedCity = $(this).val();
+			    if (selectedCity) {
 			        $.ajax({
 			            type: "GET",
-			            url: "/getGroundsByCityAndGame",
-			            data: { city: selectedCity, game: selectedGame }, // Send game name
-			            success: function (grounds) {
-			                $("#groundSelect").empty().append('<option value="">Select Ground</option>');
-			                $.each(grounds, function (index, ground) {
-			                    $("#groundSelect").append('<option value="' + ground.id + '">' + ground.name + '</option>');
+			            url: "/getGamesByCity",
+			            data: { city: selectedCity },
+			            success: function(games) {
+			                $("#gameSelect").empty().append('<option value="">Select Game</option>');
+			                $.each(games, function(index, game) {
+			                    // Use game.id as value, show game.name
+			                    $("#gameSelect").append(
+			                        $('<option></option>').val(game.id).text(game.name)
+			                    );
 			                });
+			                $("#groundSelect").empty().append('<option value="">Select Ground</option>');
 			            }
 			        });
-			    } else {
-			        $("#groundSelect").empty().append('<option value="">Select Ground</option>');
 			    }
 			});
 
-            $("#groundSelect").change(function () {
-                let selectedGroundId = $(this).val();
+			$("#gameSelect").change(function() {
+			    var selectedCity = $("#citySelect").val();
+			    var selectedGameId = $(this).val(); // This is now numeric ID
+			    
+			    if (selectedCity && selectedGameId) {
+			        $.ajax({
+			            type: "GET",
+			            url: "/getGroundsByCityAndGame",
+			            data: { 
+			                city: selectedCity, 
+			                gameId: selectedGameId // Send numeric ID
+			            },
+			            success: function(grounds) {
+			                $("#groundSelect").empty().append('<option value="">Select Ground</option>');
+			                $.each(grounds, function(index, ground) {
+			                    $("#groundSelect").append(
+			                        $('<option></option>').val(ground.id).text(ground.name)
+			                    );
+			                });
+			            }
+			        });
+			    }
+			});
+			$("#groundSelect").change(function () {
+			    let selectedGroundId = $(this).val();
+			    $("#slotContainer").empty().append('<div class="loading">Loading slots...</div>');
+			    
+			    if (selectedGroundId) {
+			        $.ajax({
+			            url: "/getSlotsByGround",
+			            type: "GET",
+			            data: { groundId: selectedGroundId }, // Fixed parameter
+			            success: function (response) {
+			                displaySlots(response);
+			            },
+			            error: function (xhr) {
+			                $("#slotContainer").html('<div class="error">Error loading slots</div>');
+			            }
+			        });
+			    }
+			});
 
-                if (selectedGroundId) {
-                    fetchSlots(selectedGroundId);
-                }
-            });
+			function displaySlots(slots) {
+			    let slotContainer = $("#slotContainer");
+			    slotContainer.empty();
 
-            function displaySlots(slots) {
-                let slotContainer = $("#slotContainer");
-                slotContainer.empty();
+			    if (!slots || slots.length === 0) {
+			        slotContainer.append(`
+			            <div class="alert alert-warning w-100">
+			                No slots available for this ground. Please select another ground.
+			            </div>
+			        `);
+			        return;
+			    }
 
-                if (slots.length === 0) {
-                    slotContainer.append('<p>No slots available for this ground.</p>');
-                    return;
-                }
+			    let hasAvailableSlots = false;
+			    
+			    slots.forEach(slot => {
+			        const isAvailable = slot.availability === "Available";
+			        const isWeekend = [0, 6].includes(new Date().getDay()); // 0=Sunday, 6=Saturday
+			        const currentPrice = isWeekend ? slot.weekendPrice : slot.price;
+			        
+			        let slotCard = `
+			            <div class="slot-card ${isAvailable ? 'available' : 'booked'}">
+			                <p><strong>Time:</strong> ${slot.startTime} - ${slot.endTime}</p>
+			                <p><strong>Price:</strong> ₹${currentPrice}</p>
+			                <p class="status ${isAvailable ? 'text-success' : 'text-danger'}">
+			                    ${slot.availability}
+			                </p>
+			                ${isAvailable ? 
+			                    `<button class="btn btn-success book-slot" 
+			                             data-slot-id="${slot.id}">
+			                        Book Now
+			                    </button>` : 
+			                    `<button class="btn btn-secondary" disabled>
+			                        Booked
+			                    </button>`}
+			            </div>
+			        `;
+			        slotContainer.append(slotCard);
+			        if (isAvailable) hasAvailableSlots = true;
+			    });
 
-                slots.forEach(slot => {
-                    let slotCard = `
-                        <div class="slot-card">
-                            <p><strong>Time:</strong> ${slot.startTime} - ${slot.endTime}</p>
-                            <p><strong>Price:</strong> ₹${slot.price} (Weekend: ₹${slot.weekendPrice})</p>
-                            <p><strong>Availability:</strong> ${slot.availability}</p>
-                            <p><strong>Break Time:</strong> ${slot.breakTime}</p>
-                            <button class="btn btn-success book-slot" data-slot-id="${slot.id}">Book</button>
-                        </div>
-                    `;
-                    slotContainer.append(slotCard);
-                });
+			    if (!hasAvailableSlots) {
+			        slotContainer.prepend(`
+			            <div class="alert alert-info w-100">
+			                All slots are currently booked. Please try another ground.
+			            </div>
+			        `);
+			    }
 
-                // Attach click event to dynamically generated buttons
-                $(".book-slot").click(function () {
-                    let slotId = $(this).data("slot-id");
-                    let groundId = $("#groundSelect").val();
-                    let gameId = $("#gameSelect").val();
+			    // Attach click handlers
+			    $(".book-slot").click(function() {
+			        const slotId = $(this).data("slot-id");
+			        const groundId = $("#groundSelect").val();
+			        const gameId = $("#gameSelect").val();
 
-                    if (!groundId || !gameId || !slotId) {
-                        alert("Please select a valid game, ground, and slot.");
-                        return;
-                    }
+			        if (!groundId || !gameId || !slotId) {
+			            showError("Please select all required fields");
+			            return;
+			        }
 
-                    // Set hidden input values
-                    $("#gameIdInput").val(gameId);
-                    $("#groundIdInput").val(groundId);
-                    $("#slotIdInput").val(slotId);
+			        // Set hidden values
+			        $("#gameIdInput").val(gameId);
+			        $("#groundIdInput").val(groundId);
+			        $("#slotIdInput").val(slotId);
 
-                    // Submit form
-                    $("#bookingForm").submit();
-                });
-            }
-
+			        // Submit form
+			        $("#bookingForm").submit();
+			    });
+			}
             function fetchSlots(groundId) {
                 $.ajax({
                     url: "/getSlotsByGround",
