@@ -176,31 +176,36 @@
 
 			    let hasAvailableSlots = false;
 			    
-			    slots.forEach(slot => {
-			        const isAvailable = slot.availability === "Available";
-			        const isWeekend = [0, 6].includes(new Date().getDay()); // 0=Sunday, 6=Saturday
-			        const currentPrice = isWeekend ? slot.weekendPrice : slot.price;
-			        
-			        let slotCard = `
-			            <div class="slot-card ${isAvailable ? 'available' : 'booked'}">
-			                <p><strong>Time:</strong> ${slot.startTime} - ${slot.endTime}</p>
-			                <p><strong>Price:</strong> ₹${currentPrice}</p>
-			                <p class="status ${isAvailable ? 'text-success' : 'text-danger'}">
-			                    ${slot.availability}
-			                </p>
-			                ${isAvailable ? 
-			                    `<button class="btn btn-success book-slot" 
-			                             data-slot-id="${slot.id}">
-			                        Book Now
-			                    </button>` : 
-			                    `<button class="btn btn-secondary" disabled>
-			                        Booked
-			                    </button>`}
-			            </div>
-			        `;
-			        slotContainer.append(slotCard);
-			        if (isAvailable) hasAvailableSlots = true;
-			    });
+				slots.forEach(slot => {
+				    const isAvailable = slot.availability === "Available";
+				    const isPaid = slot.isPaid; // Payment status from backend
+				    const isWeekend = [0, 6].includes(new Date().getDay()); // 0=Sunday, 6=Saturday
+				    const currentPrice = isWeekend ? slot.weekendPrice : slot.price;
+				    
+				    // Slot is considered "booked" if it's either unavailable or paid
+				    const isBooked = !isAvailable || isPaid;
+				    
+				    let slotCard = `
+				        <div class="slot-card ${isBooked ? 'booked' : 'available'}">
+				            <p><strong>Time:</strong> ${slot.startTime} - ${slot.endTime}</p>
+				            <p><strong>Price:</strong> ₹${currentPrice}</p>
+				            <p class="status ${isBooked ? 'text-danger' : 'text-success'}">
+				                ${isBooked ? 'Booked' : 'Available'}
+				            </p>
+				            ${isBooked ? 
+				                `<button class="btn btn-secondary" disabled>
+				                    Booked
+				                </button>` : 
+				                `<button class="btn btn-success book-slot" 
+				                         data-slot-id="${slot.id}">
+				                    Book Now
+				                </button>`}
+				        </div>
+				    `;
+				    
+				    // Append the slot card to the container
+				    $("#slotContainer").append(slotCard);
+				});
 
 			    if (!hasAvailableSlots) {
 			        slotContainer.prepend(`

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -121,35 +122,54 @@ public class BookingController {
             slotData.put("price", slot.getPrice());
             slotData.put("weekendPrice", slot.getWeekendPrice());
             slotData.put("breakTime", slot.getBreakTime());
+            
+            // Add payment status (1 = Paid, 0 = Unpaid)
+            boolean isPaid = bookingService.isSlotPaid(slot.getId());
+            slotData.put("isPaid", isPaid);
+            
             return slotData;
         }).collect(Collectors.toList());
-        
     }
     
     @PostMapping("/create")
-    public ResponseEntity<?> createBooking(
+    public String createBooking(
             @RequestParam Long gameId,
             @RequestParam Long groundId,
             @RequestParam Long slotId,
-            HttpSession session) {
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
-        // Get the logged-in user ID from the session (Assuming user is logged in)
-        Long userId = (Long) session.getAttribute("userId");  
-        if (userId == null) {
-            return ResponseEntity.badRequest().body("User not logged in");
+        // Get the complete user object from session
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+        
+        if (loggedInUser == null) {
+            redirectAttributes.addFlashAttribute("error", "User not logged in");
+            return "redirect:/login1";
         }
 
-        // Create a new booking
+        // Create a new booking using the ID from the user object
         Booking booking = new Booking();
-        booking.setUserId(userId);
+        booking.setUserId(loggedInUser.getId());
         booking.setGameId(gameId);
         booking.setGroundId(groundId);
         booking.setSlotId(slotId);
-        booking.setPaymentStatus(0); // Unpaid
+        booking.setPaymentStatus(0);
 
         bookingService.saveBooking(booking);
 
-        // Redirect user to payment page with booking details
-        return ResponseEntity.ok("/gateway.html?bookingId=" + booking.getId());
+        // Add booking ID as path variable
+        redirectAttributes.addAttribute("bookingId", booking.getId());
+        
+        // Redirect to gateway page
+        return "redirect:/user/gateway";
     }
+    
+    @GetMapping("/user/gateway")
+    public String showGateway(@RequestParam Long bookingId, Model model) {
+        // Add booking details to model if needed
+        Booking booking = bookingService.getBookingById(bookingId);
+        model.addAttribute("booking", booking);
+        return "user/gateway"; // This will resolve to templates/user/gateway.html
+    }
+    
 }
