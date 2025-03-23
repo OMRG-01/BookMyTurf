@@ -42,4 +42,13 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 	    
 	    @Query("SELECT b.id, b.groundId, b.bookingDate, b.startTime, b.endTime, b.paymentStatus FROM Booking b WHERE b.userId = :userId")
 	    List<Object[]> findBookingWithGroundName(@Param("userId") Long userId);
+
+	    @Query("SELECT COUNT(b) FROM Booking b")
+	    Long countTotalBookings();
+
+	    @Query("SELECT COUNT(b) FROM Booking b WHERE b.paymentStatus = 1")
+	    Long countPaidBookings();
+
+	    @Query("SELECT AVG(b.rating) FROM Booking b WHERE b.rating IS NOT NULL")
+	    Double findAverageRating();
 }

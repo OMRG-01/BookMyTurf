@@ -451,32 +451,34 @@
     </div>
 
     <!-- Quick Stats Card -->
-    <div class="col">
-        <div class="dashboard-card p-4 position-relative">
-           
-            <div class="row text-center">
-                <div class="col-6 mb-3">
-                    <h2>1.2k</h2>
-                    <small>Total Bookings</small>
-                </div>
-                <div class="col-6 mb-3">
-                    <h2>85%</h2>
-                    <small>Occupancy Rate</small>
-                </div>
-                <div class="col-6">
-                    <h2>50+</h2>
-                    <small>Active Users</small>
-                </div>
-                <div class="col-6">
-                    <h2>4.8</h2>
-                    <small>Avg. Rating</small>
-                </div>
-            </div>
-        </div>
-    </div>
+	<div class="col">
+	    <div class="dashboard-card p-4 position-relative">
+	        <div class="row text-center">
+	            <div class="col-6 mb-3">
+	                <h2 th:text="${stats.totalBookings}">1.2k</h2>
+	                <small>Total Bookings</small>
+	            </div>
+	            <div class="col-6 mb-3">
+	                <h2>
+	                    <span th:text="${#numbers.formatDecimal(stats.occupancyRate, 1, 0)}"></span>%
+	                </h2>
+	                <small>Occupancy Rate</small>
+	            </div>
+	            <div class="col-6">
+	                <h2 th:text="${stats.activeUsers}">50+</h2>
+	                <small>Active Users</small>
+	            </div>
+	            <div class="col-6">
+	                <h2 th:text="${#numbers.formatDecimal(stats.averageRating, 1, 1)}"></h2>
+	                <small>Avg. Rating</small>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 </div>
 </main>
 <script>
+	
 function toggleDarkMode() {
     const body = document.body;
     const isDark = body.getAttribute('data-theme') === 'dark';

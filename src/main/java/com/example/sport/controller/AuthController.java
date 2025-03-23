@@ -1,5 +1,6 @@
 package com.example.sport.controller;
 
+import com.example.sport.dto.DashboardStats;
 import com.example.sport.model.*;
 import com.example.sport.repository.*;
 import com.example.sport.service.*;
@@ -141,7 +142,7 @@ public class AuthController {
         if (loggedInUser == null) {
             return "redirect:/login1"; // Redirect if not logged in
         }
-
+        
         // Fetch all games and ground locations dynamically
         List<Game> games = gameService.getAllGames();
         List<Ground> grounds = groundService.getAllGrounds();
@@ -153,7 +154,11 @@ public class AuthController {
         return "user/userDash";
     }
 
+    private final DashboardService dashboardService;
 
+    public AuthController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
 
     @GetMapping("/admin/dashboard")
     public String adminDashboard(HttpSession session, Model model) {
@@ -168,7 +173,8 @@ public class AuthController {
         if (!"ADMIN".equals(loggedInUser.getRole().getRoleName())) {
             return "redirect:/user/dashboard"; // Redirect non-admin users
         }
-
+        DashboardStats stats = dashboardService.getDashboardStats();
+        model.addAttribute("stats", stats);
         model.addAttribute("loggedInUser", loggedInUser); // Pass admin details to view
         return "admin/adminDash";
     }
