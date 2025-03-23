@@ -28,7 +28,11 @@ public class SlotService {
     public List<Slot> getSlotsByGroundId(Long groundId) {
         return slotRepository.findByGroundId(groundId);
     }
-
+    
+    public Slot findById(Long id) {
+        return slotRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Slot not found with ID: " + id));
+    }
     // ✅ Fetch all slots
     public List<Slot> getAllSlots() {
         return slotRepository.findAll();

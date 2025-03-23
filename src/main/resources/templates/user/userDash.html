@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -8,9 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Righteous&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" th:href="@{login.css}">
     <style>
-         :root {
+    :root {
         --primary-color: #2E86C1;  /* Sophisticated blue */
         --secondary-color: #28B463; /* Fresh green */
         --accent-color: #F4D03F;    /* Warm yellow */
@@ -18,6 +18,9 @@
         --light-color: #F8F9FA;
         --text-color: #2C3E50;
         --bg-color: #ffffff;
+        --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        --card-hover-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        --transition-speed: 0.4s;
     }
 
     [data-theme="dark"] {
@@ -27,189 +30,701 @@
         --text-color: #ECF0F1;
         --bg-color: #2C3E50;
         --dark-color: #34495E;
+        --card-shadow: 0 10px 20px rgba(0,0,0,0.25);
+        --card-hover-shadow: 0 15px 30px rgba(0,0,0,0.4);
     }
 
     body {
         background-color: var(--bg-color);
         color: var(--text-color);
+        font-family: 'Poppins', sans-serif;
+        transition: background-color var(--transition-speed), color var(--transition-speed);
+        overflow-x: hidden;
     }
 
-   
-   
+    /* Sidebar Styles with Animation */
+    .sidebar {
+        width: 280px;
+        background: var(--dark-color);
+        height: calc(100vh - 70px);
+        position: fixed;
+        top: 70px;
+        padding: 1.5rem;
+        transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), box-shadow 0.3s ease;
+        z-index: 1000;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+        border-top-right-radius: 15px;
+        border-bottom-right-radius: 15px;
+        overflow-y: auto;
+    }
 
-  
- .sidebar {
-    width: 280px;
-    background: var(--dark-color);
-    height: calc(100vh - 70px);
-    position: fixed;
-    top: 70px;
-    padding: 1.5rem; /* Using rem for better scalability */
-    transition: transform 0.3s ease;
-    z-index: 1000;
-    box-shadow: 5px 0 10px rgba(0, 0, 0, 0.2); /* Adding a right-side shadow */
-    border-top-right-radius: 8px; /* Optional: Rounded top-right corner */
-    border-bottom-right-radius: 8px; /* Optional: Rounded bottom-right corner */
-    overflow-y: auto; /* Adds scroll if content overflows */
-}
+    /* Sidebar Animation on Load */
+    .sidebar {
+        animation: slideInLeft 0.6s ease-out forwards;
+    }
 
-/* User Info Section */
-.user-info {
-    padding: 1rem;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    text-align: center;
-}
+    @keyframes slideInLeft {
+        from {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
 
-.user-info h4 {
-    font-size: 1.3rem;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8rem;
-}
+    .right-sidebar {
+        animation: slideInRight 0.6s ease-out forwards;
+    }
 
-/* Dropdown Menu Styles */
-.nav-item.dropdown {
-    margin-bottom: 1.5rem;
-    position: relative;
-}
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
 
-.dropdown-toggle {
-    background: #34495e !important;
-    border: none !important;
-    padding: 1rem 1.5rem !important;
-    border-radius: 8px !important;
-    display: flex !important;
-    align-items: center;
-    width: 100%;
-    transition: all 0.3s ease;
-    color: white !important;
-}
+    /* User Info Section with Pulse Animation */
+    .user-info {
+        padding: 1.2rem;
+        background: rgba(255,255,255,0.1);
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
 
-.dropdown-toggle:hover {
-    background: #3d566e !important;
-    transform: translateY(-2px);
-}
+    .user-info:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+        pointer-events: none;
+    }
 
-.dropdown-toggle i:first-child {
-    font-size: 1.2rem;
-    width: 30px;
-    color: #1abc9c;
-}
+    .user-info:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
 
-.dropdown-toggle .chevron {
-    transition: transform 0.3s ease;
-}
+    .user-info h4 {
+        font-size: 1.3rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+    }
 
-.dropdown-toggle[aria-expanded="true"] .chevron {
-    transform: rotate(180deg);
-}
+    .user-info i {
+        animation: pulse 2s infinite;
+        color: var(--accent-color);
+    }
 
-/* Dropdown Menu */
-.dropdown-menu {
-    background: #34495e !important;
-    border: none !important;
-    border-radius: 8px !important;
-    margin-top: 0.5rem !important;
-    padding: 0.5rem !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    max-height: 300px;
-    overflow-y: auto;
-}
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
 
-/* Search Input */
-.dropdown-menu input {
-    background: rgba(255,255,255,0.1);
-    border: none;
-    color: black;
-    margin: 0.5rem;
-    border-radius: 6px;
-    padding: 0.75rem 1rem;
-}
+    /* Dropdown Menu Styles with Improved Animations */
+    .nav-item.dropdown {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
 
-.dropdown-menu input::placeholder {
-    color: rgba(255,255,255,0.6);
-}
+    .dropdown-toggle {
+        background: #34495e !important;
+        border: none !important;
+        padding: 1rem 1.5rem !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center;
+        width: 100%;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        color: white !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
 
-/* Dropdown Items */
-.dropdown-item {
-    color: white !important;
-    padding: 0.75rem 1rem !important;
-    border-radius: 6px;
-    margin: 0.25rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    transition: all 0.2s ease;
-}
+    .dropdown-toggle:hover {
+        background: #3d566e !important;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
 
-.dropdown-item i {
-    color: #1abc9c;
-    width: 25px;
-    text-align: center;
-}
+    .dropdown-toggle i:first-child {
+        font-size: 1.2rem;
+        width: 30px;
+        color: var(--accent-color);
+        transition: transform 0.3s ease;
+    }
 
-.dropdown-item:hover {
-    background: rgba(255,255,255,0.1) !important;
-    transform: translateX(5px);
-}
+    .dropdown-toggle:hover i:first-child {
+        transform: rotate(15deg);
+    }
 
-/* Scrollbar Styling */
-.dropdown-menu::-webkit-scrollbar {
-    width: 6px;
-}
+    .dropdown-toggle .chevron {
+        transition: transform 0.3s ease;
+    }
 
-.dropdown-menu::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.1);
-}
+    .dropdown-toggle[aria-expanded="true"] .chevron {
+        transform: rotate(180deg);
+    }
 
-.dropdown-menu::-webkit-scrollbar-thumb {
-    background: #1abc9c;
-    border-radius: 4px;
-}
-    /* Responsive Main Content */
+    /* Dropdown Menu with Animation */
+    .dropdown-menu {
+        background: #34495e !important;
+        border: none !important;
+        border-radius: 12px !important;
+        margin-top: 50px !important;
+        padding: 0.5rem !important;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        max-height: 300px;
+        overflow-y: auto;
+        transform-origin: top center;
+        animation: dropdownOpen 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+    }
+
+    @keyframes dropdownOpen {
+        from {
+            opacity: 0;
+            transform: scaleY(0);
+        }
+        to {
+            opacity: 1;
+            transform: scaleY(1);
+        }
+    }
+
+    /* Search Input with Glow Effect */
+    .dropdown-menu input {
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.1);
+        color: white;
+        margin: 0.5rem;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .dropdown-menu input:focus {
+        background: rgba(255,255,255,0.15);
+        border-color: var(--accent-color);
+        box-shadow: 0 0 10px rgba(244, 208, 63, 0.5);
+        outline: none;
+    }
+
+    .dropdown-menu input::placeholder {
+        color: rgba(255,255,255,0.6);
+    }
+
+    /* Dropdown Items with Hover Effects */
+    .dropdown-item {
+        color: white !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 10px;
+        margin: 0.25rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dropdown-item i {
+        color: var(--accent-color);
+        width: 25px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .dropdown-item:hover {
+        background: rgba(255,255,255,0.15) !important;
+        transform: translateX(8px);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .dropdown-item:hover i {
+        transform: scale(1.2);
+    }
+
+    .dropdown-item:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--accent-color);
+        transform: scaleY(0);
+        transition: transform 0.3s ease;
+        transform-origin: bottom;
+    }
+
+    .dropdown-item:hover:before {
+        transform: scaleY(1);
+    }
+
+    /* Scrollbar Styling */
+    .dropdown-menu::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .dropdown-menu::-webkit-scrollbar-track {
+        background: rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+
+    .dropdown-menu::-webkit-scrollbar-thumb {
+        background: var(--accent-color);
+        border-radius: 10px;
+    }
+
+    .dropdown-menu::-webkit-scrollbar-thumb:hover {
+        background: #f1c40f;
+    }
+
+    /* Improved Main Content */
     .main-content {
         margin: 90px 300px 0;
         padding: 30px;
-        transition: margin 0.3s ease;
+        transition: margin 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        animation: fadeIn 0.8s ease-out forwards;
     }
 
-   
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-    /* Card Design Improvements */
+    /* Improved Card Design with 3D Hover Effect */
     .ground-card {
         border: none;
-        border-radius: 15px;
+        border-radius: 18px;
         overflow: hidden;
-        transition: transform 0.3s ease;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         background: var(--dark-color);
+        box-shadow: var(--card-shadow);
+        transform: perspective(1000px) rotateX(0) rotateY(0);
+        position: relative;
     }
 
     .ground-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        transform: perspective(1000px) rotateX(2deg) rotateY(2deg) translateY(-10px);
+        box-shadow: var(--card-hover-shadow);
+    }
+	.right-sidebar{
+		right:0;
+	}
+    .ground-card:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
     }
 
+    .ground-card:hover:before {
+        opacity: 1;
+    }
+
+    /* Image Animation and Overlay Effects */
     .ground-card img {
         height: 220px;
         object-fit: cover;
+        transition: all 0.5s ease;
         border-bottom: 3px solid var(--primary-color);
+        transform: scale(1);
+        filter: brightness(0.9);
     }
 
+    .ground-card:hover img {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+    }
+
+    /* Card Info Section with Better Typography */
     .ground-info {
         padding: 1.5rem;
         background: var(--bg-color);
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .ground-info:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+        transform-origin: left;
+    }
+
+    .ground-card:hover .ground-info:after {
+        transform: scaleX(1);
     }
 
     .ground-info h5 {
         color: var(--primary-color);
         margin-bottom: 0.75rem;
+        font-weight: 600;
+        font-size: 1.25rem;
+        transition: color 0.3s ease;
     }
 
-    /* Responsive Design */
+    .ground-card:hover .ground-info h5 {
+        color: var(--accent-color);
+    }
+
+    /* Book Now Button */
+    .book-now-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        margin-top: 0.5rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        transform: translateY(5px);
+        opacity: 0;
+    }
+
+    .ground-card:hover .book-now-btn {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .book-now-btn:hover {
+        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Location Text with Icon */
+    .location-text {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .location-text i {
+        color: var(--secondary-color);
+        transition: transform 0.3s ease;
+    }
+
+    .ground-card:hover .location-text i {
+        transform: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-3px);
+        }
+    }
+
+    /* Improved Navbar */
+    .navbar {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        padding: 0.8rem 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        animation: slideDown 0.5s ease-out forwards;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .navbar-brand {
+        font-size: 1.8rem;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        color: var(--light-color) !important;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-brand:hover {
+        transform: scale(1.05);
+    }
+
+    .brand-icon {
+        font-size: 2.2rem;
+        color: var(--accent-color);
+        animation: spin 10s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .nav-item {
+        margin: 0 0.5rem;
+        position: relative;
+    }
+
+    .nav-link {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--light-color) !important;
+        padding: 0.8rem 1.2rem !important;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-link:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.1);
+        transform: scaleX(0);
+        transform-origin: right;
+        transition: transform 0.3s ease;
+        z-index: -1;
+    }
+
+    .nav-link:hover:before {
+        transform: scaleX(1);
+        transform-origin: left;
+    }
+
+    .nav-link:hover {
+        color: var(--accent-color) !important;
+        transform: translateY(-3px);
+    }
+
+    .nav-link i {
+        width: 24px;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+
+    .nav-link:hover i {
+        transform: rotate(15deg);
+    }
+
+    /* Improved Dark Mode Toggle */
+    .dark-mode-toggle {
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        color: var(--light-color);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dark-mode-toggle:hover {
+        background: rgba(255,255,255,0.2);
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(255,255,255,0.3);
+    }
+
+    .dark-mode-toggle i {
+        transition: transform 0.5s ease;
+    }
+
+    .dark-mode-toggle:hover i {
+        transform: rotate(360deg);
+    }
+
+    /* Mobile Toggle Button Animations */
+    .sidebar-toggle {
+        position: fixed;
+        top: 80px;
+        z-index: 1100;
+        padding: 12px 15px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        display: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        animation: pulse 2s infinite;
+    }
+
+    .sidebar-toggle:hover {
+        background: var(--secondary-color);
+        transform: scale(1.1);
+    }
+
+    /* Improved Calendar Design */
+    .calendar-container {
+        margin-top: 1rem;
+    }
+
+    .calendar-month {
+        background: var(--light-color);
+        border-radius: 15px;
+        padding: 1.2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        transition: all 0.3s ease;
+        transform: translateY(0);
+    }
+
+    .calendar-month:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    }
+
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+        font-weight: 600;
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+    }
+
+    .calendar-day {
+        text-align: center;
+        padding: 0.8rem 0;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: rgba(26, 188, 156, 0.05);
+        cursor: pointer;
+    }
+
+    .calendar-day.event::after {
+        content: '';
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: #e74c3c;
+        border-radius: 50%;
+        bottom: 3px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: pulse 2s infinite;
+    }
+
+    .calendar-day:not(.past):hover {
+        background: var(--secondary-color);
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .calendar-day.past {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .calendar-day.today {
+        background: var(--primary-color);
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 5px 15px rgba(46, 134, 193, 0.3);
+    }
+
+    /* Empty State Message with Animation */
+    .no-ground-message {
+        padding: 2.5rem;
+        text-align: center;
+        background: rgba(255,0,0,0.1);
+        border-radius: 15px;
+        margin-top: 2rem;
+        box-shadow: 0 10px 30px rgba(255,0,0,0.1);
+        animation: fadeInUp 0.8s ease-out forwards;
+        transition: all 0.3s ease;
+    }
+
+    .no-ground-message:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(255,0,0,0.15);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design Improvements */
     @media (max-width: 1200px) {
         .sidebar {
             width: 240px;
@@ -228,28 +743,15 @@
         }
         .main-content {
             margin: 90px 20px 0;
+            padding: 20px;
         }
         .sidebar.active {
             transform: translateX(0);
         }
-    }
-
-    /* Mobile Toggle Buttons */
-    .sidebar-toggle {
-        position: fixed;
-        top: 80px;
-        z-index: 1100;
-        padding: 10px 15px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        display: none;
-    }
-
-    @media (max-width: 992px) {
         .sidebar-toggle {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .left-toggle {
             left: 10px;
@@ -258,259 +760,42 @@
             right: 10px;
         }
     }
-         .navbar {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        padding: 0.8rem 1.5rem;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+    /* Card Grid Animation */
+    #groundsContainer .col-md-4 {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: cardAppear 0.6s ease-out forwards;
     }
 
-    .navbar-brand {
-        font-size: 1.8rem;
-        font-weight: 700;
-        font-family: 'Poppins', sans-serif;
-        color: var(--light-color) !important;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-
-    .brand-icon {
-        font-size: 2.2rem;
-        color: var(--accent-color);
-    }
-
-    .nav-item {
-        margin: 0 0.5rem;
-        position: relative;
-    }
-
-    .nav-link {
-        font-size: 1.1rem;
-        font-weight: 500;
-        color: var(--light-color) !important;
-        padding: 0.8rem 1.2rem !important;
-        border-radius: 8px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-    }
-
-    .nav-link:hover {
-        background: rgba(255,255,255,0.15);
-        color: var(--accent-color) !important;
-        transform: translateY(-2px);
-    }
-
-    .nav-link i {
-        width: 24px;
-        text-align: center;
-    }
-
-    .dropdown-menu {
-        background: var(--secondary-color);
-        border: none;
-        border-radius: 12px;
-        padding: 0.5rem;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-        margin-top: 0.8rem !important;
-    }
-
-    .dropdown-item {
-        color: var(--light-color) !important;
-        padding: 0.75rem 1.5rem !important;
-        border-radius: 8px;
-        margin: 0.25rem 0;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        transition: all 0.2s ease;
-    }
-
-    .dropdown-item:hover {
-        background: var(--primary-color) !important;
-        transform: translateX(5px);
-    }
-
-    .dark-mode-toggle {
-        background: rgba(255,255,255,0.1);
-        border: 2px solid rgba(255,255,255,0.2);
-        border-radius: 50px;
-        padding: 0.5rem 1rem;
-        color: var(--light-color);
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-    }
-
-    .dark-mode-toggle:hover {
-        background: rgba(255,255,255,0.2);
-        transform: scale(1.05);
-    }
-
-    .dark-mode {
-        background-color: var(--dark-color) !important;
-        color: var(--light-color) !important;
-    }
-
-    .dark-mode .navbar {
-        background: linear-gradient(135deg, #34495e, #2c3e50);
-    }
-
-    .dark-mode .dropdown-menu {
-        background: #2c3e50;
-    }
-    /* Add these dark mode styles */
-    body.dark-mode .site-footer {
-        background: #2c3e50;
-        color: #ecf0f1;
-    }
-
-    body.dark-mode .footer-links a {
-        color: #bdc3c7;
-    }
-
-    body.dark-mode .footer-links a:hover {
-        color: #ecf0f1;
-    }
-
-    body.dark-mode .footer-section h5 {
-        color: #f39c12;
-    }
-
-    body.dark-mode .newsletter-input {
-        background: rgba(0,0,0,0.3);
-    }
-    .navbar-toggler {
-        border: none;
-        padding: 0.5rem;
-    }
-
-    .navbar-toggler:focus {
-        box-shadow: none;
-    }
-
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-    }
-
-    @media (max-width: 992px) {
-        .navbar-collapse {
-            background: var(--secondary-color);
-            padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 12px;
+    @keyframes cardAppear {
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
-
-        .dropdown-menu {
-            background: rgba(0,0,0,0.1);
-            margin-left: 1.5rem;
-            width: 90%;
-        }
-   }
-   .right-sidebar {
-    background: var(--dark-color) !important;
-    border-left: 1px solid rgba(0,0,0,0.1);
-    padding: 1.5rem 1rem !important;
-    box-shadow: -4px 0 15px rgba(0,0,0,0.05);
-    right:0;
-}
-.right-sidebar h4{
-color: white;
-}
-
-.calendar-container {
-    margin-top: 1rem;
-}
-
-.calendar-month {
-    background: var(--light-color);
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    color: var(--text-color);
-}
-
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-}
-
-.calendar-day {
-    text-align: center;
-    padding: 0.8rem 0;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    position: relative;
-    transition: all 0.2s ease;
-    background: rgba(26, 188, 156, 0.05);
-}
-
-.calendar-day.event::after {
-    content: '';
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: #e74c3c;
-    border-radius: 50%;
-    bottom: 3px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.calendar-day.past {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.calendar-day.today {
-    background: var(--primary-color);
-    color: white;
-    font-weight: bold;
-}
-
-@media (max-width: 768px) {
-    .calendar-day {
-        padding: 0.5rem 0;
-        font-size: 0.8rem;
     }
-    
-    .calendar-month {
-        padding: 0.75rem;
-    }
-}
-/* Add this new style */
-        .no-ground-message {
-            padding: 2rem;
-            text-align: center;
-            background: rgba(255,0,0,0.1);
-            border-radius: 15px;
-            margin-top: 2rem;
-        }
+
+    /* Apply different animation delays to cards for staggered effect */
+    #groundsContainer .col-md-4:nth-child(1) { animation-delay: 0.1s; }
+    #groundsContainer .col-md-4:nth-child(2) { animation-delay: 0.2s; }
+    #groundsContainer .col-md-4:nth-child(3) { animation-delay: 0.3s; }
+    #groundsContainer .col-md-4:nth-child(4) { animation-delay: 0.4s; }
+    #groundsContainer .col-md-4:nth-child(5) { animation-delay: 0.5s; }
+    #groundsContainer .col-md-4:nth-child(6) { animation-delay: 0.6s; }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="btn navbar-brand" onclick="redirectToDashboard()">
             <i class="fas fa-futbol brand-icon"></i>
             BookMyTurf
         </a>
 
-        <!-- Dark Mode Toggle -->
+        <!-- Dark Mode Toggle with improved animation -->
         <button class="dark-mode-toggle me-3" onclick="toggleDarkMode()">
             <i class="fas fa-moon"></i>
-            <span>Dark Mode</span>
+            <span id="darkModeText">Dark Mode</span>
         </button>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -521,56 +806,60 @@ color: white;
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-
                 <li class="nav-item">
-                    <a class="nav-link" href="<%=TRBView.WELCOME_CTL%>">
+                    <a class="btn nav-link" onclick="redirectToDashboard()">
                         <i class="fas fa-home"></i>
                         Home
                     </a>
                 </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-info-circle"></i>
-                            About
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="fas fa-phone-alt"></i>
-                            Contact
-                        </a>
-                    </li> 
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="@{/booking}">
-                            <i class="fas fa-phone-alt"></i>
-                            Book Now
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-info-circle"></i>
+                        About
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/bookingHistory/myBookings(userId=${loggedInUser.id})}">
+                        <i class="fa-solid fa-address-book"></i>
+                        My Bookings
+                    </a>
+                </li> 
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/booking}">
+                        <i class="fas fa-calendar-plus"></i>
+                        Book Now
+                    </a>
+                </li>
             </ul>
             <ul class="navbar-nav ms-3">
-                    <li class="nav-item">
-                        <a class="nav-link" hrf="#">
-                            <i class="fas fa-sign-in-alt"></i>
-                            Profile
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link"  th:href="@{/logout}">
-                            <i class="fas fa-user-plus"></i>
-                           LogOut
-                        </a>
-                    </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-user-circle"></i>
+                        Profile
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/logout}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        LogOut
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
 </nav>
+
+<!-- Improved toggle buttons with animations -->
 <button class="sidebar-toggle left-toggle" onclick="toggleSidebar('left')">
     <i class="fas fa-bars"></i>
 </button>
 <button class="sidebar-toggle right-toggle" onclick="toggleSidebar('right')">
     <i class="fas fa-calendar"></i>
 </button>
-    <!-- Left Sidebar -->
+
+<input type="hidden" id="userId" value="${loggedInUser.id}">
+
+<!-- Left Sidebar with improved animations -->
 <div class="sidebar">
     <div class="user-info mb-4">
         <h4 class="text-white">
@@ -579,7 +868,7 @@ color: white;
         </h4>
     </div>
 
-    <!-- Sport Dropdown -->
+    <!-- Sport Dropdown with improved interactions -->
     <ul class="nav flex-column">
         <li class="nav-item dropdown">
             <button class="dropdown-toggle" 
@@ -610,6 +899,7 @@ color: white;
         </li>
     </ul>
 
+   
     <!-- City Dropdown -->
     <ul class="nav flex-column mt-3">
         <li class="nav-item dropdown">
@@ -824,6 +1114,29 @@ color: white;
 
         // Initialize calendar
         document.addEventListener('DOMContentLoaded', generateCalendar);
+		$.ajax({
+		    url: "/myBookings", // ✅ Make sure this is correct
+		    type: "GET", // ✅ Use GET
+		    success: function (data) {
+		        console.log("Loaded my bookings:", data);
+		    },
+		    error: function (xhr) {
+		        console.error("Error loading bookings:", xhr.responseText);
+		    }
+		});
+		function redirectToMyBookings() {
+		    let userId = document.getElementById("userId").value;
+		    
+		    if (!userId) {
+		        alert("User ID not found. Please log in again.");
+		        return;
+		    }
+
+		    window.location.href = "/bookingHistory/myBookings?userId=" + encodeURIComponent(userId);
+		}
+		 function redirectToDashboard() {
+			 window.location.href = '/user/dashboard'; // Match controller's @GetMapping path
+		}
     </script>
     <script src="dash.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

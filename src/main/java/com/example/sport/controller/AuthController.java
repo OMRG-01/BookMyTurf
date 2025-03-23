@@ -1,7 +1,6 @@
 package com.example.sport.controller;
 
 import com.example.sport.model.*;
-import com.example.sport.model.User;
 import com.example.sport.repository.*;
 import com.example.sport.service.*;
 
@@ -9,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -29,6 +29,13 @@ public class AuthController {
 
     @Autowired
     private GroundService groundService;
+    
+    @Autowired
+    private BookingService bookingService;
+
+
+    @Autowired
+    private SlotService slotService;
 
     @GetMapping("/login1")
     public String showLoginPage() {
@@ -91,6 +98,7 @@ public class AuthController {
     }
 
 
+    
 
 
     @GetMapping("/logout")

@@ -4,354 +4,870 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sportplex | Booking</title>
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-	    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-	
-	<style>
-		.slot-container {
-		        display: flex;
-		        flex-wrap: wrap;
-		        gap: 15px;
-		    }
-
-		    .slot-card {
-		        width: 180px;
-		        padding: 15px;
-		        border-radius: 8px;
-		        text-align: center;
-		        cursor: pointer;
-		        background: #f5f5f5;
-		        border: 2px solid transparent;
-		        transition: 0.3s;
-		    }
-
-		    .slot-card.available {
-		        border-color: green;
-		        background: #e8ffe8;
-		    }
-
-		    .slot-card.booked {
-		        border-color: red;
-		        background: #ffe8e8;
-		        cursor: not-allowed;
-		    }
-
-		    .slot-card:hover {
-		        transform: scale(1.05);
-		    }
-
-		    .slot-card.selected {
-		        border-color: blue !important;
-		        background: #d0e8ff !important;
-		    }
-	</style>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #4b5563;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --light-color: #f3f4f6;
+            --dark-color: #1f2937;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+        
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+        
+        .form-control, .form-select {
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+        }
+        
+        .btn {
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        
+        .booking-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px 0;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 30px;
+        }
+        
+        .booking-header h1 {
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        
+        .booking-section {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+        
+        .slot-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        
+        .slot-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .slot-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .slot-card.available {
+            border-color: var(--success-color);
+            background-color: rgba(16, 185, 129, 0.05);
+        }
+        
+        .slot-card.booked {
+            border-color: var(--danger-color);
+            background-color: rgba(239, 68, 68, 0.05);
+            cursor: not-allowed;
+        }
+        
+        .slot-card.selected {
+            border-color: var(--primary-color) !important;
+            background-color: rgba(37, 99, 235, 0.1) !important;
+        }
+        
+        .slot-time {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .slot-price {
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .slot-status {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .text-success {
+            color: var(--success-color) !important;
+        }
+        
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 25%;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            border: 2px solid var(--light-color);
+            transition: all 0.3s ease;
+            color: var(--secondary-color);
+            font-weight: 600;
+            z-index: 2;
+        }
+        
+        .step.active .step-circle {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+        
+        .step-line {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 3px;
+            background-color: var(--light-color);
+            z-index: 1;
+        }
+        
+        .step:last-child .step-line {
+            display: none;
+        }
+        
+        .step.completed .step-line, .step.active .step-line {
+            background-color: var(--primary-color);
+        }
+        
+        .step-title {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--secondary-color);
+            text-align: center;
+        }
+        
+        .step.active .step-title, .step.completed .step-title {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+        
+        .date-picker-container {
+            position: relative;
+        }
+        
+        .date-picker-container i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            pointer-events: none;
+        }
+        
+        .booking-summary {
+            background-color: var(--light-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .booking-summary.show {
+            display: block;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .summary-item:last-child {
+            margin-bottom: 0;
+            padding-top: 10px;
+            border-top: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+        
+        /* Modal styling */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+        
+        .modal-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            padding: 15px 20px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            border-top: none;
+            padding: 15px 20px;
+        }
+        
+        .otp-input-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+			width:20px;
+        }
+        
+        .otp-input {
+            width: 500px;
+            height: 60px;
+            font-size: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+			margin-left: 430px;
+        }
+        
+        .otp-input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        @media (max-width: 768px) {
+            .slot-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .step-indicator {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .step {
+                width: 100%;
+                flex-direction: row;
+                justify-content: flex-start;
+                gap: 10px;
+            }
+            
+            .step-line {
+                display: none;
+            }
+            
+            .step-title {
+                text-align: left;
+                margin-bottom: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2>Book a Slot</h2>
-        
+    <!-- Header Section -->
+    <div class="booking-header">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1><i class="fas fa-calendar-check me-2"></i>Book Your Slot</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a onclick="redirectToDashboard()" class="btn btn-success text-white opacity-75">Home</a></li>
+                        
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <!-- Step Indicator -->
+        <div class="step-indicator mb-4">
+            <div class="step active">
+                <div class="step-circle">1</div>
+                <div class="step-line"></div>
+                <div class="step-title">Select Location</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">2</div>
+                <div class="step-line"></div>
+                <div class="step-title">Select Game</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">3</div>
+                <div class="step-line"></div>
+                <div class="step-title">Choose Ground</div>
+            </div>
+            <div class="step">
+                <div class="step-circle">4</div>
+                <div class="step-title">Book Slot</div>
+            </div>
+        </div>
+
         <form id="bookingForm" th:action="@{/create}" method="POST">
             <!-- Hidden Inputs -->
             <input type="hidden" id="gameIdInput" name="gameId">
             <input type="hidden" id="groundIdInput" name="groundId">
             <input type="hidden" id="slotIdInput" name="slotId">
 
-            <!-- Select City -->
-            <div class="mb-3">
-                <label for="citySelect" class="form-label">Select City</label>
-                <select id="citySelect" class="form-select">
-                    <option value="">Select City</option>
-                    <option th:each="city : ${uniqueCities}" th:value="${city}" th:text="${city}"></option>
-                </select>
+            <div class="card booking-section mb-4">
+                <h3 class="section-title"><i class="fas fa-map-marker-alt"></i>Location & Game Selection</h3>
+                <div class="row">
+                    <!-- Select City -->
+                    <div class="col-md-6 mb-4">
+                        <label for="citySelect" class="form-label">
+                            <i class="fas fa-city me-2"></i>Select City
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </span>
+                            <select id="citySelect" class="form-select">
+                                <option value="">Select City</option>
+                                <option th:each="city : ${uniqueCities}" th:value="${city}" th:text="${city}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Select Game -->
+                    <div class="col-md-6 mb-4">
+                        <label for="gameSelect" class="form-label">
+                            <i class="fas fa-futbol me-2"></i>Select Game
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="fas fa-gamepad"></i>
+                            </span>
+                            <select id="gameSelect" class="form-select" name="gameId">
+                                <option value="">Select Game</option>
+                                <option th:each="game : ${games}" th:value="${game.id}" th:text="${game.gameName}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Select Game -->
-            <div class="mb-3">
-                <label for="gameSelect" class="form-label">Select Game</label>
-                <select id="gameSelect" class="form-select" name="gameId">
-                    <option value="">Select Game</option>
-                    <option th:each="game : ${games}" th:value="${game.id}" th:text="${game.gameName}"></option>
-                </select>
-            </div>
-            
-			
-            <!-- Select Ground -->
-            <div class="mb-3">
-                <label for="groundSelect" class="form-label">Select Ground</label>
-                <select id="groundSelect" class="form-select">
-                    <option value="">Select Ground</option>
-                    <option th:each="ground : ${grounds}" 
-                            th:value="${ground.id}"  
-                            th:text="${ground.name}">
-                    </option>
-                </select>
+            <div class="card booking-section mb-4">
+                <h3 class="section-title"><i class="fas fa-map"></i>Ground & Date Selection</h3>
+                <div class="row">
+                    <!-- Select Ground -->
+                    <div class="col-md-6 mb-4">
+                        <label for="groundSelect" class="form-label">
+                            <i class="fas fa-tree me-2"></i>Select Ground
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-primary text-white">
+                                <i class="fas fa-map"></i>
+                            </span>
+                            <select id="groundSelect" class="form-select">
+                                <option value="">Select Ground</option>
+                                <option th:each="ground : ${grounds}" 
+                                        th:value="${ground.id}"  
+                                        th:text="${ground.name}">
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Booking Date -->
+                    <div class="col-md-6 mb-4">
+                        <label for="bookingDate" class="form-label">
+                            <i class="far fa-calendar-alt me-2"></i>Booking Date
+                        </label>
+                        <div class="date-picker-container">
+                            <input type="date" 
+                                class="form-control" 
+                                id="bookingDate" 
+                                name="bookingDate"
+                                min="" 
+                                required>
+                            <i class="far fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-			<div id="slotContainer" class="slot-container">
-			                <!-- Slots will be added dynamically -->
-			</div>
-			<div class="mb-3">
-							<label for="bookingDate" class="form-label">Booking Date</label>
-							<input type="date" 
-								class="form-control" 
-								id="bookingDate" 
-								name="bookingDate"
-								min="" 
-								required>
-						</div>
-						
-            <button type="submit" class="btn btn-primary">Book Now</button>
+            <div class="card booking-section mb-4">
+                <h3 class="section-title"><i class="far fa-clock"></i>Available Slots</h3>
+                <div id="slotContainer" class="slot-container">
+                    <!-- Slots will be added dynamically -->
+                    <div class="text-center w-100 py-4">
+                        <i class="fas fa-info-circle fa-2x text-primary mb-3"></i>
+                        <p>Please select a ground and date to view available slots</p>
+                    </div>
+                </div>
+                
+                <!-- Booking Summary (Only shown after slot selection) -->
+                <div id="bookingSummary" class="booking-summary mt-4">
+                    <h4 class="mb-3"><i class="fas fa-receipt me-2"></i>Booking Summary</h4>
+                    <div class="summary-item">
+                        <span>Ground:</span>
+                        <span id="summaryGround">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Date:</span>
+                        <span id="summaryDate">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Time:</span>
+                        <span id="summaryTime">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total Amount:</span>
+                        <span id="summaryPrice">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check-circle me-2"></i>Proceed to Booking
+                </button>
+            </div>
         </form>
     </div>
-	<!-- Add this modal at the end of body -->
-	<div class="modal fade" id="otpModal" tabindex="-1">
-	    <div class="modal-dialog">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <h5 class="modal-title">OTP Verification</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-	            </div>
-	            <div class="modal-body">
-	                <div class="mb-3">
-	                    <label class="form-label">Enter OTP sent to your email</label>
-	                    <input type="text" class="form-control" id="otpInput" maxlength="6">
-	                </div>
-	            </div>
-	            <div class="modal-footer">
-	                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-	                <button type="button" class="btn btn-primary" id="sendOTP">Send OTP</button>
-	                <button type="button" class="btn btn-success" id="verifyOTP">Verify</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
+
+    <!-- OTP Modal -->
+    <div class="modal fade" id="otpModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-shield-alt me-2"></i>OTP Verification
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-envelope fa-3x text-primary mb-3"></i>
+                        <h5>Verify Your Booking</h5>
+                        <p>We've sent a 6-digit OTP to your registered email</p>
+                        <div class="otp-input-container">
+                            <input type="text" class="form-control otp-input" id="otpInput" maxlength="6" placeholder="******">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Close
+                    </button>
+                    <button type="button" class="btn btn-primary" id="sendOTP">
+                        <i class="fas fa-paper-plane me-2"></i>Send OTP
+                    </button>
+                    <button type="button" class="btn btn-success" id="verifyOTP">
+                        <i class="fas fa-check me-2"></i>Verify
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 
     <script>
         $(document).ready(function () {
-			const today = new Date().toISOString().split('T')[0];
-			 $('#bookingDate').attr('min', today);
-			let currentBookingDetails = {};
-			
-			$("#citySelect").change(function() {
-			    var selectedCity = $(this).val();
-			    if (selectedCity) {
-			        $.ajax({
-			            type: "GET",
-			            url: "/getGamesByCity",
-			            data: { city: selectedCity },
-			            success: function(games) {
-			                $("#gameSelect").empty().append('<option value="">Select Game</option>');
-			                $.each(games, function(index, game) {
-			                    // Use game.id as value, show game.name
-			                    $("#gameSelect").append(
-			                        $('<option></option>').val(game.id).text(game.name)
-			                    );
-			                });
-			                $("#groundSelect").empty().append('<option value="">Select Ground</option>');
-			            }
-			        });
-			    }
-			});
+            // Set min date to today
+            const today = new Date().toISOString().split('T')[0];
+            $('#bookingDate').attr('min', today);
+            
+            let currentBookingDetails = {};
+            
+            // Update step indicator based on selection
+            function updateStepIndicator(step) {
+                $('.step').removeClass('active completed');
+                for (let i = 1; i <= step; i++) {
+                    if (i < step) {
+                        $(`.step:nth-child(${i})`).addClass('completed');
+                    } else {
+                        $(`.step:nth-child(${i})`).addClass('active');
+                    }
+                }
+            }
+            
+            // Initialize with step 1
+            updateStepIndicator(1);
+            
+            // City selection
+            $("#citySelect").change(function() {
+                var selectedCity = $(this).val();
+                if (selectedCity) {
+                    updateStepIndicator(2);
+                    $.ajax({
+                        type: "GET",
+                        url: "/getGamesByCity",
+                        data: { city: selectedCity },
+                        success: function(games) {
+                            $("#gameSelect").empty().append('<option value="">Select Game</option>');
+                            $.each(games, function(index, game) {
+                                $("#gameSelect").append(
+                                    $('<option></option>').val(game.id).text(game.name)
+                                );
+                            });
+                            $("#groundSelect").empty().append('<option value="">Select Ground</option>');
+                        }
+                    });
+                } else {
+                    updateStepIndicator(1);
+                }
+            });
 
-			$("#gameSelect").change(function() {
-			    var selectedCity = $("#citySelect").val();
-			    var selectedGameId = $(this).val(); // This is now numeric ID
-			    
-			    if (selectedCity && selectedGameId) {
-			        $.ajax({
-			            type: "GET",
-			            url: "/getGroundsByCityAndGame",
-			            data: { 
-			                city: selectedCity, 
-			                gameId: selectedGameId // Send numeric ID
-			            },
-			            success: function(grounds) {
-			                $("#groundSelect").empty().append('<option value="">Select Ground</option>');
-			                $.each(grounds, function(index, ground) {
-			                    $("#groundSelect").append(
-			                        $('<option></option>').val(ground.id).text(ground.name)
-			                    );
-			                });
-			            }
-			        });
-			    }
-			});
-			
-			$("#groundSelect").change(function () {
-				$('#bookingDate').val('');
-			    let selectedGroundId = $(this).val();
-			    $("#slotContainer").empty().append('<div class="loading">Loading slots...</div>');
-			    
-			    if (selectedGroundId) {
-			        $.ajax({
-			            url: "/getSlotsByGround",
-			            type: "GET",
-			            data: { groundId: selectedGroundId }, // Fixed parameter
-			            success: function (response) {
-			                displaySlots(response);
-			            },
-			            error: function (xhr) {
-			                $("#slotContainer").html('<div class="error">Select The Date To See THe Slot</div>');
-			            }
-			        });
-			    }
-			});
-			
-			
+            // Game selection
+            $("#gameSelect").change(function() {
+                var selectedCity = $("#citySelect").val();
+                var selectedGameId = $(this).val();
+                
+                if (selectedCity && selectedGameId) {
+                    updateStepIndicator(3);
+                    $.ajax({
+                        type: "GET",
+                        url: "/getGroundsByCityAndGame",
+                        data: { 
+                            city: selectedCity, 
+                            gameId: selectedGameId
+                        },
+                        success: function(grounds) {
+                            $("#groundSelect").empty().append('<option value="">Select Ground</option>');
+                            $.each(grounds, function(index, ground) {
+                                $("#groundSelect").append(
+                                    $('<option></option>').val(ground.id).text(ground.name)
+                                );
+                            });
+                        }
+                    });
+                } else {
+                    updateStepIndicator(2);
+                }
+            });
+            
+            // Ground selection
+            $("#groundSelect").change(function () {
+                $('#bookingDate').val('');
+                let selectedGroundId = $(this).val();
+                
+                if (selectedGroundId) {
+                    updateStepIndicator(4);
+                    $("#slotContainer").html(`
+                        <div class="text-center w-100 py-4">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p>Please select a date to view available slots</p>
+                        </div>
+                    `);
+                } else {
+                    updateStepIndicator(3);
+                }
+            });
+            
+            // Display slots function
+            function displaySlots(slots) {
+                let slotContainer = $("#slotContainer");
+                slotContainer.empty();
+                let gameId = $("#gameSelect").val();
 
-			    
-			function displaySlots(slots) {
-			    let slotContainer = $("#slotContainer");
-			    slotContainer.empty();
-				let gameId = $("#gameSelect").val();
-			    if (!slots || slots.length === 0) {
-			        slotContainer.append(`
-			            <div class="alert alert-warning w-100">
-			                No slots available for this ground. Please select another ground.
-			            </div>
-			        `);
-			        return;
-			    }
+                if (!slots || slots.length === 0) {
+                    slotContainer.append(`
+                        <div class="alert alert-warning w-100">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            No slots available for this ground. Please select another ground.
+                        </div>
+                    `);
+                    return;
+                }
 
-			    let hasAvailableSlots = false;
-				const bookingDate = $('#bookingDate').val();
-				       const selectedDate = bookingDate ? new Date(bookingDate) : new Date();
-				       const isWeekend = [0, 6].includes(selectedDate.getDay()); // 0=Sunday, 6=Saturday
-					   
-				slots.forEach(slot => {
-				    const isAvailable = slot.availability === "Available";
-				    const isPaid = slot.isPaid; // Payment status from backend
-					
-				    const currentPrice = isWeekend ? slot.weekendPrice : slot.price;
-					
-				    // Slot is considered "booked" if it's either unavailable or paid
-				    const isBooked = !isAvailable || isPaid;
-				    
-					
-				    let slotCard = `
-				        <div class="slot-card ${isBooked ? 'booked' : 'available'}">
-				            <p><strong>Time:</strong> ${slot.startTime} - ${slot.endTime}</p>
-				            <p><strong>Price:</strong> ₹${currentPrice}</p>
-				            <p class="status ${isBooked ? 'text-danger' : 'text-success'}">
-				                ${isBooked ? 'Booked' : 'Available'}
-				            </p>
-				            ${isBooked ? 
-				                `<button class="btn btn-secondary" disabled>
-				                    Booked
-				                </button>` : 
-				                `<button class="btn btn-success book-slot" 
-				                         data-slot-id="${slot.id}"
-										 data-price="${currentPrice}">
-				                    Book Now
-				                </button>`}
-				        </div>
-				    `;
-				    
-				    // Append the slot card to the container
-				    $("#slotContainer").append(slotCard);
-				});
+                let hasAvailableSlots = false;
+                const bookingDate = $('#bookingDate').val();
+                const selectedDate = bookingDate ? new Date(bookingDate) : new Date();
+                const isWeekend = [0, 6].includes(selectedDate.getDay());
 
-			    if (!hasAvailableSlots) {
-			        slotContainer.prepend(`
-			            <div class="alert alert-info w-100">
-			                All slots are currently booked. Please try another ground.
-			            </div>
-			        `);
-			    }
+                // Get the current time
+                const now = new Date();
+                const currentHours = now.getHours();
+                const currentMinutes = now.getMinutes();
 
-			  
-			}
-			$(document).on('click', '.book-slot', function(e) {
-			    e.preventDefault();
-			    
-			    const slotId = $(this).data('slot-id');
-			    const groundId = $("#groundSelect").val();
-			    const gameId = $("#gameSelect").val(); // Changed from gameIdInput
-			    const price = $(this).data('price');
-			    const bookingDate = $('#bookingDate').val();
-			    
-			    // Add bookingDate to validation
-			    if (!groundId || !gameId || !slotId || !bookingDate) {
-			        alert("Please select all required fields");
-			        return;
-			    }
+                slots.forEach(slot => {
+                    const isBooked = slot.availability === "Booked";
+                    const currentPrice = isWeekend ? slot.weekendPrice : slot.price;
 
-			    currentBookingDetails = {
-			        gameId: gameId,
-			        groundId: groundId,
-			        slotId: slotId,
-			        bookingDate: bookingDate,
-			        price: price
-			    };
-			    
-			    $('#otpModal').modal('show');
-			});
-				// Send OTP Handler
-							    $('#sendOTP').click(function() {
-							        $.ajax({
-							            url: '/generate-otp',
-							            type: 'POST',
-							            success: function() {
-							                alert('OTP has been sent to your registered email');
-							            },
-							            error: function(xhr) {
-							                alert('Error sending OTP: ' + xhr.responseText);
-							            }
-							        });
-							    });
+                    // Convert slot start time to a Date object for comparison
+                    const slotTimeParts = slot.startTime.split(":");
+                    const slotHours = parseInt(slotTimeParts[0]);
+                    const slotMinutes = parseInt(slotTimeParts[1]);
 
-							    // Verify OTP Handler
-							    $('#verifyOTP').click(function() {
-							        const otp = $('#otpInput').val();
-							        
-							        if (!otp || otp.length !== 6) {
-							            alert('Please enter a valid 6-digit OTP');
-							            return;
-							        }
+                    // Check if the slot is in the past
+                    let isPastSlot = false;
+                    if (selectedDate.toDateString() === now.toDateString()) {
+                        isPastSlot = slotHours < currentHours || (slotHours === currentHours && slotMinutes < currentMinutes);
+                    }
 
-							        $.ajax({
-							            url: '/create',
-							            type: 'POST',
-							            data: {
-							                ...currentBookingDetails,
-							                otp: otp
-							            },
-							            success: function(response) {
-							                window.location.href = response;
-							            },
-							            error: function(xhr) {
-							                alert('Error: ' + xhr.responseText);
-							                $('#otpModal').modal('hide');
-							            }
-							        });
-							    });
+                    if (!isBooked && !isPastSlot) hasAvailableSlots = true;
 
-			
-			$('#bookingDate').change(function() {
-			        const groundId = $("#groundSelect").val();
-			        if (groundId) {
-			            $.ajax({
-			                url: "/getSlotsByGround",
-			                type: "GET",
-			                data: { 
-			                    groundId: groundId,
-			                    bookingDate: $(this).val()
-			                },
-			                success: function (response) {
-			                    displaySlots(response);
-			                },
-			                error: function (xhr) {
-			                    $("#slotContainer").html('<div class="error">Error loading slots</div>');
-			                }
-			            });
-			        }
-			    });       
-			 });
-    </script>
+                    let slotCard = `
+                        <div class="slot-card ${isBooked || isPastSlot ? 'booked' : 'available'}">
+                            <div class="slot-time">
+                                <i class="far fa-clock me-2"></i>${slot.startTime} - ${slot.endTime}
+                            </div>
+                            <div class="slot-price">
+                                <i class="fas fa-tag me-2"></i>₹${currentPrice}
+                            </div>
+                            <div class="slot-status ${isBooked || isPastSlot ? 'text-danger' : 'text-success'}">
+                                <i class="fas ${isBooked ? 'fa-times-circle' : (isPastSlot ? 'fa-clock' : 'fa-check-circle')} me-2"></i>
+                                ${isBooked ? 'Booked' : (isPastSlot ? 'Time Out' : 'Available')}
+                            </div>
+                            ${!isBooked && !isPastSlot ? 
+                                `<button class="btn btn-success btn-sm book-slot" 
+                                        data-slot-id="${slot.id}"
+                                        data-slot-starttime="${slot.startTime}"  
+                                        data-slot-endtime="${slot.endTime}" 
+                                        data-price="${currentPrice}">
+                                    <i class="fas fa-check-circle me-1"></i>Book Now
+                                </button>` : 
+                                `<button class="btn btn-secondary btn-sm" disabled>
+                                    <i class="fas ${isPastSlot ? 'fa-clock' : 'fa-lock'} me-1"></i>
+                                    ${isPastSlot ? 'Time Out' : 'Booked'}
+                                </button>`}
+                        </div>
+                    `;
 
-</body>
-</html>
+                    slotContainer.append(slotCard);
+                });
+
+                // Show message if all slots are booked or expired
+                if (!hasAvailableSlots) {
+                    slotContainer.prepend(`
+                        <div class="alert alert-info w-100">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No available slots. Please try another ground or date.
+                        </div>
+                    `);
+                }
+            }
+
+            // Book slot button click
+            $(document).on('click', '.book-slot', function(e) {
+                e.preventDefault();
+                
+                // Remove previously selected slot
+                $('.slot-card').removeClass('selected');
+                $(this).closest('.slot-card').addClass('selected');
+                
+                const slotId = $(this).data('slot-id');
+                const startTime = $(this).attr('data-slot-starttime');
+                const endTime = $(this).attr('data-slot-endtime');
+                const groundId = $("#groundSelect").val();
+                const gameId = $("#gameSelect").val();
+                const price = $(this).data('price');
+                const bookingDate = $('#bookingDate').val();
+                
+                // Add bookingDate to validation
+                if (!groundId || !gameId || !slotId || !bookingDate) {
+                    alert("Please select all required fields");
+                    return;
+                }
+
+                currentBookingDetails = {
+                    gameId: gameId,
+                    groundId: groundId,
+                    slotId: slotId,
+                    bookingDate: bookingDate,
+                    price: price,
+                    startTime: startTime,
+                    endTime: endTime
+                };
+                
+                // Update booking summary
+                $('#summaryGround').text($('#groundSelect option:selected').text());
+                $('#summaryDate').text(new Date(bookingDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }));
+                $('#summaryTime').text(`${startTime} - ${endTime}`);
+                $('#summaryPrice').text(`₹${price}`);
+                $('#bookingSummary').addClass('show');
+                
+                // Scroll to summary
+                $('html, body').animate({
+                    scrollTop: $('#bookingSummary').offset().top - 100
+                }, 500);
+            });
+            
+            // Form submission
+            $('#bookingForm').submit(function(e) {
+                e.preventDefault();
+                if (!currentBookingDetails.slotId) {
+                    alert("Please select a slot before proceeding");
+                    return;
+                }
+                $('#otpModal').modal('show');
+            });
+            
+            // Send OTP Handler
+            $('#sendOTP').click(function() {
+                $(this).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Sending...');
+                $(this).prop('disabled', true);
+                
+                $.ajax({
+                    url: '/generate-otp',
+                    type: 'POST',
+                    success: function() {
+                        $('#sendOTP').html('<i class="fas fa-paper-plane me-2"></i>Send OTP');
+                        $('#sendOTP').prop('disabled', false);
+                        
+                        // Show success toast
+                        alert('OTP has been sent to your registered email');
+                    },
+                    error: function(xhr) {
+                        $('#sendOTP').html('<i class="fas fa-paper-plane me-2"></i>Send OTP');
+                        $('#sendOTP').prop('disabled', false);
+                        alert('Error sending OTP: ' + xhr.responseText);
+                    }
+                });
+            });
+
+			// Verify OTP Handler
+										    $('#verifyOTP').click(function() {
+										        const otp = $('#otpInput').val();
+										        
+										        if (!otp || otp.length !== 6) {
+										            alert('Please enter a valid 6-digit OTP');
+										            return;
+										        }
+
+										        $.ajax({
+										            url: '/create',
+										            type: 'POST',
+										            data: {
+										                ...currentBookingDetails,
+										                otp: otp
+										            },
+										            success: function(response) {
+										                window.location.href = response;
+										            },
+										            error: function(xhr) {
+										                alert('Error: ' + xhr.responseText);
+										                $('#otpModal').modal('hide');
+										            }
+										        });
+										    });
+
+						
+						$('#bookingDate').change(function() {
+						        const groundId = $("#groundSelect").val();
+						        if (groundId) {
+						            $.ajax({
+						                url: "/getSlotsByGround",
+						                type: "GET",
+						                data: { 
+						                    groundId: groundId,
+						                    bookingDate: $(this).val()
+						                },
+						                success: function (response) {
+						                    displaySlots(response);
+						                },
+						                error: function (xhr) {
+						                    $("#slotContainer").html('<div class="error">Error loading slots</div>');
+						                }
+						            });
+						        }
+						    });       
+						 });
+						 function redirectToDashboard() {
+						             window.location.href = '/user/dashboard'; // Match controller's @GetMapping path
+						         }
+			    </script>
+
+			</body>
+			</html>

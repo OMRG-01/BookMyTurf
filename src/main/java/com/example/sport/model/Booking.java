@@ -1,6 +1,7 @@
 package com.example.sport.model;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,16 +22,62 @@ public class Booking {
     @Column(name = "booking_date")
     private LocalDate bookingDate;
     
+    @Column(name = "end_time")
+    private LocalTime endTime;
+    
+    @Column(name = "start_time")
+    private LocalTime startTime;
+    
+    
     @Column(name = "price")
     private Double price;
     
+    
+    @Column(nullable = true)
+    private Integer rating; // 1 to 5 stars
+
+    @Column(nullable = true)
+    private String review; // Text feedback
+
+    // Constructors, Getters & Setters
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
+    }
+    public LocalTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+    
+    
+    
+    public LocalTime getStarTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
     
     
     public LocalDate getBookingDate() {
         return bookingDate;
     }
 
-    // Setter for bookingDate
     public void setBookingDate(LocalDate bookingDate) {
         this.bookingDate = bookingDate;
     }

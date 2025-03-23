@@ -7,74 +7,123 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #5c6bc0;
+            --secondary-color: #7986cb;
+            --accent-color: #3949ab;
+            --light-bg: #f5f7ff;
+            --border-radius: 12px;
+            --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--light-bg);
+            color: #333;
+            line-height: 1.6;
+        }
+        
         .payment-container {
-            background: #f8f9fa;
             min-height: 100vh;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #f5f7ff 0%, #e8eaf6 100%);
+        }
+        
+        .payment-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
         }
         
         .payment-methods {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            height: 100%;
+            transition: all 0.3s ease;
         }
-
+        
+        .payment-methods:hover {
+            transform: translateY(-5px);
+        }
+        
         .payment-form {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            transition: all 0.3s ease;
         }
-		/* Add new styles for modals */
-		       .success-modal .modal-header {
-		           background-color: #28a745;
-		           color: white;
-		       }
-		       .failure-modal .modal-header {
-		           background-color: #dc3545;
-		           color: white;
-		       }
-		       .payment-processing {
-		           display: none;
-		           position: fixed;
-		           top: 0;
-		           left: 0;
-		           width: 100%;
-		           height: 100%;
-		           background: rgba(0,0,0,0.5);
-		           z-index: 9999;
-		       }
-		       .processing-spinner {
-		           position: absolute;
-		           top: 50%;
-		           left: 50%;
-		           transform: translate(-50%, -50%);
-		       }
+        
+        .payment-form:hover {
+            transform: translateY(-5px);
+        }
+        
         .method-item {
             cursor: pointer;
             transition: all 0.3s ease;
             border-left: 4px solid transparent;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
         }
-
+        
         .method-item:hover {
-            background: #f8f9fa;
+            background: var(--light-bg);
         }
-
+        
         .method-item.active {
-            border-left: 4px solid #0d6efd;
-            background: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            background: var(--light-bg);
+            font-weight: 500;
         }
-
+        
+        .method-item i {
+            font-size: 1.2rem;
+            margin-right: 12px;
+            color: var(--primary-color);
+            width: 24px;
+            text-align: center;
+        }
+        
         .payment-option {
             display: none;
         }
-
+        
         .payment-option.active {
             display: block;
+            animation: fadeIn 0.5s;
         }
-
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         .card-input {
             position: relative;
+            margin-bottom: 20px;
         }
-
+        
         .card-input i {
             position: absolute;
             right: 15px;
@@ -82,132 +131,432 @@
             transform: translateY(-50%);
             color: #6c757d;
         }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .form-control {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.2);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px 20px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .success-modal .modal-header {
+            background-color: #4caf50;
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            padding: 20px;
+        }
+        
+        .failure-modal .modal-header {
+            background-color: #f44336;
+            color: white;
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .modal-body {
+            padding: 25px;
+            font-size: 1.1rem;
+        }
+        
+        .modal-footer {
+            border-top: none;
+            padding: 15px 25px 25px;
+        }
+        
+        .payment-processing {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            backdrop-filter: blur(4px);
+        }
+        
+        .processing-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .spinner-container {
+            text-align: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 12px;
+        }
+        
+        .payment-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .payment-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .method-logo {
+            height: 30px;
+            width: auto;
+            margin-right: 10px;
+        }
+        
+        .card-type {
+            display: flex;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .card-brand {
+            margin-right: 10px;
+            opacity: 0.5;
+            transition: all 0.3s;
+            padding: 5px;
+            border-radius: 6px;
+            border: 2px solid transparent;
+        }
+        
+        .card-brand.active {
+            opacity: 1;
+            border-color: var(--primary-color);
+        }
+        
+        .card-brand img {
+            height: 40px;
+        }
+        
+        .divider {
+            margin: 30px 0;
+            position: relative;
+            text-align: center;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #ddd;
+        }
+        
+        .divider span {
+            position: relative;
+            background: white;
+            padding: 0 15px;
+            color: #777;
+        }
+        
+        /* Media queries for responsiveness */
+        @media (max-width: 992px) {
+            .payment-wrapper {
+                max-width: 90%;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .payment-methods {
+                margin-bottom: 30px;
+            }
+            
+            .method-item {
+                padding: 12px 15px;
+            }
+            
+            .card-brand img {
+                height: 30px;
+            }
+        }
     </style>
 </head>
-<body class="payment-container">
-	<div class="payment-processing">
-	       <div class="spinner-border text-light processing-spinner" role="status">
-	           <span class="visually-hidden">Loading...</span>
-	       </div>
-	   </div>
-    <div class="container py-5">
-        <div class="row g-4">
-            <!-- Left Side - Payment Methods -->
-            <div class="col-lg-4">
-                <div class="payment-methods p-4">
-                    <h3 class="mb-4">Select Payment Method</h3>
-                    <div class="list-group">
-                        <div class="list-group-item method-item active" onclick="showPayment('card')">
-                            <i class="fas fa-credit-card me-2"></i>
-                            Credit/Debit Card
+<body>
+    <div class="payment-container">
+        <div class="payment-processing">
+            <div class="spinner-container">
+                <div class="spinner-border text-light processing-spinner mb-3" role="status">
+                    <span class="visually-hidden">Processing...</span>
+                </div>
+                <p>Processing your payment...</p>
+            </div>
+        </div>
+        
+        <div class="container payment-wrapper">
+            <div class="header">
+                <h1>Secure Payment</h1>
+                <p>Complete your transaction securely with our trusted payment gateway</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Left Side - Payment Methods -->
+                <div class="col-lg-4">
+                    <div class="payment-methods">
+                        <h3 class="mb-4">Payment Methods</h3>
+                        <div class="list-group">
+                            <div class="list-group-item method-item active" onclick="showPayment('card')">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Credit/Debit Card</span>
+                            </div>
+                            <div class="list-group-item method-item" onclick="showPayment('upi')">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>UPI Payment</span>
+                            </div>
+                            <div class="list-group-item method-item" onclick="showPayment('razorpay')">
+                                <i class="fas fa-wallet"></i>
+                                <span>Razor Pay</span>
+                            </div>
                         </div>
-                        <div class="list-group-item method-item" onclick="showPayment('upi')">
-                            <i class="fas fa-mobile-alt me-2"></i>
-                            UPI Payment
+                        
+                        <div class="payment-info mt-4">
+                            <div class="text-center">
+                                <div class="payment-icon">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <h5>Secure Payments</h5>
+                                <p class="text-muted">All transactions are secure and encrypted.</p>
+                            </div>
                         </div>
-                        <div class="list-group-item method-item" onclick="showPayment('razorpay')">
-                            <i class="fas fa-wallet me-2"></i>
-                            Razor Pay
+                    </div>
+                </div>
+
+                <!-- Right Side - Payment Forms -->
+                <div class="col-lg-8">
+                    <div class="payment-form">
+                        <!-- Card Payment Form -->
+                        <form th:action="@{/process-payment}" method="post" class="payment-option active" id="cardForm">
+                            <h4 class="mb-4"><i class="fas fa-credit-card me-2 text-primary"></i>Card Payment</h4>
+                            
+                            <div class="card-type">
+                                <div class="card-brand active">
+                                    <img th:src="@{/images/Visa.png}" alt="Visa">
+                                </div>
+                                <div class="card-brand">
+                                    <img th:src="@{/images/mastercard.png}" alt="Mastercard">
+                                </div>
+                                <div class="card-brand">
+                                    <img th:src="@{/images/america.jpg}" alt="American Express">
+                                </div>
+                                <div class="card-brand">
+                                    <img th:src="@{/images/discover.png}" alt="Discover">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3 card-input">
+                                <label class="form-label">Card Number</label>
+                                <input type="text" class="form-control" placeholder="1234 5678 9012 3456" required>
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="month" class="form-control" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CVV</label>
+                                    <div class="card-input">
+                                        <input type="text" class="form-control" placeholder="123" required>
+                                        <i class="fas fa-question-circle" title="3-digit security code on the back of your card"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Cardholder Name</label>
+                                <input type="text" class="form-control" placeholder="Name on card" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 mt-4">
+                                <i class="fas fa-lock me-2"></i>Pay Securely
+                            </button>
+                            
+                            <div class="text-center mt-4">
+                                <small class="text-muted">
+                                    <i class="fas fa-shield-alt me-1"></i>
+                                    Your payment information is secure and encrypted
+                                </small>
+                            </div>
+                        </form>
+
+                        <!-- UPI Payment Form -->
+                        <form th:action="@{/process-payment}" method="post" class="payment-option" id="upiForm">
+                            <h4 class="mb-4"><i class="fas fa-mobile-alt me-2 text-primary"></i>UPI Payment</h4>
+                            
+                            <div class="text-center mb-4">
+                                <img th:src="@{/images/upi2.jpg}" alt="UPI Apps" class="img-fluid">
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">UPI ID</label>
+                                <div class="card-input">
+                                    <input type="text" class="form-control" placeholder="yourname@upi" required>
+                                    <i class="fas fa-at"></i>
+                                </div>
+                                <small class="text-muted">Enter your UPI ID (e.g. yourname@okaxis)</small>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 mt-4">
+                                <i class="fas fa-mobile-alt me-2"></i>Pay via UPI
+                            </button>
+                            
+                            <div class="divider">
+                                <span>OR</span>
+                            </div>
+                            
+                            <div class="text-center">
+                                <p>Scan QR code with any UPI app</p>
+                                <img src="/api/placeholder/200/200" alt="QR Code" class="img-fluid mb-3">
+                            </div>
+                        </form>
+
+                        <!-- Razor Pay Form -->
+                        <div class="payment-option" id="razorpayForm">
+                            <h4 class="mb-4"><i class="fas fa-wallet me-2 text-primary"></i>Razor Pay</h4>
+                            
+                            <div class="text-center">
+                                <img th:src="@{/images/razar.png}" alt="Razor Pay" class="img-fluid mb-4">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    You will be redirected to Razor Pay secure payment gateway to complete your payment
+                                </div>
+                                <p class="text-muted mb-4">Razor Pay supports multiple payment methods including credit/debit cards, net banking, wallets, and UPI</p>
+                                <button type="button" class="btn btn-primary w-100">
+                                    <i class="fas fa-external-link-alt me-2"></i>Proceed to Razor Pay
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Right Side - Payment Forms -->
-            <div class="col-lg-8">
-                <div class="payment-form p-4">
-                    <!-- Card Payment Form -->
-                    <form th:action="@{/process-payment}" method="post" class="payment-option active" id="cardForm">
-                        <h4 class="mb-4"><i class="fas fa-credit-card me-2"></i>Card Payment</h4>
-                        
-                        <div class="mb-3 card-input">
-                            <label class="form-label">Card Number</label>
-                            <input type="text" class="form-control" placeholder="1234 5678 9012 3456" required>
-                            <i class="fas fa-credit-card"></i>
-                        </div>
-
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Expiry Date</label>
-                                <input type="month" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">CVV</label>
-                                <input type="text" class="form-control" placeholder="123" required>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 mt-4">
-                            Pay Now
-                        </button>
-                    </form>
-
-                    <!-- UPI Payment Form -->
-                    <form th:action="@{/process-payment}" method="post" class="payment-option" id="upiForm">
-                        <h4 class="mb-4"><i class="fas fa-mobile-alt me-2"></i>UPI Payment</h4>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">UPI ID</label>
-                            <input type="text" class="form-control" placeholder="yourname@upi" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 mt-4">
-                            Pay via UPI
-                        </button>
-                    </form>
-
-                    <!-- Razor Pay Form -->
-                    <div class="payment-option" id="razorpayForm">
-                        <h4 class="mb-4"><i class="fas fa-wallet me-2"></i>Razor Pay</h4>
-                        
-                        <div class="text-center">
-                            <img src="https://razorpay.com/assets/razorpay-glyph.svg" alt="Razor Pay" 
-                                 style="height: 100px; margin-bottom: 2rem;">
-                            <p class="text-muted">You will be redirected to Razor Pay secure payment gateway</p>
-                            <button type="button" class="btn btn-primary w-100">
-                                Pay with Razor Pay
-                            </button>
+            
+            <!-- Order Summary -->
+            <div class="row mt-4">
+                <div class="col-lg-12">
+                    <div class="payment-form">
+                        <h4 class="mb-3">Order Summary</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>Subtotal</td>
+                                        <td class="text-end">₹2,500.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Taxes</td>
+                                        <td class="text-end">₹450.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Amount</strong></td>
+                                        <td class="text-end"><strong>₹2,950.00</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-	<div class="modal fade success-modal" id="successModal" tabindex="-1">
-	        <div class="modal-dialog">
-	            <div class="modal-content">
-	                <div class="modal-header">
-	                    <h5 class="modal-title">Payment Successful!</h5>
-	                </div>
-	                <div class="modal-body">
-	                    <p>Thank you for your payment. Your booking is confirmed!</p>
-	                </div>
-	                <div class="modal-footer">
-	                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" 
-	                            onclick="redirectToDashboard()">OK</button>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-		<div class="modal fade failure-modal" id="failureModal" tabindex="-1">
-		        <div class="modal-dialog">
-		            <div class="modal-content">
-		                <div class="modal-header">
-		                    <h5 class="modal-title">Payment Failed</h5>
-		                </div>
-		                <div class="modal-body">
-		                    <p id="errorMessage">There was an error processing your payment. Please try again.</p>
-		                </div>
-		                <div class="modal-footer">
-		                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-		                </div>
-		            </div>
-		        </div>
-		    </div>
+    
+    <!-- Success Modal -->
+    <div class="modal fade success-modal" id="successModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i>Payment Successful!</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-check-circle" style="font-size: 4rem; color: #4caf50;"></i>
+                    </div>
+                    <h4>Thank You!</h4>
+                    <p>Your payment has been processed successfully.</p>
+                    <p>Your booking is confirmed!</p>
+                    <p class="small text-muted mt-3">A confirmation email has been sent to your registered email address.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="redirectToDashboard()">
+                        <i class="fas fa-home me-2"></i>Go to Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Failure Modal -->
+    <div class="modal fade failure-modal" id="failureModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-times-circle me-2"></i>Payment Failed</h5>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-times-circle" style="font-size: 4rem; color: #f44336;"></i>
+                    </div>
+                    <h4>Oops!</h4>
+                    <p id="errorMessage">There was an error processing your payment.</p>
+                    <p class="small text-muted mt-3">Please check your payment details and try again.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Close
+                    </button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="fas fa-redo me-2"></i>Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-		
+        // Show payment method
         function showPayment(method) {
             // Remove active class from all methods
             document.querySelectorAll('.method-item').forEach(item => {
@@ -224,103 +573,135 @@
 
             // Show selected payment form
             document.getElementById(method + 'Form').classList.add('active');
-        }			// Get booking ID from URL
-			    const urlParams = new URLSearchParams(window.location.search);
-			    const bookingId = urlParams.get('bookingId');
+        }
+        
+        // Card brand selection
+        document.querySelectorAll('.card-brand').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.card-brand').forEach(c => {
+                    c.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+        
+        // Get booking ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('bookingId');
 
-			    // Validation functions
-			    function validateCard(cardNumber, expiryDate, cvv) {
-			        const cardRegex = /^\d{16}$/;
-			        const cvvRegex = /^\d{3,4}$/;
-			        const currentDate = new Date();
-			        const expiry = new Date(expiryDate);
+        // Validation functions
+        function validateCard(cardNumber, expiryDate, cvv) {
+            // Remove spaces from card number for validation
+            cardNumber = cardNumber.replace(/\s+/g, '');
+            
+            const cardRegex = /^\d{16}$/;
+            const cvvRegex = /^\d{3,4}$/;
+            const currentDate = new Date();
+            const expiry = new Date(expiryDate);
 
-			        return cardRegex.test(cardNumber) && 
-			               cvvRegex.test(cvv) &&
-			               expiry > currentDate;
-			    }
+            return cardRegex.test(cardNumber) && 
+                   cvvRegex.test(cvv) &&
+                   expiry > currentDate;
+        }
 
-			    function validateUPI(upiId) {
-			        const upiRegex = /^[\w.-]{2,}@[\w]{2,}$/;
-			        return upiRegex.test(upiId);
-			    }
+        function validateUPI(upiId) {
+            const upiRegex = /^[\w.-]{2,}@[\w]{2,}$/;
+            return upiRegex.test(upiId);
+        }
 
-			    function showProcessing(show) {
-			        document.querySelector('.payment-processing').style.display = show ? 'block' : 'none';
-			    }
+        function showProcessing(show) {
+            document.querySelector('.payment-processing').style.display = show ? 'block' : 'none';
+        }
 
-			    async function updatePaymentStatus(status) {
-			        showProcessing(true);
-			        try {
-			            const response = await fetch(`/update-payment-status?bookingId=${bookingId}&status=${status}`, {
-			                method: 'POST'
-			            });
+        async function updatePaymentStatus(status) {
+            showProcessing(true);
+            try {
+                const response = await fetch(`/update-payment-status?bookingId=${bookingId}&status=${status}`, {
+                    method: 'POST'
+                });
 
-			            if (!response.ok) throw new Error('Payment update failed');
-			            return true;
-			        } catch (error) {
-			            console.error('Error:', error);
-			            return false;
-			        } finally {
-			            showProcessing(false);
-			        }
-			    }
+                if (!response.ok) throw new Error('Payment update failed');
+                return true;
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            } finally {
+                showProcessing(false);
+            }
+        }
 
-				function redirectToDashboard() {
-				    window.location.href = '/user/dashboard'; // Match controller's @GetMapping path
-				}
+        function redirectToDashboard() {
+            window.location.href = '/user/dashboard'; // Match controller's @GetMapping path
+        }
 
-			    // Card Form Handler
-			    document.getElementById('cardForm').addEventListener('submit', async (e) => {
-			        e.preventDefault();
-			        
-			        const cardNumber = document.querySelector('#cardForm input[type="text"]').value;
-			        const expiryDate = document.querySelector('#cardForm input[type="month"]').value;
-			        const cvv = document.querySelector('#cardForm input[placeholder="123"]').value;
+        // Format card number input with spaces
+        const cardNumberInput = document.querySelector('#cardForm input[placeholder="1234 5678 9012 3456"]');
+        if (cardNumberInput) {
+            cardNumberInput.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+                let formattedValue = '';
+                
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) {
+                        formattedValue += ' ';
+                    }
+                    formattedValue += value[i];
+                }
+                
+                e.target.value = formattedValue;
+            });
+        }
 
-			        if (!validateCard(cardNumber, expiryDate, cvv)) {
-			            document.getElementById('errorMessage').textContent = 'Invalid card details';
-			            new bootstrap.Modal(document.getElementById('failureModal')).show();
-			            return;
-			        }
+        // Card Form Handler
+        document.getElementById('cardForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const cardNumber = document.querySelector('#cardForm input[placeholder="1234 5678 9012 3456"]').value.replace(/\s+/g, '');
+            const expiryDate = document.querySelector('#cardForm input[type="month"]').value;
+            const cvv = document.querySelector('#cardForm input[placeholder="123"]').value;
 
-			        const success = await updatePaymentStatus(1);
-			        if (success) {
-			            new bootstrap.Modal(document.getElementById('successModal')).show();
-			        } else {
-			            new bootstrap.Modal(document.getElementById('failureModal')).show();
-			        }
-			    });
+            if (!validateCard(cardNumber, expiryDate, cvv)) {
+                document.getElementById('errorMessage').textContent = 'Invalid card details. Please check your information and try again.';
+                new bootstrap.Modal(document.getElementById('failureModal')).show();
+                return;
+            }
 
-			    // UPI Form Handler
-			    document.getElementById('upiForm').addEventListener('submit', async (e) => {
-			        e.preventDefault();
-			        
-			        const upiId = document.querySelector('#upiForm input').value;
-			        if (!validateUPI(upiId)) {
-			            document.getElementById('errorMessage').textContent = 'Invalid UPI ID format (e.g., yourname@upi)';
-			            new bootstrap.Modal(document.getElementById('failureModal')).show();
-			            return;
-			        }
+            const success = await updatePaymentStatus(1);
+            if (success) {
+                new bootstrap.Modal(document.getElementById('successModal')).show();
+            } else {
+                new bootstrap.Modal(document.getElementById('failureModal')).show();
+            }
+        });
 
-			        const success = await updatePaymentStatus(1);
-			        if (success) {
-			            new bootstrap.Modal(document.getElementById('successModal')).show();
-			        } else {
-			            new bootstrap.Modal(document.getElementById('failureModal')).show();
-			        }
-			    });
+        // UPI Form Handler
+        document.getElementById('upiForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const upiId = document.querySelector('#upiForm input[placeholder="yourname@upi"]').value;
+            if (!validateUPI(upiId)) {
+                document.getElementById('errorMessage').textContent = 'Invalid UPI ID format (e.g., yourname@upi). Please check and try again.';
+                new bootstrap.Modal(document.getElementById('failureModal')).show();
+                return;
+            }
 
-			    // Razorpay Handler
-			    document.querySelector('#razorpayForm button').addEventListener('click', async () => {
-			        const success = await updatePaymentStatus(1);
-			        if (success) {
-			            new bootstrap.Modal(document.getElementById('successModal')).show();
-			        } else {
-			            new bootstrap.Modal(document.getElementById('failureModal')).show();
-			        }
-			    });
-		
+            const success = await updatePaymentStatus(1);
+            if (success) {
+                new bootstrap.Modal(document.getElementById('successModal')).show();
+            } else {
+                new bootstrap.Modal(document.getElementById('failureModal')).show();
+            }
+        });
+
+        // Razorpay Handler
+        document.querySelector('#razorpayForm button').addEventListener('click', async () => {
+            const success = await updatePaymentStatus(1);
+            if (success) {
+                new bootstrap.Modal(document.getElementById('successModal')).show();
+            } else {
+                new bootstrap.Modal(document.getElementById('failureModal')).show();
+            }
+        });
     </script>
 </body>
 </html>
