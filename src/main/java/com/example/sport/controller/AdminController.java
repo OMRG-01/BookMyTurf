@@ -1,6 +1,9 @@
 package com.example.sport.controller;
 
+import com.example.sport.dto.BookingDTO;
+import com.example.sport.model.Booking;
 import com.example.sport.model.User;
+import com.example.sport.service.BookingService;
 import com.example.sport.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +20,9 @@ public class AdminController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private BookingService bookingService;
 
     // Show all users with role 'USER'
     @GetMapping("/admin/users")
@@ -42,4 +48,15 @@ public class AdminController {
         return "redirect:/admin/user";  // Redirect to the user list page after deletion
     }
 
+    @GetMapping("/admin/user/{userId}/bookings")
+    public String getUserBookings(@PathVariable Long userId, Model model) {
+        // Call the service to get the list of bookings
+        List<BookingDTO> bookings = bookingService.getBookingsByUserId(userId);
+
+        // Add the bookings list to the model to pass to the view
+        model.addAttribute("bookings", bookings);
+
+        // Return the userBooking.html page
+        return "admin/userBooking";  // Thymeleaf template
+    }
 }

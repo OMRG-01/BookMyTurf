@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -196,6 +197,8 @@ public class BookingController {
             @RequestParam Long gameId,
             @RequestParam Long groundId,
             @RequestParam Long slotId,
+            @RequestParam String startTime,  // Accepting start time as String
+            @RequestParam String endTime, 
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate bookingDate,
             @RequestParam Double price,
             @RequestParam String otp,
@@ -215,7 +218,11 @@ public class BookingController {
         if (isBooked) {
             return ResponseEntity.badRequest().body("This slot is already booked for the selected date.");
         }
+        
+        LocalTime start = LocalTime.parse(startTime); // Assuming startTime is in HH:mm format
+        LocalTime end = LocalTime.parse(endTime);     // Assuming endTime is in HH:mm format
 
+        
         // Create booking since slot is available
         Booking booking = new Booking();
         booking.setUserId(user.getId());
@@ -225,7 +232,9 @@ public class BookingController {
         booking.setPaymentStatus(0); // Default: Unpaid
         booking.setBookingDate(bookingDate);
         booking.setPrice(price);
-
+        booking.setStartTime(start);  // Set the parsed startTime
+        booking.setEndTime(end); 
+        
         bookingService.saveBooking(booking);
 
         return ResponseEntity.ok("/user/gateway?bookingId=" + booking.getId());

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Booking History</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2980b9;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 8px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-light);
+            flex-wrap: wrap;
+        }
+        
+        .header h1 {
+            color: var(--dark);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        
+        .user-id {
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            table-layout: fixed;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        tr:hover {
+            background-color: var(--light);
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .status-paid {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .status-unpaid {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .rating {
+            color: #f1c40f;
+        }
+        
+        .review-text {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .user-id {
+                margin-left: 0;
+                margin-top: 5px;
+            }
+            
+            /* Apply responsive table */
+            table, thead, tbody, th, td, tr { 
+                display: block; 
+            }
+            
+            thead tr { 
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid var(--gray-light);
+                border-radius: var(--border-radius);
+            }
+            
+            td { 
+                border: none;
+                border-bottom: 1px solid #eee; 
+                position: relative;
+                padding-left: 50%; 
+                text-align: right;
+            }
+            
+            td:before { 
+                position: absolute;
+                top: 12px;
+                left: 10px;
+                width: 45%; 
+                padding-right: 10px; 
+                white-space: nowrap;
+                font-weight: bold;
+                text-align: left;
+            }
+            
+            /* Label the data */
+            td:nth-of-type(1):before { content: "Ground Name"; }
+            td:nth-of-type(2):before { content: "Booking Date"; }
+            td:nth-of-type(3):before { content: "Time"; }
+            td:nth-of-type(4):before { content: "Payment Status"; }
+            td:nth-of-type(5):before { content: "Rating"; }
+            td:nth-of-type(6):before { content: "Review"; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Booking History <span class="user-id" th:text="'User #' + ${userId}"></span></h1>
+            <a href="/admin/dashboard" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        
+        <div class="table-responsive">
+            <table th:if="${not #lists.isEmpty(bookings)}">
+                <thead>
+                    <tr>
+                        <th>Ground Name</th>
+                        <th>Booking Date</th>
+                        <th>Time Slot</th>
+                        <th>Payment</th>
+                        <th>Rating</th>
+                        <th>Review</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="booking : ${bookings}">
+                        <td th:text="${booking.groundName}"></td>
+                        <td th:text="${booking.bookingDate}"></td>
+                        <td th:text="${booking.startTime} + ' - ' + ${booking.endTime}"></td>
+                        <td>
+                            <span th:if="${booking.paymentStatus == 1}" class="status status-paid">Paid</span>
+                            <span th:unless="${booking.paymentStatus == 1}" class="status status-unpaid">Unpaid</span>
+                        </td>
+                        <td>
+                            <div th:if="${booking.rating != null}">
+                                <span class="rating">
+                                    <i th:each="star : ${#numbers.sequence(1, booking.rating)}" class="fas fa-star"></i>
+                                    <i th:each="star : ${#numbers.sequence(booking.rating + 1, 5)}" class="far fa-star"></i>
+                                </span>
+                            </div>
+                            <div th:unless="${booking.rating != null}">N/A</div>
+                        </td>
+                        <td>
+                            <div th:if="${booking.review != null}" class="review-text" th:text="${booking.review}" th:title="${booking.review}"></div>
+                            <div th:unless="${booking.review != null}">No review</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div th:if="${#lists.isEmpty(bookings)}" class="empty-state">
+                <i class="fas fa-calendar-times"></i>
+                <h3>No bookings found</h3>
+                <p>This user hasn't made any bookings yet.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

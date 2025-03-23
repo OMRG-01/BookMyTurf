@@ -748,8 +748,8 @@
                 $(this).closest('.slot-card').addClass('selected');
                 
                 const slotId = $(this).data('slot-id');
-                const startTime = $(this).attr('data-slot-starttime');
-                const endTime = $(this).attr('data-slot-endtime');
+                const startTime = $(this).data('slot-starttime');
+                const endTime = $(this).data('slot-endtime');
                 const groundId = $("#groundSelect").val();
                 const gameId = $("#gameSelect").val();
                 const price = $(this).data('price');

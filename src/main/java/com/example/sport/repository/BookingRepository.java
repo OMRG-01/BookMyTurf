@@ -38,5 +38,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
 	    @Query("SELECT b.groundId FROM Booking b WHERE b.gameId = :gameId GROUP BY b.groundId ORDER BY COUNT(b.id) DESC LIMIT 1")
 	    Optional<Long> findMostPopularGroundByGameId(@Param("gameId") Long gameId);
-
+	    
+	    
+	    @Query("SELECT b.id, b.groundId, b.bookingDate, b.startTime, b.endTime, b.paymentStatus FROM Booking b WHERE b.userId = :userId")
+	    List<Object[]> findBookingWithGroundName(@Param("userId") Long userId);
 }
