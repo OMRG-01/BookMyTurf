@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sports Venues | Find Your Perfect Ground</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --primary:rgba(0, 0, 0, 0.5);
+      --primary-dark: rgba(0, 0, 0, 0.7);
+      --secondary: #2ecc71;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --radius: 8px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+      color: var(--dark);
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 30px 0;
+      text-align: center;
+      border-radius: 0 0 var(--radius) var(--radius);
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+    }
+    
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    
+    header p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+      opacity: 0.9;
+    }
+    
+    .search-section {
+      background: white;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+    }
+    
+    .search-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .search-group {
+      flex: 1 1 200px;
+      position: relative;
+    }
+    
+    .search-group i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #95a5a6;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 12px 12px 40px;
+      border: 1px solid #ddd;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    select.search-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2395a5a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 15px;
+      padding-right: 35px;
+    }
+    
+    .search-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      padding: 12px 25px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .search-btn:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .filter-tag {
+      background-color: #edf2f7;
+      border-radius: 50px;
+      padding: 5px 15px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .remove-filter {
+      background-color: rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .remove-filter:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    
+    .search-status {
+      margin-top: 15px;
+      font-weight: 500;
+      color: #7f8c8d;
+    }
+    
+    .ground-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+    }
+    
+    .ground-card {
+      background-color: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .ground-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-img-container {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .card-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    
+    .ground-card:hover .card-img-container img {
+      transform: scale(1.05);
+    }
+    
+    .sport-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--primary);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    .ground-name {
+      font-size: 1.4rem;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+    
+    .ground-location {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.95rem;
+      color: #7f8c8d;
+      margin-bottom: 15px;
+    }
+    
+    .ground-details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .detail-item i {
+      color: var(--primary);
+      font-size: 1rem;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .amenities {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+    }
+    
+    .amenity {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.85rem;
+    }
+    
+    .amenity i.yes {
+      color: var(--secondary);
+    }
+    
+    .amenity i.no {
+      color: var(--danger);
+    }
+    
+    .view-btn {
+      display: block;
+      width: 100%;
+      background-color: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 12px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      margin-top: 15px;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    
+    .view-btn:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      color: #bdc3c7;
+      margin-bottom: 20px;
+    }
+    
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+    
+    .empty-state p {
+      color: #7f8c8d;
+      margin-bottom: 20px;
+    }
+    
+    .reset-btn {
+      background-color: var(--light);
+      color: var(--dark);
+      border: none;
+      border-radius: var(--radius);
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .reset-btn:hover {
+      background-color: #dfe6e9;
+    }
+    
+    @media (max-width: 768px) {
+      .search-controls {
+        flex-direction: column;
+      }
+      
+      .search-group {
+        flex: 1 1 100%;
+      }
+      
+      .ground-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+
+    /* Loader */
+    .loader-container {
+      display: flex;
+      justify-content: center;
+      padding: 30px 0;
+    }
+    
+    .loader {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary);
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      width: 120px;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.8rem;
+    }
+
+    .tooltip:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    
+    /* Modal/Popup */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+    
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal {
+      background-color: white;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 500px;
+      padding: 0;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 20px;
+      position: relative;
+      text-align: center;
+    }
+    
+    .modal-header h3 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .modal-body {
+      padding: 30px;
+    }
+    
+    .modal-actions {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    
+    .modal-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .btn-secondary {
+      background-color: var(--light);
+      color: var(--dark);
+    }
+    
+    .btn-secondary:hover {
+      background-color: #dfe6e9;
+    }
+    
+    .venue-highlight {
+      font-weight: 600;
+      color: var(--primary);
+    }
+	.map-link {
+				    text-decoration: none;
+				    cursor: pointer;
+				}
+				.map-link:hover {
+				    color: darkblue;
+				}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>Find Your Perfect Sports Venue</h1>
+      <p>Browse through our collection of premium sports grounds and book your next game</p>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-controls">
+        <div class="search-group">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchName" class="search-input" placeholder="Search by ground name" autocomplete="off">
+        </div>
+        <div class="search-group">
+          <i class="fas fa-map-marker-alt"></i>
+          <input type="text" id="searchCity" class="search-input" placeholder="Search by city" autocomplete="off">
+        </div>
+        <div class="search-group">
+          <i class="fas fa-volleyball-ball"></i>
+          <select id="searchGame" class="search-input">
+            <option value="">All Sports</option>
+            <!-- Options will be populated dynamically -->
+          </select>
+        </div>
+        <button id="searchBtn" class="search-btn">
+          <i class="fas fa-search"></i> Search
+        </button>
+      </div>
+      
+      <div id="activeFilters" class="active-filters">
+        <!-- Active filters will be displayed here -->
+      </div>
+      
+      <div id="searchStatus" class="search-status"></div>
+    </section>
+
+    <!-- Loading State -->
+    <div id="loaderContainer" class="loader-container">
+      <div class="loader"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <i class="fas fa-search"></i>
+      <h3>No venues found</h3>
+      <p>Try adjusting your search filters or browse all available venues</p>
+      <button id="resetFilters" class="reset-btn">Reset Filters</button>
+    </div>
+
+    <!-- Ground Cards Section -->
+    <div id="groundContainer" class="ground-grid">
+      <!-- Grounds will be dynamically added here -->
+    </div>
+  </div>
+
+  <!-- Login/Register Modal -->
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Authentication Required</h3>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>To view details and book <span id="venueName" class="venue-highlight">this venue</span>, please sign in to your account or register if you're new here.</p>
+        <p style="margin-top: 15px;">Signing in gives you access to:</p>
+        <ul style="margin: 10px 0 0 20px; color: #7f8c8d;">
+          <li>Book venues for your preferred time slots</li>
+          <li>Save your favorite venues</li>
+          <li>Track your booking history</li>
+          <li>Receive special discounts and offers</li>
+        </ul>
+        <div class="modal-actions">
+          <a href="/login1" class="modal-btn btn-primary">
+            <i class="fas fa-sign-in-alt"></i> Sign In
+          </a>
+          <a href="/register1" class="modal-btn btn-secondary">
+            <i class="fas fa-user-plus"></i> Register
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let grounds = []; // Store all grounds initially
+    let activeFilters = {
+      name: '',
+      city: '',
+      game: ''
+    };
+
+    $(document).ready(function() {
+      // Initialize
+      showLoader();
+      fetchGrounds();
+      
+      // Real-time search functionality
+      $('#searchName').on('input', debounce(function() {
+        activeFilters.name = $(this).val().trim().toLowerCase();
+        updateActiveFiltersDisplay();
+        applyFilters();
+      }, 300));
+      
+      $('#searchCity').on('input', debounce(function() {
+        activeFilters.city = $(this).val().trim().toLowerCase();
+        updateActiveFiltersDisplay();
+        applyFilters();
+      }, 300));
+      
+      $('#searchGame').on('change', function() {
+        activeFilters.game = $(this).val();
+        updateActiveFiltersDisplay();
+        applyFilters();
+      });
+      
+      // Search button click (for mobile users)
+      $('#searchBtn').on('click', function() {
+        activeFilters.name = $('#searchName').val().trim().toLowerCase();
+        activeFilters.city = $('#searchCity').val().trim().toLowerCase();
+        activeFilters.game = $('#searchGame').val();
+        
+        updateActiveFiltersDisplay();
+        applyFilters();
+      });
+      
+      // Reset filters button
+      $('#resetFilters').on('click', resetFilters);
+      
+      // Close modal
+      $('#closeModal').on('click', function() {
+        closeLoginModal();
+      });
+      
+      // Close modal if clicked outside
+      $(window).on('click', function(e) {
+        if ($(e.target).hasClass('modal-overlay')) {
+          closeLoginModal();
+        }
+      });
+    });
+
+    function fetchGrounds() {
+      $.get("/getAllGrounds", function(data) {
+        grounds = data;
+        populateGamesFilter(data);
+        displayGrounds(data);
+        hideLoader();
+        updateSearchStatus(data.length);
+      }).fail(function() {
+        // Handle error
+        hideLoader();
+        $('#groundContainer').html(`
+          <div class="empty-state">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Oops! Something went wrong</h3>
+            <p>We couldn't load the venues. Please try again later.</p>
+            <button onclick="fetchGrounds()" class="search-btn">Try Again</button>
+          </div>
+        `);
+      });
+    }
+
+    function populateGamesFilter(data) {
+      let gameSet = new Set();
+      data.forEach(g => gameSet.add(g.game.gameName));
+      
+      // Sort games alphabetically
+      let sortedGames = Array.from(gameSet).sort();
+      
+      sortedGames.forEach(game => {
+        $('#searchGame').append(`<option value="${game}">${game}</option>`);
+      });
+    }
+
+    function displayGrounds(groundsList) {
+      let container = $('#groundContainer');
+      container.empty();
+      
+      if (groundsList.length === 0) {
+        $('#emptyState').show();
+        return;
+      }
+      
+      $('#emptyState').hide();
+      
+      groundsList.forEach(g => {
+        let floodlightsIcon = g.floodlightsAvailable ? 
+          '<i class="fas fa-lightbulb yes"></i> Yes' : 
+          '<i class="fas fa-lightbulb-slash no"></i> No';
+          
+        let changingRoomsIcon = g.changingRooms ? 
+          '<i class="fas fa-tshirt yes"></i> Yes' : 
+          '<i class="fas fa-tshirt no"></i> No';
+
+        let card = `
+          <div class="ground-card">
+            <div class="card-img-container">
+              <img src="/images/${g.imageFileName}" alt="${g.name}">
+              <div class="sport-badge">${g.game.gameName}</div>
+            </div>
+            <div class="card-content">
+              <h3 class="ground-name">${g.name}</h3>
+              <div class="ground-location">
+                <i class="fas fa-map-marker-alt"></i> ${g.location}
+              </div>
+			  <div class="ground-location">
+			  					<span class="map-link" onclick="openGoogleMaps('${g.address}')" ><i class="fas fa-map-marker-alt"></i> ${g.address}</span>
+			  				</div>
+              <div class="ground-details">
+                <div class="detail-item tooltip">
+                  <i class="far fa-clock"></i> ${g.openingTime}
+                  <span class="tooltip-text">Opening Time</span>
+                </div>
+                <div class="detail-item tooltip">
+                  <i class="fas fa-clock"></i> ${g.closingTime}
+                  <span class="tooltip-text">Closing Time</span>
+                </div>
+              </div>
+              
+              <div class="amenities">
+                <div class="amenity">
+                  ${floodlightsIcon}
+                </div>
+                <div class="amenity">
+                  ${changingRoomsIcon}
+                </div>
+              </div>
+              
+              <button class="view-btn" onclick="showLoginModal('${g.id}', '${g.name}')">
+                View Details
+              </button>
+            </div>
+          </div>
+        `;
+        container.append(card);
+      });
+    }
+
+    function applyFilters() {
+      showLoader();
+      
+      let filteredGrounds = grounds.filter(g =>
+        (activeFilters.name === "" || g.name.toLowerCase().includes(activeFilters.name)) &&
+        (activeFilters.city === "" || g.location.toLowerCase().includes(activeFilters.city)) &&
+        (activeFilters.game === "" || g.game.gameName === activeFilters.game)
+      );
+      
+      setTimeout(() => {
+        displayGrounds(filteredGrounds);
+        hideLoader();
+        updateSearchStatus(filteredGrounds.length);
+      }, 300); // Small timeout for better UX
+    }
+    
+    function updateActiveFiltersDisplay() {
+      let container = $('#activeFilters');
+      container.empty();
+      
+      if (activeFilters.gameName) {
+        container.append(`
+          <div class="filter-tag">
+            <span>Name: ${activeFilters.name}</span>
+            <span class="remove-filter" onclick="removeFilter('name')">×</span>
+          </div>
+        `);
+      }
+      
+      if (activeFilters.city) {
+        container.append(`
+          <div class="filter-tag">
+            <span>City: ${activeFilters.city}</span>
+            <span class="remove-filter" onclick="removeFilter('city')">×</span>
+          </div>
+        `);
+      }
+      
+      if (activeFilters.game) {
+        container.append(`
+          <div class="filter-tag">
+            <span>Sport: ${activeFilters.game}</span>
+            <span class="remove-filter" onclick="removeFilter('game')">×</span>
+          </div>
+        `);
+      }
+    }
+    
+    function removeFilter(type) {
+      activeFilters[type] = '';
+      
+      // Update input fields
+      if (type === 'name') $('#searchName').val('');
+      if (type === 'city') $('#searchCity').val('');
+      if (type === 'game') $('#searchGame').val('');
+      
+      updateActiveFiltersDisplay();
+      applyFilters();
+    }
+    
+    function resetFilters() {
+      activeFilters.name = '';
+      activeFilters.city = '';
+      activeFilters.game = '';
+      
+      $('#searchName').val('');
+      $('#searchCity').val('');
+      $('#searchGame').val('');
+      
+      updateActiveFiltersDisplay();
+      applyFilters();
+    }
+    
+    function updateSearchStatus(count) {
+      if (
+        activeFilters.name === '' && 
+        activeFilters.city === '' && 
+        activeFilters.game === ''
+      ) {
+        $('#searchStatus').text(`Showing all ${count} venues`);
+      } else {
+        $('#searchStatus').text(`Found ${count} venues matching your search`);
+      }
+    }
+    
+    function showLoader() {
+      $('#loaderContainer').show();
+      $('#groundContainer').hide();
+    }
+    
+    function hideLoader() {
+      $('#loaderContainer').hide();
+      $('#groundContainer').show();
+    }
+    
+    // Login modal functions
+    function showLoginModal(groundId, groundName) {
+      // Store the ground ID for later use
+      sessionStorage.setItem('selectedGroundId', groundId);
+      
+      // Update venue name in the modal
+      $('#venueName').text(groundName);
+      
+      // Show the modal
+      $('#loginModal').addClass('active');
+      
+      // Prevent scrolling on the body
+      $('body').css('overflow', 'hidden');
+    }
+    
+    function closeLoginModal() {
+      $('#loginModal').removeClass('active');
+      $('body').css('overflow', 'auto');
+    }
+    
+    // Debounce function to improve search performance
+    function debounce(func, wait) {
+      let timeout;
+      return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+          func.apply(context, args);
+        }, wait);
+      };
+    }
+	function openGoogleMaps(address) {
+				    if (!address) {
+				        alert("Address not available");
+				        return;
+				    }
+				    
+				    // Encode address for URL
+				    let encodedAddress = encodeURIComponent(address);
+
+				    // Open Google Maps in a new tab
+				    window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
+				}
+
+  </script>
+</body>
+</html>

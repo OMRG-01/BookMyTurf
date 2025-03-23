@@ -22,5 +22,9 @@ public interface GroundRepository extends JpaRepository<Ground, Long> {
 	 	
 	 	@Query("SELECT g FROM Ground g WHERE g.location = :city")
 	 	List<Ground> findByLocation(@Param("city") String city);
+	 	
+	 	@Query("SELECT g FROM Ground g JOIN FETCH g.game")
+	 	List<Ground> findAllWithGame();
 
+	 	List<Ground> findByGameId(Long gameId);
 }

@@ -75,4 +75,8 @@ public class GroundService {
     public List<Game> getAllGames() {
         return gameRepository.findAll();
     }
+    public List<Ground> getGroundsByGameId(Long gameId) {
+        return groundRepository.findByGameId(gameId);
+    }
+    
 }

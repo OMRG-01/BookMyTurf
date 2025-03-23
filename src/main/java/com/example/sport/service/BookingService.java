@@ -139,5 +139,19 @@ public class BookingService {
         User user = userRepository.findByName(name);
         return (user != null) ? user.getId() : null;
     }
+    
+    
+    public int countBookingsByGameId(Long gameId) {
+        return bookingRepository.countByGameId(gameId);
+    }
+
+    public double getTotalRevenueByGameId(Long gameId) {
+        return bookingRepository.findTotalRevenueByGameId(gameId).orElse(0.0);
+    }
+
+    public Long getMostPopularGroundByGameId(Long gameId) {
+        return bookingRepository.findMostPopularGroundByGameId(gameId).orElse(-1L);
+    }
+
 
 }

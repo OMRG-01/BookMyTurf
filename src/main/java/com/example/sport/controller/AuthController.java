@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.security.Principal;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class AuthController {
@@ -36,7 +37,33 @@ public class AuthController {
 
     @Autowired
     private SlotService slotService;
+    
+    @GetMapping("/venue")
+    public String showVenuePage() {
+        return "user/venue";  // Loads venue.html
+    }
 
+    @GetMapping("/getAllGrounds")
+    @ResponseBody
+    public List<Ground> getAllGrounds(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) Long gameId) {
+
+        List<Ground> allGrounds = groundService.getAllGrounds();
+        
+        // Apply filters if provided
+        return allGrounds.stream()
+                .filter(g -> (name == null || g.getName().toLowerCase().contains(name.toLowerCase())))
+                .filter(g -> (city == null || g.getLocation().equalsIgnoreCase(city)))
+                .filter(g -> (gameId == null || g.getGame().getId().equals(gameId)))
+                .collect(Collectors.toList());
+    }
+    
+    @GetMapping("/")
+    public String home() {
+        return "index"; // Redirects to index.html in 'static'
+    }
     @GetMapping("/login1")
     public String showLoginPage() {
         return "login"; // This remains the same
