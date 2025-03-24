@@ -1,5 +1,7 @@
 package com.example.sport.model;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,7 +34,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
-
+    
+ //
+    
     public User() {
     }
 

@@ -3,25 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sportplex | Login</title>
+    <title>BookMyTurf | Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <link rel="stylesheet" th:href="@{login.css}">
     <style>
-        
-		  
-		.main-container {
-        display: flex;
-        min-height: 100vh;
-        align-items: center;
-        justify-content: center;
-        padding: 0rem;
-        background-image: url('/images/soccer.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-    	}
+		
+
+        :root {
+            --primary-color: #00b894;
+            --secondary-color: #0984e3;
+            --accent-color: #fdcb6e;
+            --text-primary: #2d3436;
+            --text-secondary: #636e72;
+            --bg-color: #f5f6fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --gradient-primary: linear-gradient(135deg, #00b894, #0984e3);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #00b894;
+            --secondary-color: #0984e3;
+            --accent-color: #fdcb6e;
+            --text-primary: #f5f6fa;
+            --text-secondary: #dfe6e9;
+            --bg-color: #2d3436;
+            --card-bg: rgba(44, 62, 80, 0.9);
+            --navbar-bg: rgba(44, 62, 80, 0.95);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --gradient-primary: linear-gradient(135deg, #00b894, #0984e3);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background-color: var(--navbar-bg);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+       
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+        }
+
+       
+
+        .navbar-dark .navbar-nav .nav-link {
+            color: var(--text-primary);
+            font-weight: 500;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-dark .navbar-nav .nav-link:hover {
+            background-color: var(--primary-color);
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .navbar-dark .navbar-nav .nav-link i {
+            margin-right: 5px;
+        }
+
+        .dark-mode-toggle {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            border-radius: 25px;
+            color: var(--text-primary);
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode-toggle:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .dark-mode-toggle i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            position: relative;
+            background: var(--bg-color);
+        }
+
         .bg-slideshow {
             position: absolute;
             width: 100%;
@@ -29,186 +123,614 @@
             top: 0;
             left: 0;
             z-index: 0;
-            animation: imageTransition 20s infinite;
-            background-size: cover;
-            background-position: center;
         }
 
-        @keyframes imageTransition {
-            0%, 100% {
-               background-image: url('');
-
-                opacity: 1;
-            }
-            25% {
-                background-image: url('https://source.unsplash.com/random/1920x1080?sports2');
-                opacity: 1;
-            }
-            50% {
-                background-image: url('https://source.unsplash.com/random/1920x1080?sports3');
-                opacity: 1;
-            }
-            75% {
-                background-image: url('https://source.unsplash.com/random/1920x1080?sports4');
-                opacity: 1;
-            }
-        }
-
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
-            background: rgba(0, 0, 0, 0.5); /* Dark overlay for better contrast */
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-        }
-
-        
-        [data-theme="dark"] {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --text-color: #fff;
-            --bg-color: #121212;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            transition: all 0.3s ease;
-        }
-
-        .header {
-            background-color: var(--primary-color);
-            padding: 1rem;
-        }
-
-        .main-container {
-            min-height: 100vh;
-            padding: 2rem 0;
-        }
-
-        .login-form {
-		    position: absolute;
-		    right: 10%;
-		    top: 50%;
-		    transform: translateY(-50%);
-		    background: rgba(255, 255, 255, 0.1);
-		    padding: 2rem;
-		    border-radius: 15px;
-		    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-		    transition: all 0.3s ease;
-		    width: 350px; /* Adjust width as needed */
-		}
-		
-		.login-form:hover {
-		    transform: translateY(-50%) scale(1.05);
-		    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-		}
-
-
-        .image-container {
-            height: 600px;
-            background-size: cover;
-            background-position: center;
-            border-radius: 15px;
-            animation: imageTransition 16s infinite;
-        }
-
-        @keyframes imageTransition {
-            0%, 100% { background-image: url('https://source.unsplash.com/random/800x600?sports1'); }
-            33% { background-image: url('https://source.unsplash.com/random/800x600?sports2'); }
-            66% { background-image: url('https://source.unsplash.com/random/800x600?sports3'); }
-        }
-
-        .form-control {
-            border-radius: 25px;
-            padding: 1rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 25px;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-         /* Add particles container styling */
-        #particles-js {
-            position: fixed;
+        .bg-slideshow::after {
+            content: '';
+            position: absolute;
             width: 100%;
             height: 100%;
             top: 0;
             left: 0;
-            z-index: -1;
-            pointer-events: none;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
+            z-index: 1;
         }
 
-        /* Update main container for layering */
-        .main-container {
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .login-form {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            width: 400px;
+            margin-left: auto;
+            margin-right: 10%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .login-form h2 {
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 12px;
+            padding: 12px 15px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.3);
+            border-color: var(--primary-color);
+        }
+
+        [data-theme="dark"] .form-control {
+            background-color: rgba(44, 62, 80, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(1px);
+        }
+
+        .login-form .form-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .login-options {
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+        }
+
+        .login-divider::before,
+        .login-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--text-secondary);
+            opacity: 0.2;
+        }
+
+        .login-divider span {
+            padding: 0 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-login button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .social-login button:hover {
+            transform: translateY(-3px);
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .signup-link a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .site-footer {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            padding: 3rem 0 1.5rem;
+            position: relative;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            padding: 0 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h5 {
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+            position: relative;
+            display: inline-block;
+            color: var(--primary-color);
+        }
+
+        .footer-section h5::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -8px;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .footer-links i {
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            transform: translateY(-3px);
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .newsletter-form {
+            display: flex;
+            margin-top: 1rem;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 10px 15px;
+            border-radius: 8px 0 0 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .newsletter-btn {
+            padding: 10px 15px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .footer-bottom a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .footer-bottom a:hover {
+            text-decoration: underline;
+        }
+
+        #toast-container {
+            z-index: 1100;
+        }
+
+        .toast {
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/images/soccer.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.7);
+            z-index: -1;
+        }
+
+        .hero-content {
             position: relative;
             z-index: 1;
-            min-height: 90vh;
-            padding: 2rem 0;
+            max-width: 500px;
+            margin-right: auto;
+            margin-left: 10%;
+            color: white;
         }
 
-        /* Update dark mode variables */
-        [data-theme="dark"] {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --text-color: #fff;
-            --bg-color: #121212;
-            --particle-color: #ffffff;
-            --particle-line: rgba(255,255,255,0.2);
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        :root {
-            --primary-color: #1abc9c;
-            --secondary-color: #16a085;
-            --accent-color: #f39c12;
-            --dark-color: #2c3e50;
-            --light-color: #ffffff;
-            --particle-color: #2c3e50;
-            --particle-line: rgba(44,62,80,0.2);
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
+
+        @media (max-width: 992px) {
+            .login-form {
+                margin: 0 auto;
+                width: 90%;
+                max-width: 400px;
+            }
+            
+            .hero-content {
+                display: none;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+            
+            .footer-section {
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* Animated background */
+        .animated-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .animated-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(125deg, #00b894, #0984e3, #6c5ce7, #00cec9);
+            background-size: 400% 400%;
+            opacity: 0.15;
+            animation: gradientBG 15s ease infinite;
+        }
+
+		/* Add this to your CSS */
+		.hero-background {
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 100%;
+		    height: 100%;
+		    background-size: cover;
+		    background-position: center;
+		    filter: brightness(0.7);
+		    z-index: -1;
+		    animation: imageTransition 20s infinite;
+		}
+
+		@keyframes imageTransition {
+		    0%, 100% {
+		        background-image: url('/images/soccer.jpg');
+		        opacity: 1;
+		    }
+		    25% {
+		        background-image: url('/images/basketball.jpg');
+		        opacity: 1;
+		    }
+		    50% {
+		        background-image: url('/images/tennis.jpg');
+		        opacity: 1;
+		    }
+		    75% {
+		        background-image: url('/images/football.jpg');
+		        opacity: 1;
+		    }
+		}
+		/* Forgot Password Modal Styling */
+		#forgotPasswordModal .modal-content {
+		    border-radius: 15px;
+		    border: none;
+		    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+		    background: var(--card-bg);
+		    backdrop-filter: blur(10px);
+		}
+
+		#forgotPasswordModal .modal-header {
+		    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		    padding: 1.5rem 1.5rem 1rem;
+		}
+
+		#forgotPasswordModal .modal-title {
+		    font-weight: 700;
+		    background: var(--gradient-primary);
+		    -webkit-background-clip: text;
+		    background-clip: text;
+		    -webkit-text-fill-color: transparent;
+		}
+
+		#forgotPasswordModal .modal-body {
+		    padding: 1.5rem;
+		}
+
+		#forgotPasswordModal .form-label {
+		    font-weight: 500;
+		    color: var(--text-secondary);
+		    margin-bottom: 0.5rem;
+		}
+
+		#forgotPasswordModal .input-group-text {
+		    background-color: rgba(255, 255, 255, 0.05);
+		    border-color: rgba(255, 255, 255, 0.1);
+		    color: var(--primary-color);
+		}
+
+		#forgotPasswordModal .form-control {
+		    border-radius: 0 8px 8px 0;
+		    padding: 12px 15px;
+		    border: 1px solid rgba(255, 255, 255, 0.1);
+		    background-color: rgba(255, 255, 255, 0.05);
+		    transition: all 0.3s ease;
+		    color: var(--text-primary);
+		    height: 45px;
+		}
+
+		#forgotPasswordModal .form-control:focus {
+		    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.3);
+		    border-color: var(--primary-color);
+		}
+
+		#forgotPasswordModal .btn {
+		    padding: 10px 20px;
+		    border-radius: 8px;
+		    font-weight: 600;
+		    transition: all 0.3s ease;
+		}
+
+		#forgotPasswordModal .btn-primary {
+		    background: var(--gradient-primary);
+		    border: none;
+		    box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+		}
+
+		#forgotPasswordModal .btn-primary:hover {
+		    transform: translateY(-3px);
+		    box-shadow: 0 8px 20px rgba(0, 184, 148, 0.4);
+		}
+
+		#forgotPasswordModal .btn-success {
+		    background: linear-gradient(135deg, #00b894, #00a884);
+		    border: none;
+		    box-shadow: 0 5px 15px rgba(0, 168, 132, 0.3);
+		}
+
+		#forgotPasswordModal .btn-success:hover {
+		    transform: translateY(-3px);
+		    box-shadow: 0 8px 20px rgba(0, 168, 132, 0.4);
+		}
+
+		#forgotPasswordModal .btn-link {
+		    text-decoration: none;
+		    padding: 8px 12px;
+		    color: var(--text-secondary);
+		}
+
+		#forgotPasswordModal .btn-link:hover {
+		    color: var(--primary-color);
+		    background: rgba(255, 255, 255, 0.05);
+		    border-radius: 8px;
+		}
+
+		#forgotPasswordModal .progress {
+		    background-color: rgba(255, 255, 255, 0.1);
+		    border-radius: 10px;
+		}
+
+		/* Password strength indicators */
+		#forgotPasswordModal .progress-bar.weak {
+		    background: linear-gradient(to right, #ff4757, #ff6b81);
+		}
+
+		#forgotPasswordModal .progress-bar.medium {
+		    background: linear-gradient(to right, #ffa502, #ff7f50);
+		}
+
+		#forgotPasswordModal .progress-bar.strong {
+		    background: linear-gradient(to right, #2ed573, #7bed9f);
+		}
+
+		#resendOtp:hover {
+		    color: var(--primary-color) !important;
+		    text-decoration: underline;
+		}
+
+		/* Transition animations for steps */
+		#step1, #step2, #step3 {
+		    transition: all 0.3s ease;
+		}
+
+		.fade-in {
+		    animation: fadeIn 0.4s ease forwards;
+		}
+
+		.fade-out {
+		    animation: fadeOut 0.4s ease forwards;
+		}
+
+		@keyframes fadeIn {
+		    from { opacity: 0; transform: translateY(10px); }
+		    to { opacity: 1; transform: translateY(0); }
+		}
+
+		@keyframes fadeOut {
+		    from { opacity: 1; transform: translateY(0); }
+		    to { opacity: 0; transform: translateY(10px); }
+		}
     </style>
 </head>
 <body>
-  
-       <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-    <div class="container-fluid">
-        <a class="btn navbar-brand" onclick="redirectToDashboard()">
-            <i class="fas fa-futbol brand-icon"></i>
-            BookMyTurf
-        </a>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="btn navbar-brand" onclick="redirectToDashboard()">
+                <i class="fas fa-futbol brand-icon"></i>
+                BookMyTurf
+            </a>
 
-        <!-- Dark Mode Toggle -->
-        <button class="dark-mode-toggle me-3" onclick="toggleDarkMode()">
-            <i class="fas fa-moon"></i>
-            <span>Dark Mode</span>
-        </button>
+            <!-- Dark Mode Toggle -->
+            <button class="dark-mode-toggle me-3" onclick="toggleDarkMode()">
+                <i class="fas fa-moon"></i>
+                <span>Dark Mode</span>
+            </button>
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-
-                <li class="nav-item">
-                    <a class="btn nav-link" onclick="redirectToDashboard()">
-                        <i class="fas fa-home"></i>
-                        Home
-                    </a>
-                </li>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="btn nav-link" onclick="redirectToDashboard()">
+                            <i class="fas fa-home"></i>
+                            Home
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">
                             <i class="fas fa-info-circle"></i>
@@ -221,116 +743,630 @@
                             Contact
                         </a>
                     </li>
-            </ul>
-            <ul class="navbar-nav ms-3">
+                </ul>
+                <ul class="navbar-nav ms-3">
                     <li class="nav-item">
-                        <a class="btn nav-link" th:hrf="@{/login1}">
+                        <a class="btn nav-link active" th:href="@{/login1}">
                             <i class="fas fa-sign-in-alt"></i>
                             Sign In
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link"  th:href="@{/register1}">
+                        <a class="nav-link" th:href="@{/register1}">
                             <i class="fas fa-user-plus"></i>
                             Sign Up
                         </a>
                     </li>
-            </ul>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-  
-
-   <main class="main-container">
-        <div class="container">
+    <main class="main-container">
+        <div class="animated-background"></div>
+        <div class="hero-background"></div>
+        
+        <div class="container content-wrapper">
+            <div class="hero-content">
+                <h1 class="hero-title">Reserve Your Perfect Play Space</h1>
+                <p class="hero-subtitle">Booking sports facilities has never been easier. Join thousands of athletes who trust BookMyTurf.</p>
+            </div>
             
+            <form class="login-form" th:action="@{/login}" method="post">
+                <h2 class="mb-4 text-center"><i class="fas fa-sign-in-alt"></i> Member Login</h2>
                 
-                <div class="col-lg-6">
-                    <form class="login-form" th:action="@{/login}" method="post">
-                        <h2 class="mb-4 text-center"><i class="fas fa-sign-in-alt"></i> Member Login</h2>
-                        
-                        <div class="mb-3">
-                            <label class="form-label"><i class="fas fa-envelope"></i> Email:</label>
-                            <input type="email" name="email" class="form-control" required>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label class="form-label"><i class="fas fa-lock"></i> Password:</label>
-                            <input type="password" name="password" class="form-control" required>
-                        </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-sign-in-alt"></i> Login
-                            </button>
-                        </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+                </div>
+                
+                <div class="login-options">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Remember me</label>
+                    </div>
+                    <a href="#"  id="forgotPasswordLink">Forgot password?</a>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </div>
+                
+                <div class="login-divider">
+                    <span>OR</span>
+                </div>
+                
+                <div class="social-login">
+                    <button type="button"><i class="fab fa-google"></i></button>
+                    <button type="button"><i class="fab fa-facebook-f"></i></button>
+                    <button type="button"><i class="fab fa-twitter"></i></button>
+                </div>
+                
+                <div class="signup-link">
+                    Don't have an account? <a th:href="@{/register1}">Sign up now</a>
+                </div>
+            </form>
+        </div>
+        
+        <div id="toast-container" class="position-fixed top-0 end-0 p-3">
+            <div id="toast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body" id="toast-message">
+                        Invalid Email or Password!
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+		<!-- Forgot Password Modal -->
+		<div id="forgotPasswordModal" class="modal fade" tabindex="-1">
+		    <div class="modal-dialog modal-dialog-centered">
+		        <div class="modal-content">
+		            <div class="modal-header">
+		                <h5 class="modal-title">
+		                    <i class="fas fa-key me-2"></i>Recover Your Password
+		                </h5>
+		                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+		            </div>
+		            <div class="modal-body">
+		                <!-- Step 1: Email Input -->
+		                <div id="step1">
+		                    <p class="text-secondary mb-3">Enter your email address to receive a one-time password.</p>
+		                    <div class="form-group mb-3">
+		                        <label class="form-label"><i class="fas fa-envelope me-2"></i>Email Address</label>
+		                        <div class="input-group">
+		                            <span class="input-group-text"><i class="fas fa-at"></i></span>
+		                            <input type="email" id="forgotEmail" class="form-control" placeholder="Enter your registered email">
+		                        </div>
+		                    </div>
+		                    <div class="d-grid gap-2">
+		                        <button class="btn btn-primary" id="sendOtpBtn">
+		                            <i class="fas fa-paper-plane me-2"></i>Send OTP
+		                        </button>
+		                    </div>
+		                </div>
+		                
+		                <!-- Step 2: OTP Verification -->
+		                <div id="step2" style="display: none;">
+		                    <p class="text-secondary mb-3">We've sent a verification code to your email. Please enter it below.</p>
+		                    <div class="form-group mb-3">
+		                        <label class="form-label"><i class="fas fa-shield-alt me-2"></i>Enter OTP</label>
+		                        <div class="input-group">
+		                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+		                            <input type="text" id="otp" class="form-control" placeholder="Enter 6-digit OTP">
+		                        </div>
+		                        <div class="text-end mt-2">
+		                            <a href="#" id="resendOtp" class="text-secondary small">Didn't receive? Resend OTP</a>
+		                        </div>
+		                    </div>
+		                    <div class="d-grid gap-2">
+		                        <button class="btn btn-success" id="verifyOtpBtn">
+		                            <i class="fas fa-check-circle me-2"></i>Verify OTP
+		                        </button>
+		                    </div>
+		                    <div class="mt-3">
+		                        <button class="btn btn-link text-secondary" id="backToStep1">
+		                            <i class="fas fa-arrow-left me-2"></i>Back to Email
+		                        </button>
+		                    </div>
+		                </div>
+		                
+		                <!-- Step 3: Password Reset -->
+		                <div id="step3" style="display: none;">
+		                    <p class="text-secondary mb-3">Create a new password for your account.</p>
+		                    <div class="form-group mb-3">
+		                        <label class="form-label"><i class="fas fa-lock me-2"></i>New Password</label>
+		                        <div class="input-group">
+		                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+		                            <input type="password" id="newPassword" class="form-control" placeholder="Create new password">
+		                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+		                                <i class="fas fa-eye"></i>
+		                            </button>
+		                        </div>
+		                        <div class="progress mt-2" style="height: 5px;">
+		                            <div id="passwordStrength" class="progress-bar" role="progressbar" style="width: 0%"></div>
+		                        </div>
+		                        <div id="passwordHint" class="form-text mt-1">Use at least 8 characters with letters, numbers and symbols</div>
+		                    </div>
+		                    <div class="form-group mb-3">
+		                        <label class="form-label"><i class="fas fa-lock me-2"></i>Confirm Password</label>
+		                        <div class="input-group">
+		                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+		                            <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm new password">
+		                        </div>
+		                        <div id="passwordMatch" class="form-text mt-1"></div>
+		                    </div>
+		                    <div class="d-grid gap-2">
+		                        <button class="btn btn-primary" id="resetPasswordBtn">
+		                            <i class="fas fa-sync-alt me-2"></i>Reset Password
+		                        </button>
+		                    </div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h5>About BookMyTurf</h5>
+                    <p>Your premier destination for sports turf bookings. Experience world-class facilities with seamless booking management.</p>
+                    <div class="social-links">
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i>Home</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i>About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i>Our Facilities</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i>Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h5>Contact Info</h5>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i>Fergusson College, Shivajinagar, Pune</a></li>
+                        <li><a href="tel:+1234567890"><i class="fas fa-phone"></i>+91 8262915362</a></li>
+                        <li><a href="mailto:info@bookmyturf.com"><i class="fas fa-envelope"></i>bookmyturf@gmail.com</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe for updates and special offers:</p>
+                    <form class="newsletter-form">
+                        <input type="email" class="newsletter-input" placeholder="Enter your email">
+                        <button type="submit" class="newsletter-btn">Subscribe</button>
                     </form>
                 </div>
             </div>
-       
-    </main>
 
-   <footer class="site-footer">
-    <div class="footer-container">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h5>About TurfZone</h5>
-                <p>Your premier destination for sports turf bookings. Experience world-class facilities with seamless booking management.</p>
-                <div class="social-links">
-                    <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                    <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
-                </div>
-            </div>
-
-            <div class="footer-section">
-                <h5>Quick Links</h5>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-chevron-right"></i>Home</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i>About Us</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i>Our Facilities</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i>Contact</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h5>Contact Info</h5>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-map-marker-alt"></i>Sports City, Turf Road 123</a></li>
-                    <li><a href="tel:+1234567890"><i class="fas fa-phone"></i>+1 (234) 567-890</a></li>
-                    <li><a href="mailto:info@turfzone.com"><i class="fas fa-envelope"></i>info@turfzone.com</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-section">
-                <h5>Newsletter</h5>
-                <p>Subscribe for updates and special offers:</p>
-                <form class="newsletter-form">
-                    <input type="email" class="newsletter-input" placeholder="Enter your email">
-                    <button type="submit" class="newsletter-btn">Subscribe</button>
-                </form>
+            <div class="footer-bottom">
+                <p>&copy; <a href="#">BookMyTurf</a>. All rights reserved.
+                <span style="margin: 0 10px">|</span>
+                <a href="#">Privacy Policy</a>
+                <span style="margin: 0 10px">|</span>
+                <a href="#">Terms of Service</a></p>
             </div>
         </div>
+    </footer>
 
-        <div class="footer-bottom">
-            <p>&copy; <a href="#">Turf Booking System</a>. All rights reserved.
-            <span style="margin: 0 10px">|</span>
-            <a href="#">Privacy Policy</a>
-            <span style="margin: 0 10px">|</span>
-            <a href="#">Terms of Service</a></p>
-        </div>
-    </div>
-</footer>
-  
     <script>
-		 function redirectToDashboard() {
-			 window.location.href = '/user/dashboard'; // Match controller's @GetMapping path
-		}
+		
+        // Check for saved theme preference or default to light
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            
+            // Update button icon based on current theme
+            updateDarkModeToggle();
+        });
+        
+        function toggleDarkMode() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update button icon and text
+            updateDarkModeToggle();
+        }
+        
+        function updateDarkModeToggle() {
+            const darkModeToggle = document.querySelector('.dark-mode-toggle');
+            const icon = darkModeToggle.querySelector('i');
+            const text = darkModeToggle.querySelector('span');
+            
+            if (document.body.getAttribute('data-theme') === 'dark') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Light Mode';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Dark Mode';
+            }
+        }
+        
+        function redirectToDashboard() {
+            window.location.href = '/login1'; // Match controller's @GetMapping path
+        }
+        
+        function showToast(message) {
+            let toastElement = document.getElementById('toast');
+            let toastBody = document.getElementById('toast-message');
+            toastBody.textContent = message;
+            let toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+        
+        // Check URL parameters for error messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const errorMsg = urlParams.get('error');
+            
+            if (errorMsg) {
+                showToast(decodeURIComponent(errorMsg));
+            }
+        });
+		
+		document.addEventListener("DOMContentLoaded", function () {
+		       const forgotPasswordModal = new bootstrap.Modal(document.getElementById("forgotPasswordModal"));
+		       document.getElementById("forgotPasswordLink").addEventListener("click", function (event) {
+		           event.preventDefault();
+		           forgotPasswordModal.show();
+		       });
 
-	</script>
-	<script src="dash.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+		       // Theme Preference
+		       const savedTheme = localStorage.getItem('theme') || 'light';
+		       document.body.setAttribute('data-theme', savedTheme);
+		       updateDarkModeToggle();
+
+		       function toggleDarkMode() {
+		           const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+		           document.body.setAttribute('data-theme', newTheme);
+		           localStorage.setItem('theme', newTheme);
+		           updateDarkModeToggle();
+		       }
+
+		       function updateDarkModeToggle() {
+		           const darkModeToggle = document.querySelector('.dark-mode-toggle');
+		           if (!darkModeToggle) return;
+		           const icon = darkModeToggle.querySelector('i');
+		           const text = darkModeToggle.querySelector('span');
+
+		           if (document.body.getAttribute('data-theme') === 'dark') {
+		               icon.className = 'fas fa-sun';
+		               text.textContent = 'Light Mode';
+		           } else {
+		               icon.className = 'fas fa-moon';
+		               text.textContent = 'Dark Mode';
+		           }
+		       }
+
+		       function showToast(message) {
+		           let toastElement = document.getElementById('toast');
+		           let toastBody = document.getElementById('toast-message');
+		           if (!toastElement || !toastBody) return;
+
+		           toastBody.textContent = message;
+		           let toast = new bootstrap.Toast(toastElement);
+		           toast.show();
+		       }
+
+		       // Handle error messages in URL
+		       const urlParams = new URLSearchParams(window.location.search);
+		       if (urlParams.has('error')) {
+		           showToast(decodeURIComponent(urlParams.get('error')));
+		       }
+		   });
+
+		   // Forgot Password Functionality
+		   $(document).ready(function() {
+		       const modal = $("#forgotPasswordModal");
+		       const step1 = $("#step1");
+		       const step2 = $("#step2");
+		       const step3 = $("#step3");
+		       let otpTimer;
+		       let remainingTime = 60;
+			   let email = "";
+			   let userEmail = "";
+			   
+		       // Reset modal state when closed
+		       modal.on('hidden.bs.modal', function() {
+		           resetModalState();
+		       });
+		       
+		       // Open modal when clicking "Forgot Password?"
+		       $("#forgotPasswordLink").click(function(event) {
+		           event.preventDefault();
+		           resetModalState();
+		           modal.modal('show');
+		       });
+		       
+		       // Toggle password visibility
+		       $("#togglePassword").click(function() {
+		           const passwordInput = $("#newPassword");
+		           const icon = $(this).find("i");
+		           
+		           if (passwordInput.attr("type") === "password") {
+		               passwordInput.attr("type", "text");
+		               icon.removeClass("fa-eye").addClass("fa-eye-slash");
+		           } else {
+		               passwordInput.attr("type", "password");
+		               icon.removeClass("fa-eye-slash").addClass("fa-eye");
+		           }
+		       });
+		       
+		       // Send OTP
+		       $("#sendOtpBtn").click(function() {
+		           const email = $("#forgotEmail").val();
+		           
+		           if (!isValidEmail(email)) {
+		               showToast("Please enter a valid email address", "warning");
+		               return;
+		           }
+		           
+		           // Show loading state
+		           $(this).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Sending...');
+		           $(this).prop('disabled', true);
+		           
+				   
+		           // Simulate API call (replace with actual API call)
+		           setTimeout(function() {
+					$.post("/forgot-password", { email: email })
+					           .done(function(response) {
+					               showToast("OTP sent successfully! Check your email", "success");
+								   userEmail = $("#forgotEmail").val();
+					               step1.hide();
+					               step2.fadeIn();
+					           })
+					           .fail(function(error) {
+					               alert(error.responseText);
+					           })
+					           .always(function() {
+					               $("#sendOtpBtn").html('<i class="fas fa-paper-plane me-2"></i>Send OTP')
+					                              .prop('disabled', false);
+					               startResendTimer();
+					           });
+		       
+		           }, 1500);
+				   
+		       });
+		       
+		       // Verify OTP
+		       $("#verifyOtpBtn").click(function() {
+		           const otp = $("#otp").val();
+				   
+		           if (!otp || otp.length !== 6 || !/^\d+$/.test(otp)) {
+		               showToast("Please enter a valid 6-digit OTP", "warning");
+		               return;
+		           }
+		           
+		           // Show loading state
+		           $(this).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Verifying...');
+		           $(this).prop('disabled', true);
+		           
+				   const email = $("#forgotEmail").val();
+					$.post("/verify-otp", { email: email, otp: otp })  // Now email is defined globally
+					           .done(function(response) {
+					               step2.hide();
+					               step3.fadeIn();
+					               showToast("OTP verified successfully!", "success");
+					           })
+					           .fail(function(error) {
+					               alert(error.responseText);
+					           })
+					           .always(function() {
+					               $("#verifyOtpBtn").html('<i class="fas fa-check-circle me-2"></i>Verify OTP')
+					                                 .prop('disabled', false);
+					               clearInterval(otpTimer);
+					           });
+		               
+		           
+		       });
+		       
+		       // Reset Password
+		       $("#resetPasswordBtn").click(function() {
+		           const newPassword = $("#newPassword").val();
+		           const confirmPassword = $("#confirmPassword").val();
+				   const email = userEmail;
+				   
+		           if (newPassword.length < 8) {
+		               showToast("Password must be at least 8 characters", "warning");
+		               return;
+		           }
+		           
+		           if (newPassword !== confirmPassword) {
+		               showToast("Passwords do not match", "warning");
+		               return;
+		           }
+		           
+		           // Show loading state
+		           $(this).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Resetting...');
+		           $(this).prop('disabled', true);
+		           
+		           // Simulate API call (replace with actual API call)
+		       
+					$.post("/reset-password", { email: email, newPassword: newPassword })
+					           .done(function(response) {
+					               alert(response);
+					               modal.modal('hide');
+					               showToast("Password reset successfully! You can now login", "success");
+					           })
+					           .fail(function(error) {
+					               alert(error.responseText);
+					           })
+					           .always(function() {
+					               $("#resetPasswordBtn").html('<i class="fas fa-sync-alt me-2"></i>Reset Password')
+					                                     .prop('disabled', false);
+					           });
+			
+		       });
+		       
+		       // Back button
+		       $("#backToStep1").click(function() {
+		           step2.hide();
+		           step1.fadeIn();
+		           clearInterval(otpTimer);
+		       });
+		       
+		       // Resend OTP
+		       $("#resendOtp").click(function(e) {
+		           e.preventDefault();
+		           
+		           if ($(this).hasClass('disabled')) {
+		               return;
+		           }
+		           
+		           // Disable the link and show loading
+		           $(this).addClass('disabled').html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Sending...');
+		           
+		           // Simulate API call (replace with actual API call)
+		           setTimeout(function() {
+		               // Reset timer
+		               remainingTime = 60;
+		               startResendTimer();
+		               
+		               showToast("OTP resent successfully!", "success");
+		           }, 1500);
+		       });
+		       
+		       // Check password strength
+		       $("#newPassword").on('input', function() {
+		           const password = $(this).val();
+		           const strength = checkPasswordStrength(password);
+		           
+		           // Update password strength indicator
+		           const progressBar = $("#passwordStrength");
+		           progressBar.removeClass("weak medium strong").css("width", strength.percentage + "%");
+		           
+		           if (strength.score === 1) {
+		               progressBar.addClass("weak");
+		               $("#passwordHint").text("Weak - Try adding numbers and symbols");
+		           } else if (strength.score === 2) {
+		               progressBar.addClass("medium");
+		               $("#passwordHint").text("Medium - Consider using a longer password");
+		           } else if (strength.score === 3) {
+		               progressBar.addClass("strong");
+		               $("#passwordHint").text("Strong password!");
+		           } else {
+		               $("#passwordHint").text("Use at least 8 characters with letters, numbers and symbols");
+		           }
+		       });
+		       
+		       // Check if passwords match
+		       $("#confirmPassword").on('input', function() {
+		           const newPassword = $("#newPassword").val();
+		           const confirmPassword = $(this).val();
+		           
+		           if (confirmPassword === '') {
+		               $("#passwordMatch").text('');
+		           } else if (newPassword === confirmPassword) {
+		               $("#passwordMatch").text('Passwords match!').removeClass('text-danger').addClass('text-success');
+		           } else {
+		               $("#passwordMatch").text('Passwords do not match').removeClass('text-success').addClass('text-danger');
+		           }
+		       });
+		       
+		       // Helper Functions
+		       function resetModalState() {
+		           step2.hide();
+		           step3.hide();
+		           step1.show();
+		           
+		           $("#forgotEmail").val('');
+		           $("#otp").val('');
+		           $("#newPassword").val('');
+		           $("#confirmPassword").val('');
+		           
+		           $("#passwordHint").text('Use at least 8 characters with letters, numbers and symbols');
+		           $("#passwordMatch").text('');
+		           $("#passwordStrength").css("width", "0%").removeClass("weak medium strong");
+		           
+		           clearInterval(otpTimer);
+		           $("#resendOtp").html('Didn\'t receive? Resend OTP').removeClass('disabled');
+		       }
+		       
+		       function startResendTimer() {
+		           remainingTime = 60;
+		           $("#resendOtp").addClass('disabled').html(`Resend in ${remainingTime}s`);
+		           
+		           clearInterval(otpTimer);
+		           otpTimer = setInterval(function() {
+		               remainingTime--;
+		               $("#resendOtp").html(`Resend in ${remainingTime}s`);
+		               
+		               if (remainingTime <= 0) {
+		                   clearInterval(otpTimer);
+		                   $("#resendOtp").removeClass('disabled').html('Resend OTP');
+		               }
+		           }, 1000);
+		       }
+		       
+		       function isValidEmail(email) {
+		           const regex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+		           return regex.test(email);
+		       }
+		       
+		       function checkPasswordStrength(password) {
+		           let score = 0;
+		           
+		           // Length check
+		           if (password.length >= 8) score++;
+		           
+		           // Complexity checks
+		           if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+		           if (/[0-9]/.test(password) && /[^A-Za-z0-9]/.test(password)) score++;
+		           
+		           let percentage = (password.length === 0) ? 0 : Math.min(Math.max((score / 3) * 100, 33), 100);
+		           
+		           return {
+		               score: score,
+		               percentage: percentage
+		           };
+		       }
+		       
+		       function showToast(message, type = "danger") {
+		           // Clone the existing toast structure but change its styling
+		           let toastElement = $("#toast").clone();
+		           toastElement.attr("id", "dynamic-toast");
+		           
+		           // Set the type
+		           toastElement.removeClass("text-bg-danger").addClass(`text-bg-${type}`);
+		           
+		           // Set the message
+		           toastElement.find(".toast-body").text(message);
+		           
+		           // Append to container
+		           $("#toast-container").append(toastElement);
+		           
+		           // Show toast
+		           let toast = new bootstrap.Toast(toastElement);
+		           toast.show();
+		           
+		           // Remove after hiding
+		           toastElement.on('hidden.bs.toast', function() {
+		               $(this).remove();
+		           });
+		       }
+		   });
+    </script>
 </body>
 </html>

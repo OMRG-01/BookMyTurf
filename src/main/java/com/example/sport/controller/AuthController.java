@@ -76,12 +76,11 @@ public class AuthController {
                         HttpServletRequest request, 
                         Model model,
                         HttpServletResponse response) {
-        
-        // Input validation
+
         if (email == null || email.trim().isEmpty() || 
             password == null || password.trim().isEmpty()) {
             model.addAttribute("error", "Email and password are required");
-            return "login1";
+            return "login"; // Return login.html with error
         }
 
         try {
@@ -89,41 +88,28 @@ public class AuthController {
 
             if (user != null) {
                 HttpSession session = request.getSession(true);
-                
-                // Set session attributes
                 session.setAttribute("loggedInUser", user);
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("userRole", user.getRole().getRoleName());
-                
-                // Set session timeout (30 minutes)
                 session.setMaxInactiveInterval(30 * 60);
-                
-                // Add security headers
+
                 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
                 response.setHeader("Pragma", "no-cache");
                 response.setHeader("X-Content-Type-Options", "nosniff");
-                
-                // Role-based redirection
-                String redirectPath = user.getRole().getRoleName().equalsIgnoreCase("ADMIN") ? 
+
+                return user.getRole().getRoleName().equalsIgnoreCase("ADMIN") ?
                     "redirect:/admin/dashboard" : "redirect:/user/dashboard";
-                
-                // Add login timestamp
-                session.setAttribute("loginTime", System.currentTimeMillis());
-                
-                return redirectPath;
             } else {
-                // Security: Delay response for invalid credentials
-                Thread.sleep(2000); // 2 second delay
+                Thread.sleep(1000); // Delay to prevent brute force
                 model.addAttribute("error", "Invalid email or password");
-                return "login1";
+                return "login"; // Stay on login page with error message
             }
         } catch (Exception e) {
-            // Log the error
-            
-            model.addAttribute("error", "An error occurred during login. Please try again.");
-            return "login1";
+            model.addAttribute("error", "An error occurred. Please try again.");
+            return "login";
         }
     }
+
 
 
     

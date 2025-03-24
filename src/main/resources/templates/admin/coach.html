@@ -9,19 +9,89 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --background: #f8f9fa;
+            --primary-color: #2A5C82;
+            --secondary-color: #39B54A;
+            --accent-color: #f39c12;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
             --card-bg: #ffffff;
+            --header-bg: #2A5C82;
+            --input-border: #e0e0e0;
+            --input-focus-shadow: rgba(42, 92, 130, 0.2);
+            --success-btn: #39B54A;
+            --success-btn-hover: #2d9d3a;
+            --back-btn: #2A5C82;
+            --back-btn-hover: #1e4562;
+            --header-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --accent-color: #ff9800;
+            --text-color: #fff;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --header-bg: #1e1e1e;
+            --input-border: #333;
+            --input-focus-shadow: rgba(76, 175, 80, 0.2);
+            --success-btn: #4CAF50;
+            --success-btn-hover: #388e3c;
+            --back-btn: #2196F3;
+            --back-btn-hover: #1976d2;
+            --header-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.3);
         }
 
         body {
             font-family: 'Poppins', sans-serif;
             margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--header-text);
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .page-content {
             padding: 2rem;
-            background-color: var(--background);
-            color: var(--primary-color);
         }
 
         .container {
@@ -30,7 +100,7 @@
             background: var(--card-bg);
             padding: 2rem;
             border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px var(--shadow-color);
         }
 
         h2 {
@@ -39,6 +109,19 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 3px;
         }
 
         .form-group {
@@ -51,47 +134,62 @@
 
         label {
             font-weight: 500;
-            color: var(--primary-color);
+            color: var(--text-color);
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
+        label i {
+            color: var(--primary-color);
+        }
+
         input, select {
             padding: 0.8rem 1rem;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--input-border);
             border-radius: 8px;
             font-size: 1rem;
             transition: all 0.3s ease;
+            background-color: var(--card-bg);
+            color: var(--text-color);
         }
 
         input:focus, select:focus {
             outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--input-focus-shadow);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
         button {
-            background: var(--success-color);
+            background: var(--success-btn);
             color: white;
             padding: 1rem 2rem;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            font-weight: 500;
         }
 
         button:hover {
-            background: #219150;
+            background: var(--success-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
         }
 
         .back-btn {
-            background: var(--secondary-color);
+            background: var(--back-btn);
             color: white;
             text-decoration: none;
             padding: 0.8rem 1.5rem;
@@ -99,16 +197,27 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            margin-top: 1.5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .back-btn:hover {
-            background: #2980b9;
+            background: var(--back-btn-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
         }
 
         @media (max-width: 768px) {
-            .container {
+            .header {
                 padding: 1rem;
+            }
+            
+            .page-content {
+                padding: 1rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
             }
 
             .form-group {
@@ -116,7 +225,11 @@
                 gap: 0.5rem;
             }
 
-            button {
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            button, .back-btn {
                 width: 100%;
                 padding: 1rem;
             }
@@ -124,64 +237,79 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2><i class="fas fa-user-tie"></i>Add New Coach</h2>
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-shield-alt"></i>
+            <span>BookMyTurf</span>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" title="Toggle dark/light mode">
+            <i class="fas fa-moon"></i>
+        </button>
+    </header>
 
-        <form action="/admin/coach/add" method="post">
-            <div class="form-group">
-                <label for="name"><i class="fas fa-id-card"></i>Coach Name:</label>
-                <input type="text" id="name" name="name" required placeholder="Enter coach name">
-            </div>
+    <div class="page-content">
+        <div class="container">
+            <h2><i class="fas fa-user-tie"></i>Add New Coach</h2>
 
-            <div class="form-group">
-                <label for="experience"><i class="fas fa-briefcase"></i>Experience (Years):</label>
-                <input type="number" id="experience" name="experience" required placeholder="Years of experience">
-            </div>
+            <form action="/admin/coach/add" method="post">
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-id-card"></i>Coach Name:</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter coach name">
+                </div>
 
-            <div class="form-group">
-                <label for="specialization"><i class="fas fa-certificate"></i>Specialization:</label>
-                <input type="text" id="specialization" name="specialization" required placeholder="Coaching specialization">
-            </div>
+                <div class="form-group">
+                    <label for="experience"><i class="fas fa-briefcase"></i>Experience (Years):</label>
+                    <input type="number" id="experience" name="experience" required placeholder="Years of experience">
+                </div>
 
-            <div class="form-group">
-                <label for="phoneNumber"><i class="fas fa-phone"></i>Phone Number:</label>
-                <input type="text" id="phoneNumber" name="phoneNumber" required placeholder="Enter phone number">
-            </div>
+                <div class="form-group">
+                    <label for="specialization"><i class="fas fa-certificate"></i>Specialization:</label>
+                    <input type="text" id="specialization" name="specialization" required placeholder="Coaching specialization">
+                </div>
 
-            <div class="form-group">
-                <label for="email"><i class="fas fa-envelope"></i>Email:</label>
-                <input type="email" id="email" name="email" required placeholder="Enter email address">
-            </div>
+                <div class="form-group">
+                    <label for="phoneNumber"><i class="fas fa-phone"></i>Phone Number:</label>
+                    <input type="text" id="phoneNumber" name="phoneNumber" required placeholder="Enter phone number">
+                </div>
 
-            <div class="form-group">
-                <label for="salary"><i class="fas fa-money-bill-wave"></i>Salary:</label>
-                <input type="number" id="salary" name="salary" required placeholder="Enter salary amount">
-            </div>
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i>Email:</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter email address">
+                </div>
 
-            <div class="form-group">
-                <label for="gameId"><i class="fas fa-gamepad"></i>Select Game:</label>
-                <select id="gameId" name="gameId" required>
-                    <option value="">-- Select a Game --</option>
-                    <th:block th:each="game : ${games}">
-                        <option th:value="${game.id}" th:text="${game.gameName}"></option>
-                    </th:block>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label for="salary"><i class="fas fa-money-bill-wave"></i>Salary:</label>
+                    <input type="number" id="salary" name="salary" required placeholder="Enter salary amount">
+                </div>
 
-            <button type="submit">
-                <i class="fas fa-plus-circle"></i>
-                Add Coach
-            </button>
-        </form>
+                <div class="form-group">
+                    <label for="gameId"><i class="fas fa-gamepad"></i>Select Game:</label>
+                    <select id="gameId" name="gameId" required>
+                        <option value="">-- Select a Game --</option>
+                        <th:block th:each="game : ${games}">
+                            <option th:value="${game.id}" th:text="${game.gameName}"></option>
+                        </th:block>
+                    </select>
+                </div>
 
-        <a href="/admin/dashboard" class="back-btn">
-            <i class="fas fa-arrow-left"></i>
-            Back to Dashboard
-        </a>
+                <div class="action-buttons">
+                    <button type="submit">
+                        <i class="fas fa-plus-circle"></i>
+                        Add Coach
+                    </button>
+                    
+                    <a href="/admin/dashboard" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
+        // Initialize toastr
         toastr.options = {
             "closeButton": true,
             "progressBar": true,
@@ -196,6 +324,32 @@
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
         };
+
+        // Dark mode toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference or use default
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        
+        // Apply the saved theme or default
+        if (currentTheme === 'dark') {
+            document.body.setAttribute('data-theme', 'dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+        
+        // Toggle theme when button is clicked
+        themeToggle.addEventListener('click', () => {
+            if (document.body.getAttribute('data-theme') === 'dark') {
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+        });
     </script>
 </body>
 </html>
