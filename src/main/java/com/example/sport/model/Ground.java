@@ -1,8 +1,6 @@
 package com.example.sport.model;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import jakarta.persistence.*;
 
@@ -17,7 +15,7 @@ public class Ground {
     private String name;
     private String location;
     private String address;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
@@ -30,19 +28,6 @@ public class Ground {
     private LocalTime closingTime;
 
     private String imageFileName;
-    
-    @OneToMany(mappedBy = "ground", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Slot> slots = new ArrayList<>();
-
-    public List<Slot> getSlots() {
-        return slots != null ? slots : new ArrayList<>();
-    }
-
-    public void setSlots(List<Slot> slots) {
-        this.slots = slots;
-    }
-
-    
     @ManyToOne
     @JoinColumn(name = "coach_id", nullable = true)
     private Coach coach;  // Selected Coach

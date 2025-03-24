@@ -64,6 +64,8 @@ public class FinanceController {
             double totalRevenue = bookingService.getTotalRevenueByGameId(gameId);
 
             // 3️⃣ Average Price for Slots in Grounds that Host this Game
+
+            List<Ground> gameGrounds = groundService.getGroundsByGameId(gameId);
             // Fetch all slots for these grounds
             List<Slot> slots = slotService.getSlotsByGroundIds(
                 gameGrounds.stream().map(Ground::getId).collect(Collectors.toList())
