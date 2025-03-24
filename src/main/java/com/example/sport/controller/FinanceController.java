@@ -17,6 +17,7 @@ import com.example.sport.model.Slot;
 import com.example.sport.service.BookingService;
 import com.example.sport.service.GameService;
 import com.example.sport.service.GroundService;
+import com.example.sport.service.SlotService;
 
 @RestController
 @RequestMapping("/api/finance")
@@ -25,6 +26,9 @@ public class FinanceController {
 
     @Autowired
     private GameService gameService;
+    
+    @Autowired
+    private SlotService slotService;
 
     @Autowired
     private BookingService bookingService;
@@ -60,14 +64,16 @@ public class FinanceController {
             double totalRevenue = bookingService.getTotalRevenueByGameId(gameId);
 
             // 3️⃣ Average Price for Slots in Grounds that Host this Game
-            List<Ground> gameGrounds = groundService.getGroundsByGameId(gameId);
+            // Fetch all slots for these grounds
+            List<Slot> slots = slotService.getSlotsByGroundIds(
+                gameGrounds.stream().map(Ground::getId).collect(Collectors.toList())
+            );
 
-            double avgPrice = gameGrounds.stream()
-                .flatMap(ground -> ground.getSlots().stream())  // `getSlots()` is now non-null
+            // Calculate the average price
+            double avgPrice = slots.stream()
                 .mapToDouble(Slot::getPrice)
                 .average()
                 .orElse(0.0);
-
 
          // Convert Long to String explicitly
             String popularGround = String.valueOf(bookingService.getMostPopularGroundByGameId(gameId));

@@ -43,6 +43,10 @@ public class SlotService {
         return slotRepository.findByGroundId(groundId);
     }
 
+    public List<Slot> getSlotsByGroundIds(List<Long> groundIds) {
+        return slotRepository.findByGroundIds(groundIds);
+    }
+    
     // ✅ Delete a Slot
     public void deleteSlot(Long id) {
         slotRepository.deleteById(id);
