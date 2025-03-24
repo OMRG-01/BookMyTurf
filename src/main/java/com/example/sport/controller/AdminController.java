@@ -85,7 +85,7 @@ public class AdminController {
         return "admin/bookings"; // Redirect to user/bookings.html
     }
 
-    @GetMapping("/user/bookings/filter")
+    @GetMapping("/admin/bookings/filter")
     @ResponseBody
     public List<Map<String, Object>> filterBookings(
         @RequestParam(required = false) String groundName,

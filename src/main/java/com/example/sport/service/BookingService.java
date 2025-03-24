@@ -275,11 +275,16 @@ public class BookingService {
         }
 
         if (userName != null && !userName.isEmpty()) {
+            String finalUserName = userName.toLowerCase(); // Convert to lowercase
             bookings = bookings.stream()
-                    .filter(b -> userRepository.findById(b.getUserId())
-                        .map(User::getName).orElse("").equalsIgnoreCase(userName))
-                    .collect(Collectors.toList());
-            }
+                .filter(b -> userRepository.findById(b.getUserId())
+                    .map(User::getName)
+                    .map(String::toLowerCase)
+                    .orElse("")
+                    .contains(finalUserName)) // Allow partial match
+                .collect(Collectors.toList());
+        }
+
 
         if (gameName != null && !gameName.isEmpty()) {
             bookings = bookings.stream()
@@ -301,9 +306,10 @@ public class BookingService {
             bookingData.put("userName", userRepository.findById(b.getUserId()).map(User::getName).orElse(""));
             bookingData.put("gameName", gameRepository.findById(b.getGameId()).map(Game::getGameName).orElse(""));
             slotRepository.findById(b.getSlotId()).ifPresent(slot -> {
-                bookingData.put("startTime", slot.getStartTime().toString());
-                bookingData.put("endTime", slot.getEndTime().toString());
+                bookingData.put("startTime", slot.getStartTime() != null ? slot.getStartTime().toString() : "N/A");
+                bookingData.put("endTime", slot.getEndTime() != null ? slot.getEndTime().toString() : "N/A");
             });
+
             bookingData.put("groundName", groundRepository.findById(b.getGroundId()).map(Ground::getName).orElse(""));
             bookingData.put("price", b.getPrice());
             bookingData.put("paymentStatus", b.getPaymentStatus() == 1 ? "Paid" : "Unpaid");
