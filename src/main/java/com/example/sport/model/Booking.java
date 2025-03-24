@@ -1,6 +1,7 @@
 package com.example.sport.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import jakarta.persistence.*;
@@ -38,7 +39,22 @@ public class Booking {
 
     @Column(nullable = true)
     private String review; // Text feedback
+    
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime bookingTimestamp;  // Stores the booking creation time
 
+    public Booking() {
+        this.bookingTimestamp = LocalDateTime.now();  // Automatically set current time when a booking is created
+    }
+    
+    public LocalDateTime getBookingTimestamp() {
+        return bookingTimestamp;
+    }
+
+    public void setBookingTimestamp(LocalDateTime bookingTimestamp) {
+        this.bookingTimestamp = bookingTimestamp;
+    }
+    
     // Constructors, Getters & Setters
     public Integer getRating() {
         return rating;
@@ -65,7 +81,7 @@ public class Booking {
     
     
     
-    public LocalTime getStarTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 

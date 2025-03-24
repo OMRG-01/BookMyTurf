@@ -2,18 +2,23 @@ package com.example.sport.service;
 
 import com.example.sport.dto.BookingDTO;
 import com.example.sport.model.Booking;
+import com.example.sport.model.Game;
 import com.example.sport.model.Ground;
 import com.example.sport.model.Slot;
 import com.example.sport.model.User;
 import com.example.sport.repository.BookingRepository;
+import com.example.sport.repository.GameRepository;
 import com.example.sport.repository.GroundRepository;
+import com.example.sport.repository.SlotRepository;
 import com.example.sport.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +45,13 @@ public class BookingService {
 
     @Autowired
     private SlotService slotService;
+    
+    @Autowired
+    private GameRepository gameRepository;
+    
+    @Autowired
+    private SlotRepository slotRepository;
+
     
     /**
      * Fetches bookings for a user and maps the results to a list of BookingDTO.
@@ -80,7 +92,8 @@ public class BookingService {
         return bookings;  // Return the mapped list of BookingDTOs
     }
 
-    	
+    
+    
     public Booking saveBooking(Booking booking) {
         return bookingRepository.save(booking);
     }
@@ -102,6 +115,44 @@ public class BookingService {
         return bookingRepository.findBookedSlotIdsByDate(bookingDate);
     }
     
+    public List<Map<String, Object>> getTodayBookings() {
+        List<Booking> bookings = bookingRepository.findTodayBookings();
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Booking booking : bookings) {
+            Map<String, Object> bookingData = new HashMap<>();
+            bookingData.put("id", booking.getId());
+            bookingData.put("bookingDate", booking.getBookingDate().toString()); // ✅ Add Booking Date
+
+            
+            // Fetch user details
+            userRepository.findById(booking.getUserId()).ifPresent(user -> 
+                bookingData.put("userName", user.getName())
+            );
+
+            // Fetch game details
+            gameRepository.findById(booking.getGameId()).ifPresent(game -> 
+                bookingData.put("gameName", game.getGameName())
+            );
+
+            // Fetch ground details
+            groundRepository.findById(booking.getGroundId()).ifPresent(ground -> 
+                bookingData.put("groundName", ground.getName())
+            );
+
+            // Fetch slot details
+            slotRepository.findById(booking.getSlotId()).ifPresent(slot -> {
+                bookingData.put("startTime", slot.getStartTime());
+                bookingData.put("endTime", slot.getEndTime());
+            });
+
+            bookingData.put("price", booking.getPrice());
+            bookingData.put("paymentStatus", booking.getPaymentStatus() == 1 ? "Paid" : "Unpaid");
+
+            result.add(bookingData);
+        }
+        return result;
+    }
  // Fix for past bookings
     public List<BookingDTO> getPastBookings(Long userId) {
         List<Booking> bookings = bookingRepository.findPastBookings(userId, LocalDate.now()); // 🔥 Fix: Pass LocalDate.now()
@@ -179,7 +230,88 @@ public class BookingService {
         }).collect(Collectors.toList());
     }
     
+    public List<Map<String, Object>> getAllBookings() {
+        List<Booking> bookings = bookingRepository.findAll();
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Booking booking : bookings) {
+            Map<String, Object> bookingData = new HashMap<>();
+            bookingData.put("id", booking.getId());
+            bookingData.put("bookingDate", booking.getBookingDate().toString());
+
+            userRepository.findById(booking.getUserId()).ifPresent(user -> 
+                bookingData.put("userName", user.getName())
+            );
+
+            gameRepository.findById(booking.getGameId()).ifPresent(game -> 
+                bookingData.put("gameName", game.getGameName())
+            );
+
+            groundRepository.findById(booking.getGroundId()).ifPresent(ground -> 
+                bookingData.put("groundName", ground.getName())
+            );
+
+            slotRepository.findById(booking.getSlotId()).ifPresent(slot -> {
+                bookingData.put("startTime", slot.getStartTime());
+                bookingData.put("endTime", slot.getEndTime());
+            });
+
+            bookingData.put("price", booking.getPrice());
+            bookingData.put("paymentStatus", booking.getPaymentStatus() == 1 ? "Paid" : "Unpaid");
+
+            result.add(bookingData);
+        }
+        return result;
+    }
     
+    public List<Map<String, Object>> filterBookings(String groundName, String userName, String gameName, LocalDate bookingDate) {
+        List<Booking> bookings = bookingRepository.findAll();
+        
+        if (groundName != null && !groundName.isEmpty()) {
+            bookings = bookings.stream()
+                .filter(b -> groundRepository.findById(b.getGroundId())
+                    .map(Ground::getName).orElse("").equalsIgnoreCase(groundName))
+                .collect(Collectors.toList());
+        }
+
+        if (userName != null && !userName.isEmpty()) {
+            bookings = bookings.stream()
+                    .filter(b -> userRepository.findById(b.getUserId())
+                        .map(User::getName).orElse("").equalsIgnoreCase(userName))
+                    .collect(Collectors.toList());
+            }
+
+        if (gameName != null && !gameName.isEmpty()) {
+            bookings = bookings.stream()
+                .filter(b -> gameRepository.findById(b.getGameId())
+                    .map(Game::getGameName).orElse("").equalsIgnoreCase(gameName))
+                .collect(Collectors.toList());
+        }
+
+        if (bookingDate != null) {
+            bookings = bookings.stream()
+                .filter(b -> b.getBookingDate().equals(bookingDate))
+                .collect(Collectors.toList());
+        }
+
+        return bookings.stream().map(b -> {
+            Map<String, Object> bookingData = new HashMap<>();
+            bookingData.put("id", b.getId());
+            bookingData.put("bookingDate", b.getBookingDate().toString());
+            bookingData.put("userName", userRepository.findById(b.getUserId()).map(User::getName).orElse(""));
+            bookingData.put("gameName", gameRepository.findById(b.getGameId()).map(Game::getGameName).orElse(""));
+            slotRepository.findById(b.getSlotId()).ifPresent(slot -> {
+                bookingData.put("startTime", slot.getStartTime().toString());
+                bookingData.put("endTime", slot.getEndTime().toString());
+            });
+            bookingData.put("groundName", groundRepository.findById(b.getGroundId()).map(Ground::getName).orElse(""));
+            bookingData.put("price", b.getPrice());
+            bookingData.put("paymentStatus", b.getPaymentStatus() == 1 ? "Paid" : "Unpaid");
+            return bookingData;
+        }).collect(Collectors.toList());
+    }
+
+
     
     public Long getUserIdByName(String name) {
         User user = userRepository.findByName(name);

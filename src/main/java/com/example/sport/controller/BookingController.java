@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -197,8 +198,8 @@ public class BookingController {
             @RequestParam Long gameId,
             @RequestParam Long groundId,
             @RequestParam Long slotId,
-            @RequestParam String startTime,  // Accepting start time as String
-            @RequestParam String endTime, 
+            @RequestParam String startTime,
+            @RequestParam String endTime,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate bookingDate,
             @RequestParam Double price,
             @RequestParam String otp,
@@ -213,32 +214,31 @@ public class BookingController {
             return ResponseEntity.badRequest().body("Invalid OTP");
         }
 
-        // ✅ Check if slot is already booked for this date
         boolean isBooked = bookingService.isSlotBooked(slotId, bookingDate);
         if (isBooked) {
             return ResponseEntity.badRequest().body("This slot is already booked for the selected date.");
         }
-        
-        LocalTime start = LocalTime.parse(startTime); // Assuming startTime is in HH:mm format
-        LocalTime end = LocalTime.parse(endTime);     // Assuming endTime is in HH:mm format
 
-        
-        // Create booking since slot is available
+        LocalTime start = LocalTime.parse(startTime);
+        LocalTime end = LocalTime.parse(endTime);
+
         Booking booking = new Booking();
         booking.setUserId(user.getId());
         booking.setGameId(gameId);
         booking.setGroundId(groundId);
         booking.setSlotId(slotId);
-        booking.setPaymentStatus(0); // Default: Unpaid
+        booking.setPaymentStatus(0); 
         booking.setBookingDate(bookingDate);
         booking.setPrice(price);
-        booking.setStartTime(start);  // Set the parsed startTime
-        booking.setEndTime(end); 
-        
+        booking.setStartTime(start);
+        booking.setEndTime(end);
+        booking.setBookingTimestamp(LocalDateTime.now()); // ✅ Set current timestamp
+
         bookingService.saveBooking(booking);
 
         return ResponseEntity.ok("/user/gateway?bookingId=" + booking.getId());
     }
+
 
     @GetMapping("/user/gateway")
     public String showGateway(@RequestParam Long bookingId, Model model) {
