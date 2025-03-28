@@ -1,7 +1,7 @@
 package com.example.sport.controller;
 
+import com.example.sport.dto.DashboardStats;
 import com.example.sport.model.*;
-import com.example.sport.model.User;
 import com.example.sport.repository.*;
 import com.example.sport.service.*;
 
@@ -9,8 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.security.Principal;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class AuthController {
@@ -29,7 +31,45 @@ public class AuthController {
 
     @Autowired
     private GroundService groundService;
+    
+    @Autowired
+    private BookingService bookingService;
 
+
+    @Autowired
+    private SlotService slotService;
+    
+    @GetMapping("/venue")
+    public String showVenuePage() {
+        return "user/venue";  // Loads venue.html
+    }
+    
+    @GetMapping("/contact")
+    public String showContactPage() {
+        return "contant";  // Loads venue.html
+    }
+    
+    @GetMapping("/getAllGrounds")
+    @ResponseBody
+    public List<Ground> getAllGrounds(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) Long gameId) {
+
+        List<Ground> allGrounds = groundService.getAllGrounds();
+        
+        // Apply filters if provided
+        return allGrounds.stream()
+                .filter(g -> (name == null || g.getName().toLowerCase().contains(name.toLowerCase())))
+                .filter(g -> (city == null || g.getLocation().equalsIgnoreCase(city)))
+                .filter(g -> (gameId == null || g.getGame().getId().equals(gameId)))
+                .collect(Collectors.toList());
+    }
+    
+    @GetMapping("/")
+    public String home() {
+        return "index"; // Redirects to index.html in 'static'
+    }
     @GetMapping("/login1")
     public String showLoginPage() {
         return "login"; // This remains the same
@@ -41,12 +81,11 @@ public class AuthController {
                         HttpServletRequest request, 
                         Model model,
                         HttpServletResponse response) {
-        
-        // Input validation
+
         if (email == null || email.trim().isEmpty() || 
             password == null || password.trim().isEmpty()) {
             model.addAttribute("error", "Email and password are required");
-            return "login1";
+            return "login"; // Return login.html with error
         }
 
         try {
@@ -54,43 +93,31 @@ public class AuthController {
 
             if (user != null) {
                 HttpSession session = request.getSession(true);
-                
-                // Set session attributes
                 session.setAttribute("loggedInUser", user);
                 session.setAttribute("userId", user.getId());
                 session.setAttribute("userRole", user.getRole().getRoleName());
-                
-                // Set session timeout (30 minutes)
                 session.setMaxInactiveInterval(30 * 60);
-                
-                // Add security headers
+
                 response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
                 response.setHeader("Pragma", "no-cache");
                 response.setHeader("X-Content-Type-Options", "nosniff");
-                
-                // Role-based redirection
-                String redirectPath = user.getRole().getRoleName().equalsIgnoreCase("ADMIN") ? 
+
+                return user.getRole().getRoleName().equalsIgnoreCase("ADMIN") ?
                     "redirect:/admin/dashboard" : "redirect:/user/dashboard";
-                
-                // Add login timestamp
-                session.setAttribute("loginTime", System.currentTimeMillis());
-                
-                return redirectPath;
             } else {
-                // Security: Delay response for invalid credentials
-                Thread.sleep(2000); // 2 second delay
+                Thread.sleep(1000); // Delay to prevent brute force
                 model.addAttribute("error", "Invalid email or password");
-                return "login1";
+                return "login"; // Stay on login page with error message
             }
         } catch (Exception e) {
-            // Log the error
-            
-            model.addAttribute("error", "An error occurred during login. Please try again.");
-            return "login1";
+            model.addAttribute("error", "An error occurred. Please try again.");
+            return "login";
         }
     }
 
 
+
+    
 
 
     @GetMapping("/logout")
@@ -106,7 +133,7 @@ public class AuthController {
         if (loggedInUser == null) {
             return "redirect:/login1"; // Redirect if not logged in
         }
-
+        
         // Fetch all games and ground locations dynamically
         List<Game> games = gameService.getAllGames();
         List<Ground> grounds = groundService.getAllGrounds();
@@ -118,7 +145,11 @@ public class AuthController {
         return "user/userDash";
     }
 
+    private final DashboardService dashboardService;
 
+    public AuthController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
 
     @GetMapping("/admin/dashboard")
     public String adminDashboard(HttpSession session, Model model) {
@@ -133,7 +164,8 @@ public class AuthController {
         if (!"ADMIN".equals(loggedInUser.getRole().getRoleName())) {
             return "redirect:/user/dashboard"; // Redirect non-admin users
         }
-
+        DashboardStats stats = dashboardService.getDashboardStats();
+        model.addAttribute("stats", stats);
         model.addAttribute("loggedInUser", loggedInUser); // Pass admin details to view
         return "admin/adminDash";
     }

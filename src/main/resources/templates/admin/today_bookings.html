@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Bookings - BookMyTurf</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2A5C82;
+            --secondary-color: #39B54A;
+            --accent-color: #f39c12;
+            --text-color: #333;
+            --bg-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --light-color: #ffffff;
+            --dark-color: #121212;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #4CAF50;
+            --secondary-color: #2196F3;
+            --text-color: #f0f0f0;
+            --bg-color: #1e1e1e;
+            --border-color: #333;
+            --light-color: #212121;
+            --dark-color: #ffffff;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .booking-container {
+            background-color: var(--light-color);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .bookings-table {
+            width: 100%;
+        }
+
+        .bookings-table thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .bookings-table th, 
+        .bookings-table td {
+            vertical-align: middle;
+            padding: 12px;
+            border-color: var(--border-color);
+        }
+
+        .payment-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .payment-status-paid {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .payment-status-pending {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .stats-card {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .stats-card .icon {
+            font-size: 3rem;
+            opacity: 0.7;
+        }
+
+        /* Dark mode specific styles */
+        [data-theme="dark"] .booking-container,
+        [data-theme="dark"] .stats-card {
+            background-color: var(--light-color);
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .stats-card {
+            background-color: #2c3e50;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .empty-state i {
+            font-size: 5rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+		.navbar {
+		        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+		        padding: 0.8rem 1.5rem;
+		        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+		    }
+
+		    .navbar-brand {
+		        font-size: 1.8rem;
+		        font-weight: 700;
+		        font-family: 'Poppins', sans-serif;
+		        color: var(--light-color) !important;
+		        display: flex;
+		        align-items: center;
+		        gap: 0.8rem;
+		    }
+
+		    .brand-icon {
+		        font-size: 2.2rem;
+		        color: var(--accent-color);
+		    }
+
+		    .nav-item {
+		        margin: 0 0.5rem;
+		        position: relative;
+		    }
+
+		    .nav-link {
+		        font-size: 1.1rem;
+		        font-weight: 500;
+		        color: var(--text-color) !important;
+		        padding: 0.8rem 1.2rem !important;
+		        border-radius: 8px;
+		        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		        display: flex;
+		        align-items: center;
+		        gap: 0.6rem;
+		    }
+
+		    .nav-link:hover {
+		        background: rgba(255,255,255,0.15);
+		        color: var(--accent-color) !important;
+		        transform: translateY(-2px);
+		    }
+
+		    .nav-link i {
+		        width: 24px;
+		        text-align: center;
+		    }
+
+		    .dropdown-menu {
+		        background: var(--secondary-color);
+		        border: none;
+		        border-radius: 12px;
+		        padding: 0.5rem;
+		        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+		        margin-top: 0.8rem !important;
+		    }
+
+		    .dropdown-item {
+		        color: var(--light-color) !important;
+		        padding: 0.75rem 1.5rem !important;
+		        border-radius: 8px;
+		        margin: 0.25rem 0;
+		        display: flex;
+		        align-items: center;
+		        gap: 0.8rem;
+		        transition: all 0.2s ease;
+		    }
+
+		    .dropdown-item:hover {
+		        background: var(--primary-color) !important;
+		        transform: translateX(5px);
+		    }
+
+		    .dark-mode-toggle {
+		        background: rgba(255,255,255,0.1);
+		        border: 2px solid rgba(255,255,255,0.2);
+		        border-radius: 50px;
+		        padding: 0.5rem 1rem;
+		        color: var(--light-color);
+		        transition: all 0.3s ease;
+		        display: flex;
+		        align-items: center;
+		        gap: 0.6rem;
+		    }
+
+		    .dark-mode-toggle:hover {
+		        background: rgba(255,255,255,0.2);
+		        transform: scale(1.05);
+		    }
+
+		    .dark-mode {
+		        background-color: var(--dark-color) !important;
+		        color: var(--light-color) !important;
+		    }
+
+		    .dark-mode .navbar {
+		        background: linear-gradient(135deg, #34495e, #2c3e50);
+		    }
+
+		    .dark-mode .dropdown-menu {
+		        background: #2c3e50;
+		    }
+		    /* Add these dark mode styles */
+		    body.dark-mode .site-footer {
+		        background: #2c3e50;
+		        color: #ecf0f1;
+		    }
+
+		    body.dark-mode .footer-links a {
+		        color: #bdc3c7;
+		    }
+
+		    body.dark-mode .footer-links a:hover {
+		        color: #ecf0f1;
+		    }
+
+		    body.dark-mode .footer-section h5 {
+		        color: #f39c12;
+		    }
+
+		    body.dark-mode .newsletter-input {
+		        background: rgba(0,0,0,0.3);
+		    }
+		    .navbar-toggler {
+		        border: none;
+		        padding: 0.5rem;
+		    }
+
+		    .navbar-toggler:focus {
+		        box-shadow: none;
+		    }
+
+		    .navbar-toggler-icon {
+		        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+		    }
+
+		    @media (max-width: 992px) {
+		        .navbar-collapse {
+		            background: var(--secondary-color);
+		            padding: 1rem;
+		            margin-top: 1rem;
+		            border-radius: 12px;
+		        }
+
+		        .dropdown-menu {
+		            background: rgba(0,0,0,0.1);
+		            margin-left: 1.5rem;
+		            width: 90%;
+		        }
+		    }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+		<div class="container-fluid">
+		      <a class="navbar-brand" th:href="@{/admin/dashboard}">
+		          <i class="fas fa-futbol brand-icon"></i>
+		         BookMyTurf 
+		      </a>
+
+		      <!-- Dark Mode Toggle -->
+		      <button class="dark-mode-toggle me-3" onclick="toggleDarkMode()">
+		          <i class="fas fa-moon"></i>
+		          <span>Dark Mode</span>
+		      </button>
+
+		      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+		          data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+		          aria-label="Toggle navigation">
+		          <span class="navbar-toggler-icon"></span>
+		      </button>
+
+		      <div class="collapse navbar-collapse" id="navbarNav">
+		          <ul class="navbar-nav ms-auto">
+		              <li class="nav-item dropdown">
+		                  <a class="nav-link dropdown-toggle" href="#" id="manageSlotDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+		                      <i class="fas fa-calendar-alt"></i> Manage
+		                  </a>
+		                  <ul class="dropdown-menu" aria-labelledby="manageSlotDropdown">
+		                      <li><a class="dropdown-item" th:href="@{/admin/game}">Add Game</a></li>
+		                      <li><a class="dropdown-item" th:href="@{/admin/coach}">Add Coach</a></li>
+		                      <li><a class="dropdown-item" th:href="@{/admin/ground/add}">Add Ground</a></li>
+		                      <li><a class="dropdown-item" th:href="@{/admin/slots}">Add Slot</a></li>
+		                  </ul>
+		              </li>
+		              <!-- Manage Coach Dropdown -->
+		              <li class="nav-item dropdown">
+		                  <a class="nav-link dropdown-toggle" href="#" id="manageCoachDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+		                      <i class="fas fa-info-circle"></i> View
+		                  </a>
+		                  <ul class="dropdown-menu" aria-labelledby="manageCoachDropdown">
+		                      <li><a class="dropdown-item" th:href="@{/admin/coaches}">View Coaches</a></li>
+		                      <li><a class="dropdown-item" th:href="@{/admin/ground/viewGrounds}">View Grounds</a></li>
+		                      <li><a class="dropdown-item" th:href="@{/admin/slots/viewSlot}">View Slots</a></li>
+		                  </ul>
+		              </li>
+
+		              <!-- Manage Ground Dropdown -->
+					  <li class="nav-item dropdown">
+					                      <a class="nav-link dropdown-toggle" href="#" id="manageGroundDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					                          <i class="fas fa-map-marker-alt"></i> Booking
+					                      </a>
+					                      <ul class="dropdown-menu" aria-labelledby="manageGroundDropdown">
+					                          <li><a class="dropdown-item" th:href="@{/admin/today}">Today Booking</a></li>
+					                          <li><a class="dropdown-item" th:href="@{/admin/bookings}">Booking History</a></li>
+					                          <li><a class="dropdown-item" th:href="@{/finance-report}">Account</a></li>
+					                          
+					                      </ul>
+					                  </li>
+		           </ul>    
+		          <ul class="navbar-nav ms-3">
+		                  <li class="nav-item">
+		                      <a class="nav-link"  th:href="@{/register1}">
+		                          <i class="fas fa-user-plus"></i>
+		                          Profile
+		                      </a>
+		                  </li>
+		                  <li class="nav-item">
+		                      <a class="nav-link" th:href="@{/logout}">
+		                          <i class="fas fa-sign-in-alt"></i>
+		                          Log Out
+		                      </a>
+		                  </li>
+		                  
+		          </ul>
+		      </div>
+		  </div>
+    </nav>
+
+    <div class="container-fluid px-4 py-4">
+        <div class="row">
+            <div class="col-12 col-md-4 mb-4">
+                <div class="stats-card">
+                    <div>
+                        <h4>Total Bookings</h4>
+                        <h2 th:text="${#lists.size(bookings)}">0</h2>
+                    </div>
+                    <i class="fas fa-calendar-check icon"></i>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="stats-card">
+                    <div>
+                        <h4>Total Revenue</h4>
+                        <h2 th:text="${#aggregates.sum(bookings.![price])} + ' ₹'">0 ₹</h2>
+                    </div>
+                    <i class="fas fa-money-bill-wave icon"></i>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 mb-4">
+                <div class="stats-card">
+                    <div>
+                        <h4>Pending Payments</h4>
+                        <h2 th:text="${bookings.?[paymentStatus == 'Pending'].size()}">0</h2>
+                    </div>
+                    <i class="fas fa-hourglass-half icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-container">
+            <h3 class="mb-4">Today's Bookings</h3>
+            
+            <div th:if="${#lists.isEmpty(bookings)}" class="empty-state">
+                <i class="fas fa-calendar-times"></i>
+                <h4>No Bookings Today</h4>
+                <p>There are no bookings scheduled for today.</p>
+            </div>
+
+            <table th:unless="${#lists.isEmpty(bookings)}" class="table bookings-table table-hover">
+                <thead>
+                    <tr>
+                        <th>Booking Date</th>
+                        <th>User Name</th>
+                        <th>Game Name</th>
+                        <th>Ground Name</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Price</th>
+                        <th>Payment Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="booking : ${bookings}">
+                        <td th:text="${booking['bookingDate']}"></td>
+                        <td th:text="${booking['userName']}"></td>
+                        <td th:text="${booking['gameName']}"></td>
+                        <td th:text="${booking['groundName']}"></td>
+                        <td th:text="${booking['startTime']}"></td>
+                        <td th:text="${booking['endTime']}"></td>
+                        <td th:text="${booking['price']} + ' ₹'"></td>
+                        <td>
+                            <span class="payment-status" 
+                                  th:classappend="${booking['paymentStatus'] == 'Paid' ? 'payment-status-paid' : 'payment-status-pending'}"
+                                  th:text="${booking['paymentStatus']}">
+                            </span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            const htmlElement = document.documentElement;
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        });
+    </script>
+</body>
+</html>

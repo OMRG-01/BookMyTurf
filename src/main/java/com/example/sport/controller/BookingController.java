@@ -3,6 +3,7 @@ package com.example.sport.controller;
 import com.example.sport.model.Booking;
 import com.example.sport.model.Game;
 import com.example.sport.model.Ground;
+import com.example.sport.model.ReviewRequest;
 import com.example.sport.model.Slot;
 import com.example.sport.model.User;
 import com.example.sport.service.BookingService;
@@ -15,17 +16,23 @@ import com.example.sport.service.SlotService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,26 +126,45 @@ public class BookingController {
     
     @GetMapping("/getSlotsByGround")
     @ResponseBody
-    public List<Map<String, Object>> getSlotsByGround(@RequestParam Long groundId) {
+    public List<Map<String, Object>> getSlotsByGround(
+            @RequestParam Long groundId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date bookingDate) {
+
+        // Convert Date to LocalDate
+        LocalDate localBookingDate = bookingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        // Fetch booked slots for the selected date
+        List<Long> bookedSlotIds = bookingService.getBookedSlotsByDate(localBookingDate);
+
+        // Fetch slots for the ground
         List<Slot> slots = slotService.getSlotsByGroundId(groundId);
-        
+
         return slots.stream().map(slot -> {
             Map<String, Object> slotData = new HashMap<>();
             slotData.put("id", slot.getId());
             slotData.put("startTime", slot.getStartTime().toString());
             slotData.put("endTime", slot.getEndTime().toString());
-            slotData.put("availability", slot.isAvailability() ? "Available" : "Booked");
+
+            // Check if the slot is already booked
+            boolean isBooked = bookedSlotIds.contains(slot.getId());
+            slotData.put("availability", isBooked ? "Booked" : "Available");
+
             slotData.put("price", slot.getPrice());
             slotData.put("weekendPrice", slot.getWeekendPrice());
             slotData.put("breakTime", slot.getBreakTime());
-            
-            // Add payment status (1 = Paid, 0 = Unpaid)
-            boolean isPaid = bookingService.isSlotPaid(slot.getId());
-            slotData.put("isPaid", isPaid);
-            
+
+            // Determine weekend price
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(bookingDate);
+            boolean isWeekend = cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
+                    || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+
+            slotData.put("currentPrice", isWeekend ? slot.getWeekendPrice() : slot.getPrice());
+
             return slotData;
         }).collect(Collectors.toList());
     }
+
     @PostMapping("/generate-otp")
     @ResponseBody
     public ResponseEntity<?> generateOTP(HttpSession session) {
@@ -156,39 +182,84 @@ public class BookingController {
                 .body("Failed to send OTP");
         }
     }
+    @PostMapping("/submitReview")
+    public ResponseEntity<String> submitReview(@RequestBody ReviewRequest request) {
+        boolean success = bookingService.updateBookingReview(request.getBookingId(), request.getRating(), request.getReview());
+
+        if (success) {
+            return ResponseEntity.ok("Review submitted successfully!");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to submit review.");
+        }
+    }
     
     @PostMapping("/create")
     public ResponseEntity<?> createBooking(
             @RequestParam Long gameId,
             @RequestParam Long groundId,
             @RequestParam Long slotId,
+            @RequestParam String startTime,
+            @RequestParam String endTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate bookingDate,
+            @RequestParam Double price,
             @RequestParam String otp,
             HttpSession session) {
-        
+
         User user = (User) session.getAttribute("loggedInUser");
-        if (user == null) return ResponseEntity.badRequest().body("User not logged in");
-        
+        if (user == null) {
+            return ResponseEntity.badRequest().body("User not logged in");
+        }
+
         if (!otpService.validateOTP(user.getEmail(), otp)) {
             return ResponseEntity.badRequest().body("Invalid OTP");
         }
+
+        boolean isBooked = bookingService.isSlotBooked(slotId, bookingDate);
+        if (isBooked) {
+            return ResponseEntity.badRequest().body("This slot is already booked for the selected date.");
+        }
+
+        LocalTime start = LocalTime.parse(startTime);
+        LocalTime end = LocalTime.parse(endTime);
 
         Booking booking = new Booking();
         booking.setUserId(user.getId());
         booking.setGameId(gameId);
         booking.setGroundId(groundId);
         booking.setSlotId(slotId);
-        booking.setPaymentStatus(0);
-        
+        booking.setPaymentStatus(0); 
+        booking.setBookingDate(bookingDate);
+        booking.setPrice(price);
+        booking.setStartTime(start);
+        booking.setEndTime(end);
+        booking.setBookingTimestamp(LocalDateTime.now()); // ✅ Set current timestamp
+
         bookingService.saveBooking(booking);
-        
+
         return ResponseEntity.ok("/user/gateway?bookingId=" + booking.getId());
-    }    
+    }
+
+
     @GetMapping("/user/gateway")
     public String showGateway(@RequestParam Long bookingId, Model model) {
         // Add booking details to model if needed
         Booking booking = bookingService.getBookingById(bookingId);
         model.addAttribute("booking", booking);
         return "user/gateway"; // This will resolve to templates/user/gateway.html
+    }
+    @PostMapping("/update-payment-status")
+    public ResponseEntity<?> updatePaymentStatus(
+            @RequestParam Long bookingId,
+            @RequestParam int status) {
+        
+        try {
+            Booking booking = bookingService.getBookingById(bookingId);
+            booking.setPaymentStatus(status);
+            bookingService.saveBooking(booking);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
     
 }

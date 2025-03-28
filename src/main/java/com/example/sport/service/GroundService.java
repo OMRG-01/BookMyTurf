@@ -61,7 +61,11 @@ public class GroundService {
         }
         return null;
     }
-
+    
+    public Ground findById(Long id) {
+        return groundRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ground not found with ID: " + id));
+    }
     // Delete ground
     public void deleteGround(Long id) {
         groundRepository.deleteById(id);
@@ -71,4 +75,8 @@ public class GroundService {
     public List<Game> getAllGames() {
         return gameRepository.findAll();
     }
+    public List<Ground> getGroundsByGameId(Long gameId) {
+        return groundRepository.findByGameId(gameId);
+    }
+    
 }

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GroundRepository extends JpaRepository<Ground, Long> {
 	 @Query("SELECT DISTINCT s.ground.id FROM Slot s")
@@ -22,5 +23,11 @@ public interface GroundRepository extends JpaRepository<Ground, Long> {
 	 	
 	 	@Query("SELECT g FROM Ground g WHERE g.location = :city")
 	 	List<Ground> findByLocation(@Param("city") String city);
+	 	
+	 	@Query("SELECT g FROM Ground g JOIN FETCH g.game")
+	 	List<Ground> findAllWithGame();
 
+	 	List<Ground> findByGameId(Long gameId);
+	 	
+	 	Optional<Ground> findById(Long id);
 }

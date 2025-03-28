@@ -33,5 +33,9 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
     
     @Query("SELECT s FROM Slot s WHERE s.ground.id = :groundId AND s.availability = true")
     List<Slot> findByGroundIdAndAvailabilityTrue(@Param("groundId") Long groundId);
+    
+
+    @Query("SELECT s FROM Slot s WHERE s.ground.id IN :groundIds")
+    List<Slot> findByGroundIds(@Param("groundIds") List<Long> groundIds);
 
 }

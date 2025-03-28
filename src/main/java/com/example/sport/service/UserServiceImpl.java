@@ -50,4 +50,15 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(id);
     }
 
+    public void updateUser(User updatedUser) {
+        User existingUser = userRepository.findById(updatedUser.getId()).orElse(null);
+        if (existingUser != null) {
+            existingUser.setName(updatedUser.getName());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setMobileNumber(updatedUser.getMobileNumber());
+            existingUser.setCity(updatedUser.getCity());
+            existingUser.setGender(updatedUser.getGender());
+            userRepository.save(existingUser);
+        }
+    }
 }

@@ -30,7 +30,7 @@ public class Ground {
     private String imageFileName;
     @ManyToOne
     @JoinColumn(name = "coach_id", nullable = true)
-    private Coach coach;  // Selected Coach
+    private Coach coach ;  // Selected Coach
 
    
     public Ground() {}
