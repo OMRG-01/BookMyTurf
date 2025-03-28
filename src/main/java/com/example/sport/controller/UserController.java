@@ -1,14 +1,18 @@
 package com.example.sport.controller;
 
+import com.example.sport.model.Game;
 import com.example.sport.model.Ground;
 import com.example.sport.model.Role;
 import com.example.sport.model.User;
 import com.example.sport.repository.UserRepository;
 import com.example.sport.service.EmailService;
+import com.example.sport.service.GameService;
 import com.example.sport.service.GroundService;
 import com.example.sport.service.OTPService;
 import com.example.sport.service.RoleService;
 import com.example.sport.service.UserService;
+
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
 public class UserController {
@@ -42,9 +47,34 @@ public class UserController {
     @Autowired
     private OTPService otpService;
     
+    @Autowired
+    private GameService gameService;
+    
     @Autowired 
     private UserRepository userRepository;
     
+ // Load Profile Page
+    @GetMapping("/profile/{id}")
+    public String showProfile(@PathVariable Long id, Model model) {
+        User user = userService.getUserById(id);
+        model.addAttribute("user", user);
+        return "user/profile"; // Redirects to profile.html
+    }
+
+    // Update User
+ // 👉 Handle Profile Update
+    @PostMapping("/updateProfile")
+    public String updateProfile(@ModelAttribute("user") User user, Model model) {
+        userService.updateUser(user); // Update user in DB
+        
+        // Fetch updated user details
+        User updatedUser = userService.getUserById(user.getId());
+        model.addAttribute("loggedInUser", updatedUser);
+
+        // Redirect to user dashboard with updated user data
+        return "user/userDash"; // user/userDash.html
+    }
+
     // Show the registration form
     @GetMapping("/register1")
     public String showRegistrationForm(Model model) {

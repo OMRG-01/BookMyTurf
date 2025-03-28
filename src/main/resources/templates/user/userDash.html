@@ -813,7 +813,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" th:href="@{/contact}">
                         <i class="fas fa-info-circle"></i>
                         About
                     </a>
@@ -832,12 +832,13 @@
                 </li>
             </ul>
             <ul class="navbar-nav ms-3">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-user-circle"></i>
-                        Profile
-                    </a>
-                </li>
+				<li class="nav-item">
+				    <a class="nav-link" th:href="@{'/profile/' + ${loggedInUser.id}}">
+				        <i class="fas fa-user-circle"></i>
+				        Profile
+				    </a>
+				</li>
+
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/logout}">
                         <i class="fas fa-sign-out-alt"></i>
@@ -888,11 +889,11 @@
                     </div>
                 </li>
                 <li th:each="game : ${games}">
-                    <a class="dropdown-item" 
+                    <a  class="dropdown-item" 
                        th:text="${game.gameName}" 
                        th:attr="data-id=${game.id}">
                         <i class="fas fa-running"></i>
-                        <span th:text="${game.gameName}"></span>
+                        <span  th:text="${game.gameName}"></span>
                     </a>
                 </li>
             </ul>
@@ -901,40 +902,20 @@
 
    
     <!-- City Dropdown -->
-    <ul class="nav flex-column mt-3">
-        <li class="nav-item dropdown">
-            <button class="dropdown-toggle" 
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                <i class="fas fa-city"></i>
-                <span>Select City</span>
-                <i class="fas fa-chevron-down chevron ms-auto"></i>
-            </button>
-            <ul class="dropdown-menu shadow-lg">
-                <li>
-                    <div class="px-2 py-1">
-                        <input type="text" 
-                               class="form-control" 
-                               placeholder="Search City..." 
-                               id="searchCity">
-                    </div>
-                </li>
-                <li th:each="ground : ${ground}">
-                    <a class="dropdown-item" 
-                       th:text="${ground.location}" 
-                       th:attr="data-id=${ground.id}">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span th:text="${ground.location}"></span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-    </ul>
+	<ul class="nav flex-column mt-3">
+	    <form th:action="@{/venue}" method="get">
+	        <button type="submit" class="dropdown-toggle" 
+	                
+	                aria-expanded="false">
+	            <i class="fas fa-city"></i>
+	            <span>Explore Ground</span>
+	            <i class="fas fa-chevron-down chevron ms-auto"></i>
+	        </button>
+	    </form>
+	</ul>
+	
 </div>
-<div class="sidebar right-sidebar">
-    <h4 class="mb-3"><i class="fas fa-calendar-alt me-2"></i>Availability</h4>
-    <div id="calendarContainer" class="calendar-container"></div>
-</div>
+
   
     <!-- Main Content -->
     <div class="main-content">

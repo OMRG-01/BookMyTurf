@@ -43,7 +43,12 @@ public class AuthController {
     public String showVenuePage() {
         return "user/venue";  // Loads venue.html
     }
-
+    
+    @GetMapping("/contact")
+    public String showContactPage() {
+        return "contant";  // Loads venue.html
+    }
+    
     @GetMapping("/getAllGrounds")
     @ResponseBody
     public List<Ground> getAllGrounds(

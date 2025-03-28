@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookMyTurf - About Us</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+
+        :root {
+            --deep-navy: #1A2238;
+            --soft-navy: #2C3E50;
+            --silver-gray: #95A5A6;
+            --off-white: #F4F6F7;
+            --accent-blue: #3498DB;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--off-white);
+            color: var(--deep-navy);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            padding-bottom: 30px;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background-color: var(--accent-blue);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: var(--deep-navy);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: var(--silver-gray);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 15px auto 0;
+        }
+
+        .section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            padding: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            transform: translateY(-10px);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--soft-navy);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+            font-size: 2.2rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 70px;
+            height: 3px;
+            background-color: var(--accent-blue);
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .feature {
+            flex-basis: calc(33.333% - 20px);
+            text-align: center;
+            padding: 25px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            border-left-color: var(--accent-blue);
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .feature i {
+            color: var(--accent-blue);
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .team {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .team-member {
+            text-align: center;
+            width: 250px;
+        }
+
+        .team-member img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--off-white);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--silver-gray);
+            border-radius: 5px;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .contact-form button {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background-color: var(--soft-navy);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .social-links a {
+            color: var(--silver-gray);
+            font-size: 1.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-blue);
+        }
+
+        @media (max-width: 768px) {
+            .features, .team {
+                flex-direction: column;
+            }
+
+            .feature, .team-member {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BookMyTurf</h1>
+            <p>Elegantly Connecting Sports Enthusiasts with Premier Facilities</p>
+        </div>
+
+        <section class="section">
+            <h2 class="section-title">Our Mission</h2>
+            <p>At BookMyTurf, we are dedicated to transforming the sports facility booking experience. Our mission is to provide a sophisticated, seamless platform that connects athletes and sports enthusiasts with top-tier venues, making every booking a refined and effortless journey.</p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Our Features</h2>
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-book-open"></i>
+                    <h3>Sophisticated Booking</h3>
+                    <p>Refined venue reservation process with intuitive design</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-clock"></i>
+                    <h3>Real-Time Precision</h3>
+                    <p>Instant, accurate facility availability tracking</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Transactions</h3>
+                    <p>Elegant and protected payment ecosystem</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Our Team</h2>
+            <div class="team">
+                <div class="team-member">
+                    <img src="/api/placeholder/200/200" alt="Team Member">
+                    <h3>Technology Strategist</h3>
+                    <p>Pioneering innovative digital solutions</p>
+                </div>
+                <div class="team-member">
+                    <img src="/api/placeholder/200/200" alt="Team Member">
+                    <h3>Experience Architect</h3>
+                    <p>Crafting seamless user journeys</p>
+                </div>
+                <div class="team-member">
+                    <img src="/api/placeholder/200/200" alt="Team Member">
+                    <h3>Community Curator</h3>
+                    <p>Fostering sports connectivity</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Contact Us</h2>
+            <form class="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <textarea placeholder="Your Message" rows="5" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">Connect</h2>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message. We will get back to you soon.');
+            this.reset();
+        });
+    </script>
+</body>
+</html>
