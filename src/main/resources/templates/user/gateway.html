@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #5c6bc0;
-            --secondary-color: #7986cb;
+			--primary-color: #2E86C1;  /* Sophisticated blue */
+						       --secondary-color: #28B463; 
             --accent-color: #3949ab;
-            --light-bg: #f5f7ff;
+            --light-bg: #2E86C1;
             --border-radius: 12px;
             --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             --card-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
@@ -100,7 +100,7 @@
         .method-item i {
             font-size: 1.2rem;
             margin-right: 12px;
-            color: var(--primary-color);
+            color: black;
             width: 24px;
             text-align: center;
         }
@@ -449,7 +449,7 @@
                             
                             <div class="text-center">
                                 <p>Scan QR code with any UPI app</p>
-                                <img src="/api/placeholder/200/200" alt="QR Code" class="img-fluid mb-3">
+                                <img th:src="@{/images/qr.png}" alt="QR Code" class="img-fluid mb-3">
                             </div>
                         </form>
 
