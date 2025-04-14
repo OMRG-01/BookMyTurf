@@ -477,49 +477,49 @@
 	            <span class="navbar-toggler-icon"></span>
 	        </button>
 
-	        <div class="collapse navbar-collapse" id="navbarNav">
-	            <ul class="navbar-nav ms-auto">
+			<div class="collapse navbar-collapse" id="navbarNav">
+			            <ul class="navbar-nav ms-auto">
+			                <li class="nav-item">
+			                    <a class="btn nav-link" onclick="redirectToDashboard()">
+			                        <i class="fas fa-home"></i>
+			                        Home
+			                    </a>
+			                </li>
+			                <li class="nav-item">
+			                    <a class="nav-link" th:href="@{/contact}">
+			                        <i class="fas fa-info-circle"></i>
+			                        About
+			                    </a>
+			                </li>
+			                <li class="nav-item">
+			                    <a class="nav-link" th:href="@{/bookingHistory/myBookings(userId=${loggedInUser.id})}">
+			                        <i class="fa-solid fa-address-book"></i>
+			                        My Bookings
+			                    </a>
+			                </li> 
+			                <li class="nav-item">
+			                    <a class="nav-link" th:href="@{/booking}">
+			                        <i class="fas fa-calendar-plus"></i>
+			                        Book Now
+			                    </a>
+			                </li>
+			            </ul>
+			            <ul class="navbar-nav ms-3">
+							<li class="nav-item">
+							    <a class="nav-link" th:href="@{'/profile/' + ${loggedInUser.id}}">
+							        <i class="fas fa-user-circle"></i>
+							        Profile
+							    </a>
+							</li>
 
-	                <li class="nav-item">
-	                    <a class="btn nav-link" onclick="redirectToDashboard()">
-	                        <i class="fas fa-home"></i>
-	                        Home
-	                    </a>
-	                </li>
-	                    <li class="nav-item">
-	                        <a class="nav-link" href="#">
-	                            <i class="fas fa-info-circle"></i>
-	                            About
-	                        </a>
-	                    </li>
-	                    <li class="nav-item">
-	                        <a class="nav-link" th:href="@{/bookingHistory/myBookings(userId=${loggedInUser.id})}">
-	                            <i class="fa-solid fa-address-book"></i>
-	                            My Bookings
-	                        </a>
-	                    </li> 
-	                    <li class="nav-item">
-	                        <a class="nav-link" th:href="@{/booking}">
-	                            <i class="fas fa-phone-alt"></i>
-	                            Book Now
-	                        </a>
-	                    </li>
-	            </ul>
-	            <ul class="navbar-nav ms-3">
-	                    <li class="nav-item">
-	                        <a class="nav-link" hrf="#">
-	                            <i class="fas fa-sign-in-alt"></i>
-	                            Profile
-	                        </a>
-	                    </li>
-	                    <li class="nav-item">
-	                        <a class="nav-link"  th:href="@{/logout}">
-	                            <i class="fas fa-user-plus"></i>
-	                           LogOut
-	                        </a>
-	                    </li>
-	            </ul>
-	        </div>
+			                <li class="nav-item">
+			                    <a class="nav-link" th:href="@{/logout}">
+			                        <i class="fas fa-sign-out-alt"></i>
+			                        LogOut
+			                    </a>
+			                </li>
+			            </ul>
+			        </div>
 	    </div>
 	</nav>
     <input type="hidden" id="userId" th:value="${loggedInUser.id}">

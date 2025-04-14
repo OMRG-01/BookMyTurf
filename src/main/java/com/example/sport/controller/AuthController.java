@@ -40,9 +40,19 @@ public class AuthController {
     private SlotService slotService;
     
     @GetMapping("/venue")
-    public String showVenuePage() {
-        return "user/venue";  // Loads venue.html
+    public String showVenuePage(HttpSession session, Model model) {
+        Object user = session.getAttribute("loggedInUser"); // or whatever your session key is
+
+        if (user != null) {
+            // Optionally, pass any user info to the model
+            model.addAttribute("user", user);
+            return "user/userVenue";  // Loads userVenue.html (authenticated version)
+        }
+
+        return "user/venue"; // Loads venue.html (guest version)
     }
+
+    
     
     @GetMapping("/contact")
     public String showContactPage() {

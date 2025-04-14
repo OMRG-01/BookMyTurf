@@ -55,11 +55,19 @@ public class UserController {
     
  // Load Profile Page
     @GetMapping("/profile/{id}")
-    public String showProfile(@PathVariable Long id, Model model) {
+    public String showProfile(@PathVariable Long id, Model model, HttpSession session) {
         User user = userService.getUserById(id);
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        if (loggedInUser == null) {
+            return "redirect:/login1";
+        }
+
         model.addAttribute("user", user);
-        return "user/profile"; // Redirects to profile.html
+        model.addAttribute("loggedInUser", loggedInUser); // ✅ Add this
+        return "user/profile";
     }
+
 
     // Update User
  // 👉 Handle Profile Update
@@ -84,19 +92,25 @@ public class UserController {
 
     // Handle the registration form submission
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") User user) {
+    public String registerUser(@ModelAttribute("user") User user, Model model) {
 
-        // Fetch the "USER" role (role_id = 2)
+        Optional<User> existingUser = userService.findByEmail(user.getEmail());
+
+        if (existingUser.isPresent()) {
+            model.addAttribute("error", "Email is already registered!");
+            return "user/register";  // Return to registration page with error message
+        }
+
+        // Set role
         Role userRole = roleService.findById(2L);
-
-        // Set the role to "USER"
         user.setRole(userRole);
 
-        // Save the user to the database
+        // Save new user
         userService.save(user);
 
-        return "redirect:/register1";  // Redirect to the login page after successful registration
+        return "redirect:/register1";  // Or to login page
     }
+
     
     @GetMapping("/viewGrounds")
     public String viewGrounds(Model model) {

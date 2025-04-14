@@ -371,7 +371,6 @@
                     <div>
                         <h4>Pending Payments</h4>
 						<h2 th:text="${#aggregates.sum(bookings.?[paymentStatus == 'Unpaid'].![price])} + ' ₹'">0 ₹</h2>
-
                     </div>
                     <i class="fas fa-hourglass-half icon"></i>
                 </div>

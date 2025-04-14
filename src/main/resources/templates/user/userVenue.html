@@ -40,7 +40,7 @@
     }
     
     header {
-      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      background:  var(--dark);
       color: white;
       padding: 30px 0;
       text-align: center;
@@ -533,10 +533,10 @@
 </head>
 <body>
   <header>
-    <div class="container">
-      <h1>Find Your Perfect Sports Venue</h1>
-      <p>Browse through our collection of premium sports grounds and book your next game</p>
-    </div>
+	<div class="container">
+	  <h1>Explore the Ground of <span id="gameName">Game Name</span></h1>
+	  <p>Browse through our collection of premium sports grounds and book your next game</p>
+	</div>
   </header>
 
   <div class="container">
@@ -561,6 +561,9 @@
         <button id="searchBtn" class="search-btn">
           <i class="fas fa-search"></i> Search
         </button>
+		<a onclick="redirectToDashboard()"><button  class="search-btn">
+		         <i class="fa-solid fa-house"></i> Home 
+		</button></a>
       </div>
       
       <div id="activeFilters" class="active-filters">
@@ -618,6 +621,9 @@
   </div>
 
   <script>
+	const urlParams = new URLSearchParams(window.location.search);
+	 const game = urlParams.get('game') || 'Your Favorite Sport';
+	 document.getElementById('gameName').textContent = game;
     let grounds = []; // Store all grounds initially
     let activeFilters = {
       name: '',
@@ -763,9 +769,6 @@
                 </div>
               </div>
               
-              <button class="view-btn" onclick="showLoginModal('${g.id}', '${g.name}')">
-                View Details
-              </button>
             </div>
           </div>
         `;
@@ -923,6 +926,9 @@
 				    applyFilters();
 				  }
 				}
+				function redirectToDashboard() {
+										             window.location.href = '/user/dashboard'; // Match controller's @GetMapping path
+										         }
 
   </script>
 </body>
