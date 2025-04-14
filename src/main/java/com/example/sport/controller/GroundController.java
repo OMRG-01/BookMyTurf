@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.io.File;
@@ -47,41 +48,51 @@ public class GroundController {
                              @RequestParam(value = "coach.id", required = false) Long coachId,
                              @RequestParam("openingTime") String openingTimeStr,
                              @RequestParam("closingTime") String closingTimeStr,
-                             @RequestParam("image") MultipartFile image) throws IOException {
+                             @RequestParam("image") MultipartFile image,
+                             RedirectAttributes redirectAttributes) throws IOException {
 
-        // Step 1: Handle Game
-        Game existingGame = gameService.getGameById(gameId)
-            .orElseThrow(() -> new RuntimeException("Game not found with ID: " + gameId));
-        ground.setGame(existingGame);
+        try {
+            // Step 1: Handle Game
+            Game existingGame = gameService.getGameById(gameId)
+                .orElseThrow(() -> new RuntimeException("Game not found with ID: " + gameId));
+            ground.setGame(existingGame);
 
-        // Step 2: Handle Coach (Allow Null)
-        if (coachId != null) {
-            Coach existingCoach = coachService.getCoachById(coachId)
-                .orElseThrow(() -> new RuntimeException("Coach not found with ID: " + coachId));
-            ground.setCoach(existingCoach);
-        } else {
-            ground.setCoach(null); // Set NULL if no coach is selected
+            // Step 2: Handle Coach (Allow Null)
+            if (coachId != null) {
+                Coach existingCoach = coachService.getCoachById(coachId)
+                    .orElseThrow(() -> new RuntimeException("Coach not found with ID: " + coachId));
+                ground.setCoach(existingCoach);
+            } else {
+                ground.setCoach(null);
+            }
+
+            // Step 3: Convert time input
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            ground.setOpeningTime(LocalTime.parse(openingTimeStr, formatter));
+            ground.setClosingTime(LocalTime.parse(closingTimeStr, formatter));
+
+            // Step 4: Save ground
+            groundService.saveGround(ground);
+
+            // Step 5: Save image
+            if (!image.isEmpty()) {
+                String fileName = image.getOriginalFilename();
+                Path path = Paths.get("src/main/resources/static/GroundImg/" + fileName);
+                Files.copy(image.getInputStream(), path);
+                ground.setImageFileName(fileName);
+                groundService.saveGround(ground);
+            }
+
+            // Add success message
+            redirectAttributes.addFlashAttribute("success", "Ground added successfully!");
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Something went wrong while adding the ground.");
         }
 
-        // Step 3: Convert time input to LocalTime
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        ground.setOpeningTime(LocalTime.parse(openingTimeStr, formatter));
-        ground.setClosingTime(LocalTime.parse(closingTimeStr, formatter));
-
-        // Step 4: Save Ground (without image initially)
-        groundService.saveGround(ground);
-
-        // Step 5: Handle image upload
-        if (!image.isEmpty()) {
-            String fileName = image.getOriginalFilename();
-            Path path = Paths.get("src/main/resources/static/GroundImg/" + fileName);
-            Files.copy(image.getInputStream(), path);
-            ground.setImageFileName(fileName);
-            groundService.saveGround(ground); // Update ground with image filename
-        }
-
-        return "redirect:/admin/dashboard";
+        return "redirect:/admin/ground/add";
     }
+
 
     @GetMapping("/viewGrounds")
     public String viewGrounds(Model model) {

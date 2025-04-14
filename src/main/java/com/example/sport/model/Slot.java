@@ -25,6 +25,17 @@ public class Slot {
     private LocalTime endTime;    // Slot end time
     @Column(nullable = true)
     private String breakTime;
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;  // default: not deleted
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
 
     public String getBreakTime() {
         return breakTime;

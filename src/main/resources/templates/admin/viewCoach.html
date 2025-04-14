@@ -3,52 +3,500 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Coach</title>
+    <title>Sports Complex Admin - Manage Coaches</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
-    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --background: #f8f9fa;
+            --text-color: #333;
+            --light-gray: #ecf0f1;
+            --border-color: #ddd;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text-color);
+            padding: 20px;
+        }
+        
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-back {
+            background-color: var(--light-gray);
+            color: var(--primary-color);
+        }
+        
+        .btn-back:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            position: sticky;
+            top: 0;
+        }
+        
+        tbody tr:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .action-col {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-update {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .btn-update:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+        
+        .coach-search {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+        
+        .pagination a {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+        
+        .pagination a.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+        
+        .pagination a:hover:not(.active) {
+            background-color: var(--light-gray);
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                width: 100%;
+            }
+            
+            th, td {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .action-col {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+
+        /* Badge for experience level */
+        .badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge-junior {
+            background-color: #f1c40f;
+            color: #333;
+        }
+        
+        .badge-mid {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .badge-senior {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        /* Form modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn-submit {
+            background-color: var(--success-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        
+        .btn-submit:hover {
+            background-color: #219653;
+        }
+    </style>
 </head>
 <body>
-  
+    <div class="admin-container">
+        <div class="header">
+            <h1><i class="fas fa-user-tie"></i> Manage Coaches</h1>
+            <div class="action-buttons">
+                <a th:href="@{/admin/coach}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add New Coach
+                </a>
+                <a href="/admin/dashboard" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+		<!-- Success message -->
+		<div th:if="${success}" class="alert alert-success">
+		    <p th:text="${success}"></p>
+		</div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Experience</th>
-                <th>Specialization</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Salary</th>
-                <th>Game</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="coach : ${coaches}">
-                <td th:text="${coach.id}"></td>
-                <td th:text="${coach.name}"></td>
-                <td th:text="${coach.experience}"></td>
-                <td th:text="${coach.specialization}"></td>
-                <td th:text="${coach.phoneNumber}"></td>
-                <td th:text="${coach.email}"></td>
-                <td th:text="${coach.salary}"></td>
-                <td th:text="${coach.game.gameName}"></td>
-                <td>
-                    <a th:href="@{/admin/coach/update/{id}(id=${coach.id})}" class="btn-update">Update</a>
-                    <a th:href="@{/admin/coach/delete/{id}(id=${coach.id})}" class="btn-delete" 
-                       onclick="return confirm('Are you sure you want to delete this coach?')">Delete</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+		<!-- Error message -->
+		<div th:if="${error}" class="alert alert-danger">
+		    <p th:text="${error}"></p>
+		</div>
 
-    <a href="/admin/dashboard" class="back-btn">
-        <i class="fas fa-arrow-left"></i>
-        Back to Dashboard
-    </a>
-
+        <div class="coach-search">
+            <input type="text" class="search-input" id="coachSearch" placeholder="Search coaches by name, game or specialization...">
+            <button class="btn btn-primary" onclick="searchCoaches()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag"></i> ID</th>
+                        <th><i class="fas fa-user"></i> Name</th>
+                        <th><i class="fas fa-briefcase"></i> Experience</th>
+                        <th><i class="fas fa-star"></i> Specialization</th>
+                        <th><i class="fas fa-phone"></i> Phone</th>
+                        <th><i class="fas fa-envelope"></i> Email</th>
+                        <th><i class="fas fa-dollar-sign"></i> Salary</th>
+                        <th><i class="fas fa-gamepad"></i> Game</th>
+                        <th><i class="fas fa-cogs"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="coach : ${coaches}">
+                        <td th:text="${coach.id}"></td>
+                        <td th:text="${coach.name}"></td>
+                        <td>
+                            <span th:class="${coach.experience < 3 ? 'badge badge-junior' : (coach.experience < 7 ? 'badge badge-mid' : 'badge badge-senior')}"
+                                  th:text="${coach.experience} + ' years'"></span>
+                        </td>
+                        <td th:text="${coach.specialization}"></td>
+                        <td th:text="${coach.phoneNumber}"></td>
+                        <td th:text="${coach.email}"></td>
+                        <td th:text="${'$' + coach.salary}"></td>
+                        <td th:text="${coach.game.gameName}"></td>
+                        <td class="action-col">
+                            <a th:href="@{/admin/coach/update/{id}(id=${coach.id})}" class="btn-update">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a th:href="@{/admin/coach/delete/{id}(id=${coach.id})}" class="btn-delete"
+                               onclick="return confirm('Are you sure you want to delete this coach?')">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagination">
+            <a href="#">&laquo;</a>
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <a href="#">&raquo;</a>
+        </div>
+    </div>
+    
+    <!-- Add Coach Modal -->
+    <div id="addCoachModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Coach</h2>
+                <span class="close" onclick="closeAddCoachModal()">&times;</span>
+            </div>
+            <form th:action="@{/admin/coach/add}" method="post" th:object="${coach}">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="experience">Experience (years)</label>
+                    <input type="number" class="form-control" id="experience" name="experience" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="specialization">Specialization</label>
+                    <input type="text" class="form-control" id="specialization" name="specialization" required>
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="salary">Salary</label>
+                    <input type="number" class="form-control" id="salary" name="salary" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="gameId">Game</label>
+                    <select class="form-control" id="gameId" name="game.id" required>
+                        <option value="">Select a game</option>
+                        <option th:each="game : ${games}" th:value="${game.id}" th:text="${game.gameName}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Add Coach</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        // Modal functions
+        function openAddCoachModal() {
+            document.getElementById('addCoachModal').style.display = 'block';
+        }
+        
+        function closeAddCoachModal() {
+            document.getElementById('addCoachModal').style.display = 'none';
+        }
+        
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            let modal = document.getElementById('addCoachModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Search function
+        function searchCoaches() {
+            let input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("coachSearch");
+            filter = input.value.toUpperCase();
+            table = document.querySelector("table");
+            tr = table.getElementsByTagName("tr");
+            
+            for (i = 1; i < tr.length; i++) {
+                let nameCol = tr[i].getElementsByTagName("td")[1];
+                let specialCol = tr[i].getElementsByTagName("td")[3];
+                let gameCol = tr[i].getElementsByTagName("td")[7];
+                
+                if (nameCol && specialCol && gameCol) {
+                    let nameText = nameCol.textContent || nameCol.innerText;
+                    let specialText = specialCol.textContent || specialCol.innerText;
+                    let gameText = gameCol.textContent || gameCol.innerText;
+                    
+                    if (nameText.toUpperCase().indexOf(filter) > -1 || 
+                        specialText.toUpperCase().indexOf(filter) > -1 || 
+                        gameText.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+        
+        // Notification system
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check for success message from controller
+            const urlParams = new URLSearchParams(window.location.search);
+            const successMsg = urlParams.get('success');
+            const errorMsg = urlParams.get('error');
+            
+            if (successMsg) {
+                toastr.success(decodeURIComponent(successMsg));
+            }
+            
+            if (errorMsg) {
+                toastr.error(decodeURIComponent(errorMsg));
+            }
+        });
+    </script>
 </body>
 </html>

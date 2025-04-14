@@ -124,7 +124,7 @@
 
             fetch(`/admin/slots/delete/${slotId}`, { method: "DELETE" })
                 .then(response => {
-                    if (!response.ok) throw new Error("Failed to delete slot");
+                    if (!response.ok) throw new Error("Failed ");
                     return response.text();
                 })
                 .then(() => {

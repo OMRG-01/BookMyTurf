@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Controller
@@ -49,21 +50,26 @@ public class GameController {
         return "redirect:/admin/game"; // Reload the page after saving
     }
 
-    // Delete a game by its ID
     @GetMapping("/admin/deleteGame/{id}")
-    @DeleteMapping("/admin/deleteGame/{id}")
-    public String deleteGame(@PathVariable Long id) {
-        // Delete related coaches first
-        coachRepository.deleteByGameId(id);
-        
-     // Delete related records in the 'ground' table first
-        groundRepository.deleteByGameId(id);
-        
-        // Now delete the game
-        gameRepository.deleteById(id);
-        
-        return "redirect:/admin/games";  // Redirect to the games list
+    public String deleteGame(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            // Delete related coaches first
+            coachRepository.deleteByGameId(id);
+
+            // Delete related ground records
+            groundRepository.deleteByGameId(id);
+
+            // Attempt to delete the game
+            gameRepository.deleteById(id);
+
+            redirectAttributes.addFlashAttribute("success", "Game deleted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Cannot delete game. It is linked to another record.");
+        }
+
+        return "redirect:/admin/game"; // Redirect to games list
     }
+
 
 
     // Edit a game by its ID (For updating the game details)

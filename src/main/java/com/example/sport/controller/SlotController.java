@@ -67,6 +67,46 @@ public class SlotController {
 //    }
     
    
+//    @PostMapping("/submit")
+//    public ResponseEntity<?> createSlot(@RequestBody SlotDTO slotDTO) {
+//        if (slotDTO.getGroundId() == null) {
+//            return ResponseEntity.badRequest().body("Ground ID is required.");
+//        }
+//
+//        Ground ground = groundRepository.findById(slotDTO.getGroundId())
+//                .orElseThrow(() -> new RuntimeException("Ground not found"));
+//
+//        // Parse LocalTime from String
+//        LocalTime startTime = LocalTime.parse(slotDTO.getStartTime());
+//        LocalTime endTime = LocalTime.parse(slotDTO.getEndTime());
+//
+//        // Check if a slot already exists with the same ground, startTime, and endTime
+//        boolean exists = slotRepository.existsByGroundIdAndStartTimeAndEndTime(
+//                slotDTO.getGroundId(), startTime, endTime);
+//
+//        if (exists) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT)
+//                    .body("Slot from " + startTime + " to " + endTime + " already exists for this ground.");
+//        }
+//
+//        // Create Slot object
+//        Slot slot = new Slot();
+//        slot.setGround(ground);
+//        slot.setAvailability(slotDTO.isAvailability());
+//        slot.setBreakTime(slotDTO.getBreakTime());
+//        slot.setStartTime(startTime);
+//        slot.setEndTime(endTime);
+//        slot.setPrice(slotDTO.getPrice());
+//        slot.setWeekendPrice(slotDTO.getWeekendPrice());
+//
+//        // Log the slot object before saving
+//        System.out.println("Saving slot: " + slot.toString());
+//
+//        // Save the slot
+//        slotRepository.save(slot);
+//
+//        return ResponseEntity.ok("Slot added successfully.");
+//    }
     @PostMapping("/submit")
     public ResponseEntity<?> createSlot(@RequestBody SlotDTO slotDTO) {
         if (slotDTO.getGroundId() == null) {
@@ -80,8 +120,8 @@ public class SlotController {
         LocalTime startTime = LocalTime.parse(slotDTO.getStartTime());
         LocalTime endTime = LocalTime.parse(slotDTO.getEndTime());
 
-        // Check if a slot already exists with the same ground, startTime, and endTime
-        boolean exists = slotRepository.existsByGroundIdAndStartTimeAndEndTime(
+        // Check if a non-soft-deleted slot already exists with the same ground, startTime, and endTime
+        boolean exists = slotRepository.existsByGroundIdAndStartTimeAndEndTimeAndIsDeletedFalse(
                 slotDTO.getGroundId(), startTime, endTime);
 
         if (exists) {
@@ -110,6 +150,7 @@ public class SlotController {
 
 
 
+
     public SlotController(GroundService groundService) {
         this.groundService = groundService;
     }
@@ -121,16 +162,21 @@ public class SlotController {
     
 
     @GetMapping("/all")
-    @ResponseBody 
+    @ResponseBody
     public List<Slot> getAllSlots() {
-    	 return slotRepository.findAllWithGround();  
+        // Fetch only non-deleted slots using a custom repository method
+        return slotRepository.findAllByIsDeletedFalseWithGround();
     }
+
     
  // Page Navigation to viewSlot.html
     @GetMapping("/viewSlot")
-    public String showViewSlotPage() {
+    public String showViewSlotPage(Model model) {
+        List<Slot> slots = slotRepository.findByIsDeletedFalse(); // fetch only active slots
+        model.addAttribute("slots", slots);
         return "admin/viewSlot";
     }
+
  // ✅ Fetch slots for a specific ground and load edit page
     @GetMapping("/editSlot")
     public String editSlotPage(@RequestParam("groundId") Long groundId, Model model) {
@@ -144,8 +190,8 @@ public class SlotController {
             return "redirect:/slotManagement";
         }
 
-        // Fetch all slots for the selected ground
-        List<Slot> slots = slotService.getSlotsByGroundId(groundId);
+        // Fetch all non-deleted slots for the selected ground
+        List<Slot> slots = slotService.getSlotsByGroundIdAndIsDeletedFalse(groundId);
         System.out.println("Slots fetched: " + slots);
 
         // Add attributes to model for Thymeleaf template
@@ -154,6 +200,7 @@ public class SlotController {
 
         return "admin/editSlot"; // Loads editSlot.html
     }
+
 
 
     // ✅ Fetch a single slot by ID (For Editing)
@@ -201,6 +248,7 @@ public class SlotController {
 
         return ResponseEntity.ok(response);
     }
+
     
     @PutMapping("/update/{groundId}")
     public ResponseEntity<?> updateSlotsByGround(
@@ -224,22 +272,51 @@ public class SlotController {
     }
 
 
-    // ✅ Delete Slot
+//    // ✅ Delete Slot
+//    @DeleteMapping("/delete/{slotId}")
+//    public ResponseEntity<?> deleteSlot(@PathVariable Long slotId) {
+//        if (slotRepository.existsById(slotId)) {
+//            slotRepository.deleteById(slotId);
+//            return ResponseEntity.ok("Slot deleted successfully.");
+//        }
+//        return ResponseEntity.notFound().build();
+//    }
     @DeleteMapping("/delete/{slotId}")
     public ResponseEntity<?> deleteSlot(@PathVariable Long slotId) {
-        if (slotRepository.existsById(slotId)) {
-            slotRepository.deleteById(slotId);
-            return ResponseEntity.ok("Slot deleted successfully.");
+        Optional<Slot> optionalSlot = slotRepository.findById(slotId);
+        if (optionalSlot.isPresent()) {
+            Slot slot = optionalSlot.get();
+            slot.setDeleted(true); // Soft delete
+            slotRepository.save(slot);
+            return ResponseEntity.ok("Slot marked as deleted.");
         }
         return ResponseEntity.notFound().build();
     }
+
+
     
+//    @DeleteMapping("/slotdelete/{groundId}")
+//    @Transactional
+//    public ResponseEntity<String> deleteSlotsByGroundId(@PathVariable Long groundId) {
+//        List<Slot> slots = slotRepository.findByGroundId(groundId);
+//
+//        // 🔍 Debug Log: Check if Slots Exist
+//        System.out.println("🔍 Checking slots for ground ID: " + groundId);
+//        System.out.println("Found Slots: " + slots.size());
+//
+//        if (slots.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No slots found for this ground.");
+//        }
+//
+//        slotRepository.deleteByGroundId(groundId);
+//        return ResponseEntity.ok("All slots for Ground ID " + groundId + " have been deleted.");
+//    }
     @DeleteMapping("/slotdelete/{groundId}")
     @Transactional
     public ResponseEntity<String> deleteSlotsByGroundId(@PathVariable Long groundId) {
         List<Slot> slots = slotRepository.findByGroundId(groundId);
 
-        // 🔍 Debug Log: Check if Slots Exist
+        // 🔍 Debug Log
         System.out.println("🔍 Checking slots for ground ID: " + groundId);
         System.out.println("Found Slots: " + slots.size());
 
@@ -247,9 +324,15 @@ public class SlotController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No slots found for this ground.");
         }
 
-        slotRepository.deleteByGroundId(groundId);
-        return ResponseEntity.ok("All slots for Ground ID " + groundId + " have been deleted.");
+        // ✅ Soft delete all slots
+        for (Slot slot : slots) {
+            slot.setDeleted(true);  // mark as soft-deleted
+        }
+        slotRepository.saveAll(slots); // batch save
+
+        return ResponseEntity.ok("All slots for Ground ID " + groundId + " have been marked as deleted.");
     }
+
 
 
 

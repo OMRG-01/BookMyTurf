@@ -37,5 +37,13 @@ public interface SlotRepository extends JpaRepository<Slot, Long> {
 
     @Query("SELECT s FROM Slot s WHERE s.ground.id IN :groundIds")
     List<Slot> findByGroundIds(@Param("groundIds") List<Long> groundIds);
+    
+    List<Slot> findByIsDeletedFalse();
 
+    @Query("SELECT s FROM Slot s LEFT JOIN FETCH s.ground WHERE s.isDeleted = false")
+    List<Slot> findAllByIsDeletedFalseWithGround();
+
+    List<Slot> findByGroundIdAndIsDeletedFalse(Long groundId);
+    
+    boolean existsByGroundIdAndStartTimeAndEndTimeAndIsDeletedFalse(Long groundId, LocalTime startTime, LocalTime endTime);
 }

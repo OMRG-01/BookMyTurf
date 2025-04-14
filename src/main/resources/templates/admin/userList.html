@@ -141,11 +141,7 @@
 						<button class="btn btn-booking" th:onclick="'viewUserBookingHistory(' + ${user.id} + ')'">
 								<i class="fas fa-calendar-check"></i> Booking
 						</button>
-                        <form th:action="@{/admin/user/{id}/delete(id=${user.id})}"  method="post" th:method="delete">
-                            <button class="btn btn-delete" type="submit">
-                                <i class="fas fa-trash-alt"></i> Delete
-                            </button>
-                        </form>
+                        
                     </div>
                 </td>
             </tr>

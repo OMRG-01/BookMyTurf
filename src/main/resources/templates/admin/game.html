@@ -159,6 +159,15 @@
             <i class="fas fa-gamepad"></i>
             Game Management
         </h2>
+		<!-- Success message -->
+		<div th:if="${success}" class="alert alert-success">
+		    <p th:text="${success}"></p>
+		</div>
+
+		<!-- Error message -->
+		<div th:if="${error}" class="alert alert-danger">
+		    <p th:text="${error}"></p>
+		</div>
 
         <form class="game-form" th:action="@{/admin/addGame}" method="post">
             <div class="form-group">

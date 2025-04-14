@@ -215,6 +215,15 @@
 <body>
     <div class="container">
         <h2><i class="fas fa-map-marked-alt"></i><span th:text="${ground.id == null ? 'Add New Ground' : 'Edit Ground'}"></span></h2>
+		<!-- Success Message -->
+		<div th:if="${success}" class="alert alert-success">
+		    <p th:text="${success}"></p>
+		</div>
+
+		<!-- Error Message -->
+		<div th:if="${error}" class="alert alert-danger">
+		    <p th:text="${error}"></p>
+		</div>
 
         <form th:action="@{/admin/ground/save}" th:object="${ground}" method="post" enctype="multipart/form-data">
             <input type="hidden" th:field="*{id}"/>
@@ -424,7 +433,7 @@ $(document).ready(function() {
                 success: function(coaches) {
                     console.log("Received Coaches:", coaches); // Debugging line
                     if (coaches.length > 0) {
-                        var options = '<option value="">-- Select a Coach --</option>';
+						var options = '<option value="">-- No Coach --</option>'; // Instead of "Select a Coach"
                         coaches.forEach(function(coach) {
                             options += '<option value="' + coach.id + '">' + coach.name + '</option>';
                         });

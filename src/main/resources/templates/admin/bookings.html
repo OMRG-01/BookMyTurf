@@ -1,325 +1,261 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking History</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Booking History - BookMyTurf</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2A5C82;
-            --secondary-color: #39B54A;
-            --accent-color: #f39c12;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --background: #f8f9fa;
             --text-color: #333;
-            --bg-color: #f8f9fa;
+            --border-color: #ddd;
         }
-
+        
         [data-theme="dark"] {
-            --primary-color: #4CAF50;
-            --secondary-color: #2196F3;
-            --text-color: #fff;
-            --bg-color: #121212;
+            --primary-color: #375a7f;
+            --secondary-color: #2c82c9;
+            --success-color: #00bc8c;
+            --danger-color: #e74c3c;
+            --background: #222;
+            --text-color: #eee;
+            --border-color: #444;
         }
-
+        
         body {
-            background-color: var(--bg-color);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
             color: var(--text-color);
-            font-family: 'Arial', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
+            transition: all 0.3s ease;
         }
-
-        .filter-section {
-            background-color: rgba(42, 92, 130, 0.1);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 10px 20px;
         }
-
-        .filter-section .form-label {
-            color: var(--primary-color);
+        
+        .navbar-brand {
             font-weight: 600;
+            font-size: 24px;
         }
-
-        .filter-section .form-control {
-            border-color: var(--primary-color);
+        
+        .brand-icon {
+            margin-right: 8px;
         }
-
+        
+        .dark-mode-toggle {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            border-radius: 5px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .dark-mode-toggle i {
+            font-size: 14px;
+        }
+        
+        .dark-mode-toggle span {
+            font-size: 14px;
+        }
+        
+        .filter-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        [data-theme="dark"] .filter-section {
+            background-color: #2d3436;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .form-control, .form-select {
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        
+        [data-theme="dark"] .form-control, [data-theme="dark"] .form-select {
+            background-color: #444;
+            border-color: #555;
+            color: #eee;
+        }
+        
         .table {
-            background-color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        .table thead {
+        
+        [data-theme="dark"] .table {
+            color: #eee;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .table th {
             background-color: var(--primary-color);
             color: white;
+            font-weight: 500;
         }
-
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(42, 92, 130, 0.05);
+        
+        [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: rgba(255,255,255,0.05);
         }
-
-        .theme-toggle {
-            position: absolute;
-            top: 15px;
-            right: 15px;
+        
+        [data-theme="dark"] .table-hover > tbody > tr:hover {
+            background-color: rgba(255,255,255,0.1);
         }
-
+        
         .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
         }
-
-        @media (max-width: 768px) {
-            .filter-section {
-                flex-direction: column;
-            }
-            .filter-section .form-group {
-                margin-bottom: 10px;
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .section-title {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
+            color: var(--primary-color);
+        }
+        
+        [data-theme="dark"] .section-title {
+            color: #fff;
+        }
+        
+        /* Status badge styles */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-paid {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .status-pending {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .status-failed {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .navbar-brand {
+                font-size: 20px;
             }
         }
-		.navbar {
-				        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-				        padding: 0.8rem 1.5rem;
-				        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-				    }
-
-				    .navbar-brand {
-				        font-size: 1.8rem;
-				        font-weight: 700;
-				        font-family: 'Poppins', sans-serif;
-				        color: var(--light-color) !important;
-				        display: flex;
-				        align-items: center;
-				        gap: 0.8rem;
-				    }
-
-				    .brand-icon {
-				        font-size: 2.2rem;
-				        color: var(--accent-color);
-				    }
-
-				    .nav-item {
-				        margin: 0 0.5rem;
-				        position: relative;
-				    }
-
-				    .nav-link {
-				        font-size: 1.1rem;
-				        font-weight: 500;
-				        color: var(--text-color) !important;
-				        padding: 0.8rem 1.2rem !important;
-				        border-radius: 8px;
-				        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-				        display: flex;
-				        align-items: center;
-				        gap: 0.6rem;
-				    }
-
-				    .nav-link:hover {
-				        background: rgba(255,255,255,0.15);
-				        color: var(--accent-color) !important;
-				        transform: translateY(-2px);
-				    }
-
-				    .nav-link i {
-				        width: 24px;
-				        text-align: center;
-				    }
-
-				    .dropdown-menu {
-				        background: var(--secondary-color);
-				        border: none;
-				        border-radius: 12px;
-				        padding: 0.5rem;
-				        box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-				        margin-top: 0.8rem !important;
-				    }
-
-				    .dropdown-item {
-				        color: var(--light-color) !important;
-				        padding: 0.75rem 1.5rem !important;
-				        border-radius: 8px;
-				        margin: 0.25rem 0;
-				        display: flex;
-				        align-items: center;
-				        gap: 0.8rem;
-				        transition: all 0.2s ease;
-				    }
-
-				    .dropdown-item:hover {
-				        background: var(--primary-color) !important;
-				        transform: translateX(5px);
-				    }
-
-				    .dark-mode-toggle {
-				        background: rgba(255,255,255,0.1);
-				        border: 2px solid rgba(255,255,255,0.2);
-				        border-radius: 50px;
-				        padding: 0.5rem 1rem;
-				        color: var(--light-color);
-				        transition: all 0.3s ease;
-				        display: flex;
-				        align-items: center;
-				        gap: 0.6rem;
-				    }
-
-				    .dark-mode-toggle:hover {
-				        background: rgba(255,255,255,0.2);
-				        transform: scale(1.05);
-				    }
-
-				    .dark-mode {
-				        background-color: var(--dark-color) !important;
-				        color: var(--light-color) !important;
-				    }
-
-				    .dark-mode .navbar {
-				        background: linear-gradient(135deg, #34495e, #2c3e50);
-				    }
-
-				    .dark-mode .dropdown-menu {
-				        background: #2c3e50;
-				    }
-				    /* Add these dark mode styles */
-				    body.dark-mode .site-footer {
-				        background: #2c3e50;
-				        color: #ecf0f1;
-				    }
-
-				    body.dark-mode .footer-links a {
-				        color: #bdc3c7;
-				    }
-
-				    body.dark-mode .footer-links a:hover {
-				        color: #ecf0f1;
-				    }
-
-				    body.dark-mode .footer-section h5 {
-				        color: #f39c12;
-				    }
-
-				    body.dark-mode .newsletter-input {
-				        background: rgba(0,0,0,0.3);
-				    }
-				    .navbar-toggler {
-				        border: none;
-				        padding: 0.5rem;
-				    }
-
-				    .navbar-toggler:focus {
-				        box-shadow: none;
-				    }
-
-				    .navbar-toggler-icon {
-				        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
-				    }
-
-				    @media (max-width: 992px) {
-				        .navbar-collapse {
-				            background: var(--secondary-color);
-				            padding: 1rem;
-				            margin-top: 1rem;
-				            border-radius: 12px;
-				        }
-
-				        .dropdown-menu {
-				            background: rgba(0,0,0,0.1);
-				            margin-left: 1.5rem;
-				            width: 90%;
-				        }
-				    }
     </style>
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-			<div class="container-fluid">
-			      <a class="navbar-brand" th:href="@{/admin/dashboard}">
-			          <i class="fas fa-futbol brand-icon"></i>
-			         BookMyTurf 
-			      </a>
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/admin/dashboard}">
+                <i class="fas fa-futbol brand-icon"></i>
+                BookMyTurf 
+            </a>
 
-			      <!-- Dark Mode Toggle -->
-			      <button class="dark-mode-toggle me-3" id="themeToggle">
-			          <i class="fas fa-moon"></i>
-			          <span>Dark Mode</span>
-			      </button>
+            <!-- Dark Mode Toggle -->
+            <button class="dark-mode-toggle me-3" id="themeToggle">
+                <i class="fas fa-moon"></i>
+                <span>Dark Mode</span>
+            </button>
 
-			      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-			          data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-			          aria-label="Toggle navigation">
-			          <span class="navbar-toggler-icon"></span>
-			      </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-			      <div class="collapse navbar-collapse" id="navbarNav">
-			          <ul class="navbar-nav ms-auto">
-			              <li class="nav-item dropdown">
-			                  <a class="nav-link dropdown-toggle" href="#" id="manageSlotDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-			                      <i class="fas fa-calendar-alt"></i> Manage
-			                  </a>
-			                  <ul class="dropdown-menu" aria-labelledby="manageSlotDropdown">
-			                      <li><a class="dropdown-item" th:href="@{/admin/game}">Add Game</a></li>
-			                      <li><a class="dropdown-item" th:href="@{/admin/coach}">Add Coach</a></li>
-			                      <li><a class="dropdown-item" th:href="@{/admin/ground/add}">Add Ground</a></li>
-			                      <li><a class="dropdown-item" th:href="@{/admin/slots}">Add Slot</a></li>
-			                  </ul>
-			              </li>
-			              <!-- Manage Coach Dropdown -->
-			              <li class="nav-item dropdown">
-			                  <a class="nav-link dropdown-toggle" href="#" id="manageCoachDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-			                      <i class="fas fa-info-circle"></i> View
-			                  </a>
-			                  <ul class="dropdown-menu" aria-labelledby="manageCoachDropdown">
-			                      <li><a class="dropdown-item" th:href="@{/admin/coaches}">View Coaches</a></li>
-			                      <li><a class="dropdown-item" th:href="@{/admin/ground/viewGrounds}">View Grounds</a></li>
-			                      <li><a class="dropdown-item" th:href="@{/admin/slots/viewSlot}">View Slots</a></li>
-			                  </ul>
-			              </li>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="manageSlotDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-calendar-alt"></i> Manage
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="manageSlotDropdown">
+                            <li><a class="dropdown-item" th:href="@{/admin/game}">Add Game</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/coach}">Add Coach</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/ground/add}">Add Ground</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/slots}">Add Slot</a></li>
+                        </ul>
+                    </li>
+                    <!-- Manage Coach Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="manageCoachDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-info-circle"></i> View
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="manageCoachDropdown">
+                            <li><a class="dropdown-item" th:href="@{/admin/coaches}">View Coaches</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/ground/viewGrounds}">View Grounds</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/slots/viewSlot}">View Slots</a></li>
+                        </ul>
+                    </li>
 
-						  <li class="nav-item dropdown">
-						                      <a class="nav-link dropdown-toggle" href="#" id="manageGroundDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						                          <i class="fas fa-map-marker-alt"></i> Booking
-						                      </a>
-						                      <ul class="dropdown-menu" aria-labelledby="manageGroundDropdown">
-						                          <li><a class="dropdown-item" th:href="@{/admin/today}">Today Booking</a></li>
-						                          <li><a class="dropdown-item" th:href="@{/admin/bookings}">Booking History</a></li>
-						                          <li><a class="dropdown-item" th:href="@{/finance-report}">Account</a></li>
-						                          
-						     </ul>
-						</li>
-			           </ul>    
-			          <ul class="navbar-nav ms-3">
-			                  <li class="nav-item">
-			                      <a class="nav-link"  th:href="@{/register1}">
-			                          <i class="fas fa-user-plus"></i>
-			                          Profile
-			                      </a>
-			                  </li>
-			                  <li class="nav-item">
-			                      <a class="nav-link" th:href="@{/logout}">
-			                          <i class="fas fa-sign-in-alt"></i>
-			                          Log Out
-			                      </a>
-			                  </li>
-			                  
-			          </ul>
-			      </div>
-			  </div>
-	    </nav>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="manageGroundDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-map-marker-alt"></i> Booking
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="manageGroundDropdown">
+                            <li><a class="dropdown-item" th:href="@{/admin/today}">Today Booking</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/bookings}">Booking History</a></li>
+                            <li><a class="dropdown-item" th:href="@{/finance-report}">Account</a></li>
+                        </ul>
+                    </li>
+                </ul>    
+                <ul class="navbar-nav ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/register1}">
+                            <i class="fas fa-user-plus"></i>
+                            Profile
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/logout}">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Log Out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container-fluid p-4">
         <div class="row">
             <div class="col-12">
-               
+                <h3 class="section-title">
+                    <i class="fas fa-history"></i> Booking History
+                </h3>
 
                 <!-- Filter Section -->
                 <div class="filter-section row g-3 mb-4">
@@ -341,10 +277,10 @@
                     </div>
                     <div class="col-12 mt-3">
                         <button onclick="applyFilters()" class="btn btn-primary">
-                            Apply Filters
+                            <i class="fas fa-filter"></i> Apply Filters
                         </button>
                         <button onclick="resetFilters()" class="btn btn-secondary ms-2">
-                            Reset
+                            <i class="fas fa-undo"></i> Reset
                         </button>
                     </div>
                 </div>
@@ -366,8 +302,8 @@
                             </tr>
                         </thead>
                         <tbody id="bookingTable">
-                            <!-- Dynamically populated rows -->
-                            <tr th:each="booking : ${bookings}">
+                            <!-- Original bookings loaded from server -->
+                            <tr th:each="booking : ${bookings}" class="booking-row">
                                 <td th:text="${booking['id']}"></td>
                                 <td th:text="${booking['bookingDate']}"></td>
                                 <td th:text="${booking['userName']}"></td>
@@ -376,33 +312,67 @@
                                 <td th:text="${booking['startTime']}"></td>
                                 <td th:text="${booking['endTime']}"></td>
                                 <td th:text="${booking['price']}"></td>
-                                <td th:text="${booking['paymentStatus']}"></td>
+                                <td>
+                                    <span th:class="${booking['paymentStatus'] == 'PAID' ? 'status-badge status-paid' : 
+                                                 (booking['paymentStatus'] == 'PENDING' ? 'status-badge status-pending' : 'status-badge status-failed')}"
+                                          th:text="${booking['paymentStatus']}">
+                                    </span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                
+                <!-- No Results Message -->
+                <div id="noResultsMessage" class="alert alert-info text-center mt-4" style="display: none;">
+                    <i class="fas fa-info-circle me-2"></i> No bookings found matching the filters.
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Store all original booking rows when page loads
+        let originalBookings = [];
+        
+        // When document is ready
+        $(document).ready(function() {
+            // Store all original booking rows
+            $(".booking-row").each(function() {
+                originalBookings.push($(this).clone());
+            });
+        });
+        
         // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
-            document.documentElement.setAttribute('data-theme', 
-                currentTheme === 'dark' ? '' : 'dark'
-            );
+            const newTheme = currentTheme === 'dark' ? '' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            
+            // Update icon
+            const icon = themeToggle.querySelector('i');
+            const text = themeToggle.querySelector('span');
+            
+            if (newTheme === 'dark') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Light Mode';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Dark Mode';
+            }
         });
 
         function applyFilters() {
-            let ground = $("#filterGround").val();
-            let user = $("#filterUser").val();
-            let game = $("#filterGame").val();
+            let ground = $("#filterGround").val().toLowerCase();
+            let user = $("#filterUser").val().toLowerCase();
+            let game = $("#filterGame").val().toLowerCase();
             let date = $("#filterDate").val();
 
             $.ajax({
-                url: '/user/bookings/filter',
+                url: '/admin/bookings/filter',
                 type: 'GET',
                 data: {
                     groundName: ground,
@@ -415,17 +385,23 @@
                     tableBody.empty();
 
                     if (data.length === 0) {
-                        tableBody.append(`
-                            <tr>
-                                <td colspan="9" class="text-center text-muted">
-                                    No bookings found matching the filters.
-                                </td>
-                            </tr>
-                        `);
+                        $("#noResultsMessage").show();
                     } else {
+                        $("#noResultsMessage").hide();
+                        
                         data.forEach(booking => {
+                            // Determine status class
+                            let statusClass = '';
+                            if (booking.paymentStatus === 'PAID') {
+                                statusClass = 'status-badge status-paid';
+                            } else if (booking.paymentStatus === 'PENDING') {
+                                statusClass = 'status-badge status-pending';
+                            } else {
+                                statusClass = 'status-badge status-failed';
+                            }
+                            
                             tableBody.append(`
-                                <tr>
+                                <tr class="booking-row">
                                     <td>${booking.id}</td>
                                     <td>${booking.bookingDate}</td>
                                     <td>${booking.userName}</td>
@@ -434,14 +410,16 @@
                                     <td>${booking.startTime}</td>
                                     <td>${booking.endTime}</td>
                                     <td>${booking.price}</td>
-                                    <td>${booking.paymentStatus}</td>
+                                    <td><span class="${statusClass}">${booking.paymentStatus}</span></td>
                                 </tr>
                             `);
                         });
                     }
                 },
                 error: function() {
-                    alert('Error fetching bookings. Please try again.');
+                    $("#noResultsMessage").show();
+                    tableBody.empty();
+                    toastr.error('Error fetching bookings. Please try again.');
                 }
             });
         }
@@ -450,30 +428,16 @@
             // Reset all filter inputs
             $("#filterGround, #filterUser, #filterGame, #filterDate").val('');
             
-            // Reload original bookings
-            $.ajax({
-                url: '/user/bookings',
-                type: 'GET',
-                success: function(data) {
-                    let tableBody = $("#bookingTable");
-                    tableBody.empty();
-
-                    data.forEach(booking => {
-                        tableBody.append(`
-                            <tr>
-                                <td>${booking.id}</td>
-                                <td>${booking.bookingDate}</td>
-                                <td>${booking.userName}</td>
-                                <td>${booking.gameName}</td>
-                                <td>${booking.groundName}</td>
-                                <td>${booking.startTime}</td>
-                                <td>${booking.endTime}</td>
-                                <td>${booking.price}</td>
-                                <td>${booking.paymentStatus}</td>
-                            </tr>
-                        `);
-                    });
-                }
+            // Hide no results message
+            $("#noResultsMessage").hide();
+            
+            // Clear the table
+            let tableBody = $("#bookingTable");
+            tableBody.empty();
+            
+            // Restore the original bookings from our saved copy
+            originalBookings.forEach(function(bookingRow) {
+                tableBody.append(bookingRow);
             });
         }
     </script>

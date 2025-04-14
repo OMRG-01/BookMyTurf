@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,12 +68,19 @@ public class CoachController {
         model.addAttribute("coaches", coaches);
         return "admin/viewCoach";
     }
- // ✅ Delete a coach
+    
     @GetMapping("/admin/coach/delete/{id}")
-    public String deleteCoach(@PathVariable Long id) {
-        coachService.deleteCoach(id);
+    public String deleteCoach(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            coachService.deleteCoach(id);
+            redirectAttributes.addFlashAttribute("success", "Coach deleted successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Cannot delete coach. It is linked to another record.");
+        }
+
         return "redirect:/admin/coaches";
     }
+
 
     // ✅ Redirect to the Update Coach form
     @GetMapping("/admin/coach/update/{id}")
